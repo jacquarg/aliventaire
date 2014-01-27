@@ -1,10 +1,62 @@
-#content
+#content.menu
     div.header
-        img(src="images/titre.png", alt="aliventaire", title="Aliventaire")
-    div.menu
-        div.row
-            img(src="images/shop.png", alt="shop", title="Mes courses")
-            img(src="images/fridge.png", alt="fridge", title="Mon placard")
-        div.row
-            img(src="images/cook.png", alt="cook", title="Ma cuisine")
-            img(src="images/recipe.png", alt="recipe", title="Mes recettes")
+        div.menu
+            img(src="images/titre.png", 
+                alt="aliventaire", 
+                title="Aliventaire")
+        div.shop
+            img.menu(src="images/shop.png", 
+                     alt="shop", 
+                     title="Retour au menu")
+            h1 Mes courses
+            img.navigation(src="images/2points.png", 
+                           alt="navigation", 
+                           title="Navigation")
+        div.fridge
+            img.menu(src="images/fridge.png", 
+                     alt="fridge", 
+                     title="Retour au menu")
+            h1 Mon placard
+            img.navigation(src="images/2points.png", 
+                           alt="navigation", 
+                           title="Navigation")
+        div.cook
+            img.menu(src="images/cook.png", 
+                     alt="cook", 
+                     title="Retour au menu")
+            h1 Ma cuisine
+            img.navigation(src="images/2points.png", 
+                           alt="navigation", 
+                           title="Navigation")
+        div.recipe
+            img.menu(src="images/recipe.png", 
+                     alt="recipe", 
+                     title="Retour au menu")
+            h1 Mes recettes
+            img.navigation(src="images/2points.png", 
+                           alt="navigation", 
+                           title="Navigation")
+    div.page
+        div.menu
+            div.row
+                img.shop(src="images/shop.png", 
+                         alt="shop", 
+                         title="Mes courses")
+                img.fridge(src="images/fridge.png", 
+                           alt="fridge", 
+                           title="Mon placard")
+            div.row
+                img.cook(src="images/cook.png", 
+                         alt="cook", 
+                         title="Ma cuisine")
+                img.recipe(src="images/recipe.png", 
+                           alt="recipe", 
+                           title="Mes recettes")
+        div.shop
+            "shop"
+        div.fridge
+            "fridge"
+        div.cook
+            "cook"
+        div.recipe
+            "recipe"

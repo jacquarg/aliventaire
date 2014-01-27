@@ -1,11 +1,14 @@
 @import 'nib'
 
 background-color = #f5f5f5
+color = #868686
 
 body
   background: background-color
   font: bold 18px "Helvetica Neue", Arial, Helvetica, sans-serif
   text-align: center
+  margin: 0
+  padding: 0
 
 ul
   list-style-type: none
@@ -17,27 +20,32 @@ a, a:visited
 a:hover
   color: #665248
 
+h1
+  margin: 0
+  padding: 0
+
 #home-view
   width: 600px
   height: 200px
-  margin: 20px auto
+  margin: 5px auto
+  padding: 0
 
   #content
     background: background-color
-    padding: 20px
+    padding: 0
     border-radius: 4px
 
 /* Default font settings */
 body
   font-size: 15px
-  color: #666
+  color: color
   background: background-color
-  font-family: "KievitPro", "ff-kievit-web-pro-1","ff-kievit-web-pro-2", "Helvetica Neue", Arial, Helvetica, sans-serif
+  font-family: "Just Another Hand", cursive
 
 /* Headings */
 h1, h2, h3, h4, h5
   font-weight: normal
-  color: #222
+  color: color
   clear: left
 
 h1
@@ -67,12 +75,58 @@ ul, ol
   list-style-type: none
 
 /* Style */
-div.menu
-  margin-top: 50px
+#content
+  div.header, div.page
+    > div
+      display: none
+  &.menu
+    div.menu
+      display: block
 
-  img
-    padding: 0 2px
+      img
+        padding: 0 2px
+        cursor: pointer
+        opacity: 0.9
+        &:hover
+          opacity: 1
+
+  &.shop
+    div.shop
+      display: block
+
+  &.fridge
+    div.fridge
+      display: block
+
+  &.cook
+    div.cook
+      display: block
+
+  &.recipe
+    div.recipe
+      display: block
+
+  .page
+    margin-top: 50px
+
+  img.menu
+    position: absolute
+    left: 5px
+    top: 5px
+    width: 64px
+    height: 64px
     cursor: pointer
     opacity: 0.9
     &:hover
       opacity: 1
+
+  img.navigation
+    position: absolute
+    right: 5px
+    top: 5px
+    height: 16px
+    cursor: pointer
+    opacity: 0.9
+    &:hover
+      opacity: 1
+

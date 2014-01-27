@@ -155,12 +155,55 @@ module.exports = Backbone.Model.extend({
 });
 
 ;require.register("views/home_view", function(exports, require, module) {
-var View = require('./view');
-var template = require('./templates/home');
+var View     = require('./view'),
+    template = require('./templates/home');
 
 module.exports = View.extend({
-    id: 'home-view',
-    template: template
+    "id": "home-view",
+    "template": template,
+    "events": {
+        "click .menu": "goMenu",
+        "click .menu .shop": "goShop",
+        "click .menu .fridge": "goFridge",
+        "click .menu .cook": "goCook",
+        "click .menu .recipe": "goRecipe",
+    },
+
+    "goPage": function (pageName) {
+        $("#content").removeClass();
+        $("#content").addClass(pageName);
+    },
+
+    "goShop": function () {
+        this.goPage("shop");
+
+        return false;
+    },
+
+    "goFridge": function () {
+        this.goPage("fridge");
+
+        return false;
+    },
+
+    "goCook": function () {
+        this.goPage("cook");
+
+        return false;
+    },
+
+    "goRecipe": function () {
+        this.goPage("recipe");
+
+        return false;
+    },
+
+    "goMenu": function () {
+        this.goPage("menu");
+
+        return false;
+    }
+
 });
 
 });
@@ -171,7 +214,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div class="header"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses"/><img src="images/fridge.png" alt="fridge" title="Mon placard"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine"/><img src="images/recipe.png" alt="recipe" title="Mes recettes"/></div></div></div>');
+buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div class="shop">"shop"</div><div class="fridge">"fridge"</div><div class="cook">"cook"</div><div class="recipe">"recipe"</div></div></div>');
 }
 return buf.join("");
 };
