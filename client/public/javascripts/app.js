@@ -159,8 +159,8 @@ var View = require('./view');
 var template = require('./templates/home');
 
 module.exports = View.extend({
-  id: 'home-view',
-  template: template
+    id: 'home-view',
+    template: template
 });
 
 });
@@ -171,7 +171,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><h1>Cozy template</h1><h2>Welcome</h2><ul><li> <a href="https://github.com/mycozycloud/cozy-setup/wiki">Documentation</a></li><li> <a href="https://github.com/mycozycloud/cozy-setup/wiki/Getting-started">Getting Started</a></li><li> <a href="https://github.com/mycozycloud">Github</a></li></ul></div>');
+buf.push('<div id="content"><div class="header"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses"/><img src="images/fridge.png" alt="fridge" title="Mon placard"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine"/><img src="images/recipe.png" alt="recipe" title="Mes recettes"/></div></div></div>');
 }
 return buf.join("");
 };

@@ -1,8 +1,11 @@
 @import 'nib'
 
+background-color = #f5f5f5
+
 body
-  background: #91A2C0
+  background: background-color
   font: bold 18px "Helvetica Neue", Arial, Helvetica, sans-serif
+  text-align: center
 
 ul
   list-style-type: none
@@ -20,7 +23,7 @@ a:hover
   margin: 20px auto
 
   #content
-    background: #FFF
+    background: background-color
     padding: 20px
     border-radius: 4px
 
@@ -28,7 +31,7 @@ a:hover
 body
   font-size: 15px
   color: #666
-  background: #fff
+  background: background-color
   font-family: "KievitPro", "ff-kievit-web-pro-1","ff-kievit-web-pro-2", "Helvetica Neue", Arial, Helvetica, sans-serif
 
 /* Headings */
@@ -64,25 +67,12 @@ ul, ol
   list-style-type: none
 
 /* Style */
-#content
-  width: 605px
-  margin: 0 auto
-  margin-top: 40px
-  margin-bottom: 60px
+div.menu
+  margin-top: 50px
 
-h1
-  background: #91A2C0
-  background-repeat: no-repeat
-  background-position: 2px
-  color: #fff
-  width: 330px
-  padding-left: 18px
-  border-radius: 5px
-
-#props
-  position: relative
-  top: 36px
-  font-size: 18px
-  padding-left: 373px
-  color: #eee
-  font-style: italic
+  img
+    padding: 0 2px
+    cursor: pointer
+    opacity: 0.9
+    &:hover
+      opacity: 1
