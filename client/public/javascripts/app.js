@@ -161,6 +161,7 @@ var View     = require('./view'),
 module.exports = View.extend({
     "id": "home-view",
     "template": template,
+
     "events": {
         "click .menu": "goMenu",
         "click .menu .shop": "goShop",
@@ -169,9 +170,32 @@ module.exports = View.extend({
         "click .menu .recipe": "goRecipe",
     },
 
+    "swipers": {},
+
     "goPage": function (pageName) {
+        var that = this, 
+            pageClass = "." + pageName;
+
         $("#content").removeClass();
         $("#content").addClass(pageName);
+
+        if (!that.swipers[pageName]) {
+            that.swipers[pageName] = $(".swiper-container:visible").swiper({
+                "loop": false,
+                "grabCursor": true,
+                "pagination": pageClass + "> .pagination",
+                "paginationClickable": true,
+                "keyboardControl": true
+            });
+            $(pageClass + "> .navigation.left").on("click", function (evt) {
+                evt.preventDefault()
+                that.swipers[pageName].swipePrev()
+            });
+            $(pageClass + "> .navigation.right").on("click", function (evt) {
+                evt.preventDefault()
+                that.swipers[pageName].swipeNext()
+            });
+        }
     },
 
     "goShop": function () {
@@ -214,7 +238,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><img src="images/2points.png" alt="navigation" title="Navigation" class="navigation"/></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div class="shop">"shop"</div><div class="fridge">"fridge"</div><div class="cook">"cook"</div><div class="recipe">"recipe"</div></div></div>');
+buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div class="shop"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>shop 1</p></div><div class="swiper-slide"> <p>shop 2</p></div><div class="swiper-slide"> <p>shop 3</p></div></div></div><div class="navigation right"></div></div><div class="fridge">"fridge"</div><div class="cook"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>cook 1</p></div><div class="swiper-slide"> <p>cook 2</p></div></div></div><div class="navigation right"></div></div><div class="recipe">"recipe"</div></div></div>');
 }
 return buf.join("");
 };

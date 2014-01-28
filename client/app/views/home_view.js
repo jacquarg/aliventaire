@@ -4,6 +4,7 @@ var View     = require('./view'),
 module.exports = View.extend({
     "id": "home-view",
     "template": template,
+
     "events": {
         "click .menu": "goMenu",
         "click .menu .shop": "goShop",
@@ -12,9 +13,32 @@ module.exports = View.extend({
         "click .menu .recipe": "goRecipe",
     },
 
+    "swipers": {},
+
     "goPage": function (pageName) {
+        var that = this, 
+            pageClass = "." + pageName;
+
         $("#content").removeClass();
         $("#content").addClass(pageName);
+
+        if (!that.swipers[pageName]) {
+            that.swipers[pageName] = $(".swiper-container:visible").swiper({
+                "loop": false,
+                "grabCursor": true,
+                "pagination": pageClass + "> .pagination",
+                "paginationClickable": true,
+                "keyboardControl": true
+            });
+            $(pageClass + "> .navigation.left").on("click", function (evt) {
+                evt.preventDefault()
+                that.swipers[pageName].swipePrev()
+            });
+            $(pageClass + "> .navigation.right").on("click", function (evt) {
+                evt.preventDefault()
+                that.swipers[pageName].swipeNext()
+            });
+        }
     },
 
     "goShop": function () {
