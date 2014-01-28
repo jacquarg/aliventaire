@@ -61,13 +61,13 @@ Application to help users to chose a recipe and buy its products.
 
 # Resources used
 * client
-  * jquery 1.7.2
+  * jquery 2.1.0
     http://jquery.com/ - MIT
-  * bootstrap 2.0.2
+  * bootstrap 3.0.3
     http://getbootstrap.com/ - Apache Licence v2.0
-  * underscore 1.3.1
+  * underscore 1.5.2
     http://underscorejs.org/ - MIT
-  * backbone 0.9.2 
+  * backbone 1.1.0 
     http://backbonejs.org/ - MIT
   * idangerous swiper 2.4.2
     http://www.idangero.us/sliders/swiper/ - GPL & MIT
