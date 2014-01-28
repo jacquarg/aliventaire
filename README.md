@@ -5,11 +5,6 @@ Application to help users to chose a recipe and buy its products.
 
 # TODO
 
-* main page
-  * go to shop page  
-  * go to fridge page
-  * go to recipe page
-  * go to the cook page
 * shop page
   * display history
   * chose the kind of a recipe
@@ -24,16 +19,19 @@ Application to help users to chose a recipe and buy its products.
   * add a product
   * list all products
   * modify the quantity of a product
-  * attach tags to products
+  * modify the price of a product
+  * attach tags to a product
   * add products from a shop ticket
   * add products from an online shop
 * recipe page
   * add a recipe
   * list all recipe
   * modify a recipe
+  * attach tags to a recipe
   * attach a product to a recipe
   * create recipe from an online site
 * cook page
+  * go back to menu
   * update the products quantities with the shop ticket
   * display the recipe
   * validate the cooked recipe and update the products quantities
@@ -41,8 +39,39 @@ Application to help users to chose a recipe and buy its products.
 
 # Changelog
 
+* v0.0.2
+    * navigation and pagination system
+    * main page
+      * go to shop page  
+      * go to fridge page
+      * go to recipe page
+      * go to the cook page
+    * shop page
+      * go back to menu
+    * fridge page
+      * go back to menu
+    * recipe page
+      * go back to menu
+    * cook page
+      * go back to menu
+    * test of the pagination system on shop and recipe pages
 * v0.0.1
-    * cozy-template clone
+  * cozy-template clone
+
+
+# Resources used
+* client
+  * jquery 1.7.2
+    http://jquery.com/ - MIT
+  * bootstrap 2.0.2
+    http://getbootstrap.com/ - Apache Licence v2.0
+  * underscore 1.3.1
+    http://underscorejs.org/ - MIT
+  * backbone 0.9.2 
+    http://backbonejs.org/ - MIT
+  * idangerous swiper 2.4.2
+    http://www.idangero.us/sliders/swiper/ - GPL & MIT
+* server : please see package.json
 
 
 # About Cozy
