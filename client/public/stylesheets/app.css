@@ -27,6 +27,7 @@ h3,
 h4,
 h5 {
   font-weight: normal;
+  font-family: "Just Another Hand", cursive;
   color: #868686;
   clear: left;
   margin: 0;
@@ -158,6 +159,29 @@ ol {
 #content .navigation.right {
   background: url("../images/arrows.png") no-repeat left bottom;
   right: 10px;
+}
+#content form button {
+  margin: 0.1em;
+}
+#content .form-group {
+  padding: 0.1em;
+}
+#content .form-group input {
+  font-size: 0.8em;
+}
+#fridge {
+  font-size: 2em;
+}
+#fridge #product-number,
+#fridge #product-price {
+  text-align: right;
+}
+#fridge ul {
+  margin-top: 1em;
+}
+#fridge ul img {
+  width: 32px;
+  height: 32px;
 }
 
 

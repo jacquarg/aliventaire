@@ -124,13 +124,13 @@ $(function () {
 var application = require('application');
 
 module.exports = Backbone.Router.extend({
-  routes: {
-    '': 'home'
-  },
+    routes: {
+        "": "home"
+    },
 
-  home: function () {
-    $('body').html(application.homeView.render().el);
-  }
+    home: function () {
+        $("body").html(application.homeView.render().el);
+    }
 });
 
 });
@@ -154,9 +154,32 @@ module.exports = Backbone.Model.extend({
 
 });
 
+;require.register("models/product", function(exports, require, module) {
+var Model = require("./model");
+
+module.exports = Model.extend({
+    "urlRoot": "products"
+});
+
+});
+
+;require.register("models/products", function(exports, require, module) {
+var Collection = require("./collection"),
+    Product    = require("./product");
+
+module.exports = Collection.extend({
+    "model": Product,
+    "url": "products"
+});
+
+});
+
 ;require.register("views/home_view", function(exports, require, module) {
-var View     = require('./view'),
-    template = require('./templates/home');
+var View         = require("./view"),
+    Product      = require("../models/product"),
+    Products     = require("../models/products"),
+    ProductsView = require("./products_view"),
+    template     = require("./templates/home");
 
 module.exports = View.extend({
     "id": "home-view",
@@ -205,6 +228,15 @@ module.exports = View.extend({
     },
 
     "goFridge": function () {
+        this.products = new Products([ 
+            { "name": "pates", "number": 4, "price": 0.59 },
+            { "name": "riz", "number": 0, "price": 1.32 },
+        ]);
+        this.productsView = new ProductsView({ 
+            "el": $("#fridge")[0],
+            "collection": this.products
+        });
+        this.productsView.render();
         this.goPage("fridge");
 
         return false;
@@ -232,13 +264,114 @@ module.exports = View.extend({
 
 });
 
+;require.register("views/product_view", function(exports, require, module) {
+var View     = require("./view"),
+    Product  = require("../models/product"),
+    template = require("./templates/product");
+
+module.exports = View.extend({
+    "tagName": "li",
+    "className": "row",
+    "template": template,
+
+    "model": Product,
+
+    "getRenderData": function () { 
+        var attributes = this.model.attributes;
+        if (!attributes.image) {
+            attributes.image = "images/fridge.png";
+        }
+        return attributes;
+    },
+
+    "initialize": function () {
+        this.render();
+    }
+
+});
+
+
+});
+
+;require.register("views/products_view", function(exports, require, module) {
+var View        = require("./view"),
+    Product     = require("../models/product"),
+    Products    = require("../models/products"),
+    ProductView = require("./product_view"),
+    template    = require("./templates/products");
+
+module.exports = View.extend({
+    "collection": Products,
+    
+    "template": template,
+
+    "render": function () {
+        this.$el.html(this.template(this.getRenderData()));
+        this.collection.each(function (product){
+            this.add(product);
+        }, this);
+    },
+
+    "add": function (product) {
+        var productView = new ProductView({ "model": product });
+        this.$el.find("ul.products").prepend(productView.el)
+    },
+
+    "events": {
+        "submit form": "addProduct",
+    },
+
+    "addProduct": function (evt) {
+        var $form = $(evt.target),
+            product = new Product ({
+                "name": $("#product-name").val(),
+                "number": $("#product-number").val(),
+                "price": $("#product-price").val(),
+            });
+
+        this.collection.push(product);
+        this.add(product);
+
+        return false;
+    },
+
+});
+
+});
+
 ;require.register("views/templates/home", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div class="shop"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>shop 1</p></div><div class="swiper-slide"> <p>shop 2</p></div><div class="swiper-slide"> <p>shop 3</p></div></div></div><div class="navigation right"></div></div><div class="fridge">"fridge"</div><div class="cook"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>cook 1</p></div><div class="swiper-slide"> <p>cook 2</p></div></div></div><div class="navigation right"></div></div><div class="recipe">"recipe"</div></div></div>');
+buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div class="shop"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>shop 1</p></div><div class="swiper-slide"> <p>shop 2</p></div><div class="swiper-slide"> <p>shop 3</p></div></div></div><div class="navigation right"></div></div><div id="fridge" class="fridge"></div><div class="cook"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>cook 1</p></div><div class="swiper-slide"> <p>cook 2</p></div></div></div><div class="navigation right"></div></div><div class="recipe">"recipe"</div></div></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/product", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<span class="image col-xs-2"> <img');
+buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
+buf.push('/></span><span class="name col-xs-6">' + escape((interp = name) == null ? '' : interp) + '</span><span class="number col-xs-2">' + escape((interp = number) == null ? '' : interp) + '</span><span class="price col-xs-2">' + escape((interp = price) == null ? '' : interp) + '</span>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/products", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-number" type="text" pattern="[0-9]+" title="le nombre de produit de ce type" placeholder="Nombre" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-1"><button type="submit" title="ajouter" class="col-xs-1 btn btn-default glyphicon glyphicon-plus"></button></div></div></form><ul class="products"></ul>');
 }
 return buf.join("");
 };
@@ -249,20 +382,20 @@ require('lib/view_helper');
 
 // Base class for all views.
 module.exports = Backbone.View.extend({
-  initialize: function () {
-    this.render = _.bind(this.render, this);
-  },
+    "initialize": function () {
+        this.render = _.bind(this.render, this);
+    },
 
-  template: function () { return null; },
-  getRenderData: function () { return null; },
+    "template": function () { return null; },
+    "getRenderData": function () { return null; },
 
-  render: function () {
-    this.$el.html(this.template(this.getRenderData()));
-    this.afterRender();
-    return this;
-  },
+    "render": function () {
+        this.$el.html(this.template(this.getRenderData()));
+        this.afterRender();
+        return this;
+    },
 
-  afterRender: function () { return null; }
+    "afterRender": function () { return null; }
 });
 
 });

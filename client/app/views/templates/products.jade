@@ -1,0 +1,26 @@
+form.form-inline(role="form")
+    .row
+        .form-group.col-xs-7
+            input#product-name(type="text", 
+                               class="form-control",
+                               required="required"
+                               placeholder="Produit")
+        .form-group.col-xs-2
+            input#product-number(type="text",
+                                 class="form-control",
+                                 pattern="[0-9]+"
+                                 title="le nombre de produit de ce type"
+                                 placeholder="Nombre")
+        .form-group.col-xs-2
+            input#product-price(type="text",
+                                class="form-control",
+                                required="required"
+                                pattern="[0-9]+(.[0-9]+)?"
+                                title="le prix unitaire de ce produit (ex: 3.2)"
+                                placeholder="Prix unitaire")
+        .form-group.col-xs-1
+            button(type="submit",
+                   class="col-xs-1 btn btn-default glyphicon glyphicon-plus",
+                   title="ajouter")
+ul.products
+

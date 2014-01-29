@@ -1,5 +1,8 @@
-var View     = require('./view'),
-    template = require('./templates/home');
+var View         = require("./view"),
+    Product      = require("../models/product"),
+    Products     = require("../models/products"),
+    ProductsView = require("./products_view"),
+    template     = require("./templates/home");
 
 module.exports = View.extend({
     "id": "home-view",
@@ -48,6 +51,15 @@ module.exports = View.extend({
     },
 
     "goFridge": function () {
+        this.products = new Products([ 
+            { "name": "pates", "number": 4, "price": 0.59 },
+            { "name": "riz", "number": 0, "price": 1.32 },
+        ]);
+        this.productsView = new ProductsView({ 
+            "el": $("#fridge")[0],
+            "collection": this.products
+        });
+        this.productsView.render();
         this.goPage("fridge");
 
         return false;
