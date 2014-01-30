@@ -1,7 +1,7 @@
 var View        = require("./view"),
     Product     = require("../models/product"),
     Products    = require("../models/products"),
-    ProductView = require("./product_view"),
+    ProductView = require("./product"),
     template    = require("./templates/products");
 
 module.exports = View.extend({

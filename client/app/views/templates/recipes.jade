@@ -1,0 +1,22 @@
+form(role="form")
+    .form-group
+        input#recipe-name(type="text", 
+                          class="form-control",
+                          required="required"
+                          placeholder="Nom de la recette")
+    .form-group
+        textarea#recipe-description(type="text", 
+                                    class="form-control",
+                                    placeholder="Description de la recette")
+    .form-group
+        select#recipe-products(multiple="multiple",
+                               class="form-control")
+            - each product in products
+                option(value="#{product.attributes.name}") 
+                    | #{product.attributes.name}
+    .form-group
+        button(type="submit",
+               class="btn btn-default glyphicon glyphicon-plus",
+               title="ajouter")
+ul.recipes
+

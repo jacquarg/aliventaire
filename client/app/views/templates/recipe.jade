@@ -1,0 +1,10 @@
+.image.col-xs-3 
+    img(src="#{image}", alt="image", title="#{name}")
+.col-xs-9 
+    .name #{name}
+    .description !{description}
+    hr
+    .recipe-products Produits :
+        ul
+           - each product in products
+               li #{product}
