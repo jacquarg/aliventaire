@@ -140,6 +140,26 @@ module.exports = Backbone.Router.extend({
 
 });
 
+;require.register("models/cart", function(exports, require, module) {
+var Model = require("./model");
+
+module.exports = Model.extend({
+    "urlRoot": "carts"
+});
+
+});
+
+;require.register("models/carts", function(exports, require, module) {
+var Collection = require("./collection"),
+    Cart       = require("./cart");
+
+module.exports = Collection.extend({
+    "model": Cart,
+    "url": "carts"
+});
+
+});
+
 ;require.register("models/collection", function(exports, require, module) {
 // Base class for all collections.
 module.exports = Backbone.Collection.extend({
@@ -194,6 +214,95 @@ module.exports = Collection.extend({
 
 });
 
+;require.register("views/cart", function(exports, require, module) {
+var View     = require("./view"),
+    Cart     = require("../models/cart"),
+    template = require("./templates/cart");
+
+module.exports = View.extend({
+    "tagName": "li",
+    "className": "row",
+    "template": template,
+
+    "model": Cart,
+
+});
+
+
+});
+
+;require.register("views/carts", function(exports, require, module) {
+var View     = require("./view"),
+    Cart     = require("../models/cart"),
+    Carts    = require("../models/carts"),
+    CartView = require("./cart"),
+    template = require("./templates/carts");
+
+module.exports = View.extend({
+    "collection": Carts,
+    
+    "template": template,
+
+    "initialize": function (params) {
+        this.recipes = params.recipes.models;
+    },
+
+    "getRenderData": function () {
+        return { "recipes": this.recipes }
+    },
+
+    "render": function () {
+        this.$el.html(this.template(this.getRenderData()));
+        this.collection.each(function (cart){
+            this.add(cart);
+        }, this);
+    },
+
+    "add": function (cart) {
+        var cartView = new CartView({ "model": cart });
+        this.$el.find("ul.carts").prepend(cartView.el)
+    },
+
+    "addCart": function (evt) {
+        var $form = $(evt.target),
+            cart = new Cart ({
+                "name": $("#cart-name").val(),
+                "description": $("#cart-description").val(),
+                "products": $("#cart-products").val()
+            });
+
+        this.collection.push(cart);
+        this.add(cart);
+
+        return false;
+    },
+
+    "events": {
+        "click .recipe": "updateCart",
+    },
+
+    "updateCart": function (evt) {
+        var $target = $(evt.currentTarget),
+            $button = $target.find(".btn"),
+            products = this.recipes[0].attributes.products;
+
+        $button.toggleClass("glyphicon-unchecked");
+        $button.toggleClass("glyphicon-check");
+
+        if ($button.hasClass("glyphicon-check")) {
+            _(products).each(function (product) {
+                var productContainer = $("<div class='product' />");
+                productContainer.html(product);
+                $("#cart .products").append(productContainer);
+            });
+        } else {
+            $("#cart .products .product").remove();
+        }
+    }
+});
+
+});
+
 ;require.register("views/home", function(exports, require, module) {
 var View         = require("./view"),
     Product      = require("../models/product"),
@@ -202,6 +311,9 @@ var View         = require("./view"),
     Recipe       = require("../models/recipe"),
     Recipes      = require("../models/recipes"),
     RecipesView  = require("./recipes"),
+    Cart         = require("../models/cart"),
+    Carts        = require("../models/carts"),
+    CartsView    = require("./carts"),
     template     = require("./templates/home");
 
 module.exports = View.extend({
@@ -210,7 +322,7 @@ module.exports = View.extend({
 
     "events": {
         "click .menu": "goMenu",
-        "click .menu .shop": "goShop",
+        "click .menu .cart": "goCart",
         "click .menu .fridge": "goFridge",
         "click .menu .cook": "goCook",
         "click .menu .recipe": "goRecipe",
@@ -225,6 +337,7 @@ module.exports = View.extend({
             { "name": "Pates 500g", "number": 4, "price": 1.46 },
             { "name": "Riz 400g", "number": 0, "price": 2.04 },
         ]);
+
         this.recipes = new Recipes([ 
             { "name": "Tarte au citron", "description": "M�langer pendant quelques minutes les jaunes et les oeufs entiers avec le sucre et la Fleur de Ma�s Ma�zena. Sans cesser de fouetter, ajouter la cr�me, le jus et les zestes de citron.\nVerser la pr�paration sur le fond de tarte, et enfourner 35 � 40 minutes.\nD�guster bien frais.",
               "products": [ "Pate sablee", 
@@ -232,6 +345,8 @@ module.exports = View.extend({
                             "Fleur de mais",
                             "Citron jaune 500g" ] },
         ]);
+
+        this.carts = new Carts();
     },
 
     "swipers": {},
@@ -243,13 +358,13 @@ module.exports = View.extend({
         $("#content").removeClass();
         $("#content").addClass(pageName);
 
-        if (!that.swipers[pageName]) {
+        if (!that.swipers[pageName] && pageName !== "menu") {
             that.swipers[pageName] = $(".swiper-container:visible").swiper({
                 "loop": false,
                 "grabCursor": true,
                 "pagination": pageClass + "> .pagination",
                 "paginationClickable": true,
-                "keyboardControl": true
+                "keyboardControl": true,
             });
             $(pageClass + "> .navigation.left").on("click", function (evt) {
                 evt.preventDefault()
@@ -262,8 +377,16 @@ module.exports = View.extend({
         }
     },
 
-    "goShop": function () {
-        this.goPage("shop");
+    "goCart": function () {
+        if (!this.cartsView) {
+            this.cartsView = new CartsView({ 
+                "el": $("#cart")[0],
+                "collection": this.carts,
+                "recipes": this.recipes,
+            });
+            this.cartsView.render();
+        }
+        this.goPage("cart");
 
         return false;
     },
@@ -468,13 +591,54 @@ module.exports = View.extend({
 
 });
 
+;require.register("views/templates/cart", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/carts", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="cart"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des cat�gories</h2></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2>');
+// iterate recipes
+;(function(){
+  if ('number' == typeof recipes.length) {
+    for (var $index = 0, $$l = recipes.length; $index < $$l; $index++) {
+      var recipe = recipes[$index];
+
+buf.push('<div class="recipe"> \n' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '<div class="btn glyphicon glyphicon-unchecked"> </div></div>');
+    }
+  } else {
+    for (var $index in recipes) {
+      var recipe = recipes[$index];
+
+buf.push('<div class="recipe"> \n' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '<div class="btn glyphicon glyphicon-unchecked"> </div></div>');
+   }
+  }
+}).call(this);
+
+buf.push('</div><div class="swiper-slide cart"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary">Valider</div></div></div></div><div class="navigation right"></div></div>');
+}
+return buf.join("");
+};
+});
+
 ;require.register("views/templates/home", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div class="shop"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>shop 1</p></div><div class="swiper-slide"> <p>shop 2</p></div><div class="swiper-slide"> <p>shop 3</p></div></div></div><div class="navigation right"></div></div><div id="fridge" class="fridge"></div><div class="cook"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>cook 1</p></div><div class="swiper-slide"> <p>cook 2</p></div></div></div><div class="navigation right"></div></div><div id="recipe" class="recipe"></div></div></div>');
+buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="cart"><img src="images/cart.png" alt="cart" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/cart.png" alt="cart" title="Mes courses" class="cart"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div id="cart" class="cart"></div><div id="fridge" class="fridge"></div><div class="cook"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>cook 1</p></div><div class="swiper-slide"> <p>cook 2</p></div></div></div><div class="navigation right"></div></div><div id="recipe" class="recipe"></div></div></div>');
 }
 return buf.join("");
 };

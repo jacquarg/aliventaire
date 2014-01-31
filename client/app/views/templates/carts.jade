@@ -1,0 +1,22 @@
+.cart
+    .navigation.left
+    .swiper-container
+        .swiper-wrapper
+            .swiper-slide 
+                h2 Information de consomation
+            .swiper-slide 
+                h2 Choix des catégories
+            .swiper-slide 
+                h2 Choix du prix
+            .swiper-slide 
+                h2 Choix de la recette
+                - each recipe in recipes
+                    .recipe 
+                        | #{recipe.attributes.name}
+                        .btn.glyphicon.glyphicon-unchecked 
+            .swiper-slide.cart
+                h2 Panier
+                .products
+                hr
+                .btn.btn-primary Valider
+    .navigation.right

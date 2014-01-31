@@ -4,9 +4,9 @@
             img(src="images/titre.png", 
                 alt="aliventaire", 
                 title="Aliventaire")
-        .shop
-            img.menu(src="images/shop.png", 
-                     alt="shop", 
+        .cart
+            img.menu(src="images/cart.png", 
+                     alt="cart", 
                      title="Retour au menu")
             h1 Mes courses
             .pagination
@@ -31,8 +31,8 @@
     .page
         .menu
             .row
-                img.shop(src="images/shop.png", 
-                         alt="shop", 
+                img.cart(src="images/cart.png", 
+                         alt="cart", 
                          title="Mes courses")
                 img.fridge(src="images/fridge.png", 
                            alt="fridge", 
@@ -44,17 +44,7 @@
                 img.recipe(src="images/recipe.png", 
                            alt="recipe", 
                            title="Mes recettes")
-        .shop
-            .navigation.left
-            .swiper-container
-                .swiper-wrapper
-                    .swiper-slide 
-                        p shop 1
-                    .swiper-slide 
-                        p shop 2
-                    .swiper-slide 
-                        p shop 3
-            .navigation.right
+        #cart.cart
         #fridge.fridge
         .cook
             .navigation.left

@@ -93,8 +93,8 @@ ol {
   -ms-filter: none;
   filter: none;
 }
-#content.shop div.shop,
-#content.shop div.pagination {
+#content.cart div.cart,
+#content.cart div.pagination {
   display: block;
 }
 #content.fridge div.fridge,
@@ -170,6 +170,13 @@ ol {
 #content .form-group select,
 #content .form-group textarea {
   font-size: 0.8em;
+}
+#cart {
+  font-size: 1.5em;
+}
+#cart .recipe,
+#cart .btn-primary {
+  font-size: 1.5em;
 }
 #fridge {
   font-size: 2em;
