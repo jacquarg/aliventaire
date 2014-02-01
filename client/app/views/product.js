@@ -4,7 +4,7 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "row",
+    "className": "row product",
     "template": template,
 
     "model": Product,
@@ -19,7 +19,48 @@ module.exports = View.extend({
 
     "initialize": function () {
         this.render();
-    }
+    },
 
+    "events": {
+        "click .delete": "destroy",
+        "click .plus": "plus",
+        "click .minus": "minus",
+    },
+
+    "destroy": function () {
+        var that = this;
+
+        that.model.destroy({
+            "success": function () {
+                that.remove();
+            }
+        });
+    },
+
+    "plus": function () {
+        var that = this;
+
+        that.model.save({ "quantity": this.model.get("quantity") + 1 }, {
+            "success": function (product) {
+                that.render();
+            },
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
+    },
+
+    "minus": function () {
+        var that = this;
+
+        that.model.save({ "quantity": this.model.get("quantity") - 1 }, {
+            "success": function (product) {
+                that.render();
+            },
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
+    }
 });
 

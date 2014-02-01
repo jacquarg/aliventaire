@@ -152,7 +152,7 @@ ul, ol
 
 #fridge
   font-size: 2em
-  #product-number
+  #product-quantity
   #product-price
     text-align: right
   ul
@@ -161,6 +161,18 @@ ul, ol
     img
       width: 32px
       height: 32px
+  .delete
+    cursor: pointer
+    .btn
+      display: none
+  .product:hover
+    .delete
+      .btn
+        display: inline
+  .actions
+    margin-left: .5em
+    .btn
+      margin: .2em
 
 #recipe
   font-size: 2em

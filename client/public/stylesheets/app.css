@@ -181,7 +181,7 @@ ol {
 #fridge {
   font-size: 2em;
 }
-#fridge #product-number,
+#fridge #product-quantity,
 #fridge #product-price {
   text-align: right;
 }
@@ -191,6 +191,21 @@ ol {
 #fridge ul img {
   width: 32px;
   height: 32px;
+}
+#fridge .delete {
+  cursor: pointer;
+}
+#fridge .delete .btn {
+  display: none;
+}
+#fridge .product:hover .delete .btn {
+  display: inline;
+}
+#fridge .actions {
+  margin-left: 0.5em;
+}
+#fridge .actions .btn {
+  margin: 0.2em;
 }
 #recipe {
   font-size: 2em;

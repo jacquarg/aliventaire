@@ -23,14 +23,12 @@ module.exports = View.extend({
     },
 
     "afterRender": function () {
-        this.products = new Products([ 
-            { "name": "Pate sablee", "number": 1, "price": 0.96 },
-            { "name": "Boite de 6 oeufs", "number": 1, "price": 1.49 },
-            { "name": "Fleur de mais", "number": 1, "price": 1.97 },
-            { "name": "Citron jaune 500g", "number": 1, "price": 3.40 },
-            { "name": "Pates 500g", "number": 4, "price": 1.46 },
-            { "name": "Riz 400g", "number": 0, "price": 2.04 },
-        ]);
+        this.products = new Products();
+        this.products.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
 
         this.recipes = new Recipes([ 
             { "name": "Tarte au citron", "description": "Mélanger pendant quelques minutes les jaunes et les oeufs entiers avec le sucre et la Fleur de Maïs Maïzena. Sans cesser de fouetter, ajouter la crème, le jus et les zestes de citron.\nVerser la préparation sur le fond de tarte, et enfourner 35 à 40 minutes.\nDéguster bien frais.",

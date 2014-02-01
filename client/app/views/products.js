@@ -29,12 +29,16 @@ module.exports = View.extend({
         var $form = $(evt.target),
             product = new Product ({
                 "name": $("#product-name").val(),
-                "number": $("#product-number").val(),
+                "quantity": $("#product-quantity").val(),
                 "price": $("#product-price").val(),
-            });
+            }),
+            that = this;
 
-        this.collection.push(product);
-        this.add(product);
+        this.collection.create(product, {
+            "success": function (product) {
+                that.add(product);
+            }
+        });
 
         return false;
     },
