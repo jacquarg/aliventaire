@@ -93,20 +93,20 @@ ol {
   -ms-filter: none;
   filter: none;
 }
-#content.cart div.cart,
-#content.cart div.pagination {
+#content.shop div.shop,
+#content.shop div.pagination {
   display: block;
 }
 #content.fridge div.fridge,
 #content.fridge div.pagination {
   display: block;
 }
-#content.cook div.cook,
-#content.cook div.pagination {
+#content.kitchen div.kitchen,
+#content.kitchen div.pagination {
   display: block;
 }
-#content.recipe div.recipe,
-#content.recipe div.pagination {
+#content.recipes div.recipes,
+#content.recipes div.pagination {
   display: block;
 }
 #content .page {
@@ -171,11 +171,11 @@ ol {
 #content .form-group textarea {
   font-size: 0.8em;
 }
-#cart {
+#shop {
   font-size: 1.5em;
 }
-#cart .recipe,
-#cart .btn-primary {
+#shop .recipe,
+#shop .btn-primary {
   font-size: 1.5em;
 }
 #fridge {
@@ -207,39 +207,39 @@ ol {
 #fridge .actions .btn {
   margin: 0.2em;
 }
-#recipe {
+#recipes {
   font-size: 2em;
 }
-#recipe ul {
+#recipes ul {
   margin-top: 1em;
 }
-#recipe ul img {
+#recipes ul img {
   width: 128px;
   height: 128px;
 }
-#recipe ul .description {
+#recipes ul .description {
   text-align: left;
 }
-#recipe ul.recipes > li {
+#recipes ul.recipes > li {
   border: 1px dotted #000;
   padding: 0.5em;
 }
-#recipe ul.recipes > li .image {
+#recipes ul.recipes > li .image {
   padding: 5px;
 }
-#recipe .recipe-products {
+#recipes .recipe-products {
   text-align: left;
 }
-#recipe .recipe-products ul {
+#recipes .recipe-products ul {
   margin: 0;
 }
-#recipe .delete {
+#recipes .delete {
   cursor: pointer;
 }
-#recipe .delete .btn {
+#recipes .delete .btn {
   display: none;
 }
-#recipe .recipe:hover .delete .btn {
+#recipes .recipe:hover .delete .btn {
   display: inline;
 }
 

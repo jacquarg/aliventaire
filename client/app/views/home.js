@@ -16,10 +16,10 @@ module.exports = View.extend({
 
     "events": {
         "click .menu": "goMenu",
-        "click .menu .cart": "goCart",
+        "click .menu .shop": "goShop",
         "click .menu .fridge": "goFridge",
-        "click .menu .cook": "goCook",
-        "click .menu .recipe": "goRecipe",
+        "click .menu .kitchen": "goKitchen",
+        "click .menu .recipes": "goRecipes",
     },
 
     "afterRender": function () {
@@ -69,16 +69,16 @@ module.exports = View.extend({
         }
     },
 
-    "goCart": function () {
+    "goShop": function () {
         if (!this.cartsView) {
             this.cartsView = new CartsView({ 
-                "el": $("#cart")[0],
+                "el": $("#shop")[0],
                 "collection": this.carts,
                 "recipes": this.recipes,
             });
             this.cartsView.render();
         }
-        this.goPage("cart");
+        this.goPage("shop");
 
         return false;
     },
@@ -96,22 +96,22 @@ module.exports = View.extend({
         return false;
     },
 
-    "goCook": function () {
-        this.goPage("cook");
+    "goKitchen": function () {
+        this.goPage("kitchen");
 
         return false;
     },
 
-    "goRecipe": function () {
+    "goRecipes": function () {
         if (!this.recipesView) {
             this.recipesView = new RecipesView({ 
-                "el": $("#recipe")[0],
+                "el": $("#recipes")[0],
                 "collection": this.recipes,
                 "products": this.products
             });
         }
         this.recipesView.render();
-        this.goPage("recipe");
+        this.goPage("recipes");
 
         return false;
     },

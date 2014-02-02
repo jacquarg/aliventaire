@@ -289,11 +289,12 @@ module.exports = View.extend({
         if ($button.hasClass("glyphicon-check")) {
             _(products).each(function (product) {
                 var productContainer = $("<div class='product' />");
-                productContainer.html(product);
-                $("#cart .products").append(productContainer);
+                console.log(product)
+                productContainer.html(product.id);
+                $("#shop .products").append(productContainer);
             });
         } else {
-            $("#cart .products .product").remove();
+            $("#shop .products .product").remove();
         }
     }
 });
@@ -319,10 +320,10 @@ module.exports = View.extend({
 
     "events": {
         "click .menu": "goMenu",
-        "click .menu .cart": "goCart",
+        "click .menu .shop": "goShop",
         "click .menu .fridge": "goFridge",
-        "click .menu .cook": "goCook",
-        "click .menu .recipe": "goRecipe",
+        "click .menu .kitchen": "goKitchen",
+        "click .menu .recipes": "goRecipes",
     },
 
     "afterRender": function () {
@@ -372,16 +373,16 @@ module.exports = View.extend({
         }
     },
 
-    "goCart": function () {
+    "goShop": function () {
         if (!this.cartsView) {
             this.cartsView = new CartsView({ 
-                "el": $("#cart")[0],
+                "el": $("#shop")[0],
                 "collection": this.carts,
                 "recipes": this.recipes,
             });
             this.cartsView.render();
         }
-        this.goPage("cart");
+        this.goPage("shop");
 
         return false;
     },
@@ -399,22 +400,22 @@ module.exports = View.extend({
         return false;
     },
 
-    "goCook": function () {
-        this.goPage("cook");
+    "goKitchen": function () {
+        this.goPage("kitchen");
 
         return false;
     },
 
-    "goRecipe": function () {
+    "goRecipes": function () {
         if (!this.recipesView) {
             this.recipesView = new RecipesView({ 
-                "el": $("#recipe")[0],
+                "el": $("#recipes")[0],
                 "collection": this.recipes,
                 "products": this.products
             });
         }
         this.recipesView.render();
-        this.goPage("recipe");
+        this.goPage("recipes");
 
         return false;
     },
@@ -689,7 +690,7 @@ buf.push('<div class="recipe"> \n' + escape((interp = recipe.attributes.name) ==
   }
 }).call(this);
 
-buf.push('</div><div class="swiper-slide cart"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary">Valider</div></div></div></div><div class="navigation right"></div></div>');
+buf.push('</div><div class="swiper-slide cart"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary">Commander</div></div></div></div><div class="navigation right"></div></div>');
 }
 return buf.join("");
 };
@@ -701,7 +702,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/titre.png" alt="aliventaire" title="Aliventaire"/></div><div class="cart"><img src="images/cart.png" alt="cart" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="cook"><img src="images/cook.png" alt="cook" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipe"><img src="images/recipe.png" alt="recipe" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/cart.png" alt="cart" title="Mes courses" class="cart"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="cook" title="Ma cuisine" class="cook"/><img src="images/recipe.png" alt="recipe" title="Mes recettes" class="recipe"/></div></div><div id="cart" class="cart"></div><div id="fridge" class="fridge"></div><div class="cook"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <p>cook 1</p></div><div class="swiper-slide"> <p>cook 2</p></div></div></div><div class="navigation right"></div></div><div id="recipe" class="recipe"></div></div></div>');
+buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/title.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="kitchen"><img src="images/kitchen.png" alt="kitchen" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipes"><img src="images/recipes.png" alt="recipes" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="kitchen" title="Ma cuisine" class="kitchen"/><img src="images/recipes.png" alt="recipes" title="Mes recettes" class="recipes"/></div></div><div id="shop" class="shop"></div><div id="fridge" class="fridge"></div><div id="kitchen" class="kitchen"></div><div id="recipes" class="recipes"></div></div></div>');
 }
 return buf.join("");
 };

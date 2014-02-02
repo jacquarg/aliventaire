@@ -1,12 +1,12 @@
 #content.menu
     .header
         .menu
-            img(src="images/titre.png", 
+            img(src="images/title.png", 
                 alt="aliventaire", 
                 title="Aliventaire")
-        .cart
-            img.menu(src="images/cart.png", 
-                     alt="cart", 
+        .shop
+            img.menu(src="images/shop.png", 
+                     alt="shop", 
                      title="Retour au menu")
             h1 Mes courses
             .pagination
@@ -16,43 +16,35 @@
                      title="Retour au menu")
             h1 Mon placard
             .pagination
-        .cook
-            img.menu(src="images/cook.png", 
-                     alt="cook", 
+        .kitchen
+            img.menu(src="images/kitchen.png", 
+                     alt="kitchen", 
                      title="Retour au menu")
             h1 Ma cuisine
             .pagination
-        .recipe
-            img.menu(src="images/recipe.png", 
-                     alt="recipe", 
+        .recipes
+            img.menu(src="images/recipes.png", 
+                     alt="recipes", 
                      title="Retour au menu")
             h1 Mes recettes
             .pagination
     .page
         .menu
             .row
-                img.cart(src="images/cart.png", 
-                         alt="cart", 
+                img.shop(src="images/shop.png", 
+                         alt="shop", 
                          title="Mes courses")
                 img.fridge(src="images/fridge.png", 
                            alt="fridge", 
                            title="Mon placard")
             .row
-                img.cook(src="images/cook.png", 
-                         alt="cook", 
-                         title="Ma cuisine")
-                img.recipe(src="images/recipe.png", 
-                           alt="recipe", 
-                           title="Mes recettes")
-        #cart.cart
+                img.kitchen(src="images/cook.png", 
+                            alt="kitchen", 
+                            title="Ma cuisine")
+                img.recipes(src="images/recipes.png", 
+                            alt="recipes", 
+                            title="Mes recettes")
+        #shop.shop
         #fridge.fridge
-        .cook
-            .navigation.left
-            .swiper-container
-                .swiper-wrapper
-                    .swiper-slide 
-                        p cook 1
-                    .swiper-slide 
-                        p cook 2
-            .navigation.right
-        #recipe.recipe
+        #kitchen.kitchen
+        #recipes.recipes

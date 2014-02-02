@@ -58,11 +58,12 @@ module.exports = View.extend({
         if ($button.hasClass("glyphicon-check")) {
             _(products).each(function (product) {
                 var productContainer = $("<div class='product' />");
-                productContainer.html(product);
-                $("#cart .products").append(productContainer);
+                console.log(product)
+                productContainer.html(product.id);
+                $("#shop .products").append(productContainer);
             });
         } else {
-            $("#cart .products .product").remove();
+            $("#shop .products .product").remove();
         }
     }
 });
