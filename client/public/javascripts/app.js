@@ -333,13 +333,13 @@ module.exports = View.extend({
             }
         });
 
-        this.recipes = new Recipes([ 
-            { "name": "Tarte au citron", "description": "M�langer pendant quelques minutes les jaunes et les oeufs entiers avec le sucre et la Fleur de Ma�s Ma�zena. Sans cesser de fouetter, ajouter la cr�me, le jus et les zestes de citron.\nVerser la pr�paration sur le fond de tarte, et enfourner 35 � 40 minutes.\nD�guster bien frais.",
-              "products": [ "Pate sablee", 
-                            "Boite de 6 oeufs", 
-                            "Fleur de mais",
-                            "Citron jaune 500g" ] },
-        ]);
+        this.recipes = new Recipes();
+        this.recipes.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
+
 
         this.carts = new Carts();
     },
@@ -387,10 +387,12 @@ module.exports = View.extend({
     },
 
     "goFridge": function () {
-        this.productsView = new ProductsView({ 
-            "el": $("#fridge")[0],
-            "collection": this.products
-        });
+        if (!this.productsView) {
+            this.productsView = new ProductsView({ 
+                "el": $("#fridge")[0],
+                "collection": this.products
+            });
+        }
         this.productsView.render();
         this.goPage("fridge");
 
@@ -404,11 +406,13 @@ module.exports = View.extend({
     },
 
     "goRecipe": function () {
-        this.recipesView = new RecipesView({ 
-            "el": $("#recipe")[0],
-            "collection": this.recipes,
-            "products": this.products
-        });
+        if (!this.recipesView) {
+            this.recipesView = new RecipesView({ 
+                "el": $("#recipe")[0],
+                "collection": this.recipes,
+                "products": this.products
+            });
+        }
         this.recipesView.render();
         this.goPage("recipe");
 
@@ -552,7 +556,7 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "row",
+    "className": "row recipe",
     "template": template,
 
     "model": Recipe,
@@ -563,13 +567,28 @@ module.exports = View.extend({
             attributes.image = "images/recipe.png";
         }
         if (attributes.description) {
-            attributes.description = attributes.description.replace(/[\r\n]+/g, "<br>");
+            attributes.description = 
+                attributes.description.replace(/[\r\n]+/g, "<br>");
         }
         return attributes;
     },
 
     "initialize": function () {
         this.render();
+    },
+
+    "events": {
+        "click .delete": "destroy",
+    },
+
+    "destroy": function () {
+        var that = this;
+
+        that.model.destroy({
+            "success": function () {
+                that.remove();
+            }
+        });
     }
 
 });
@@ -619,10 +638,14 @@ module.exports = View.extend({
                 "name": $("#recipe-name").val(),
                 "description": $("#recipe-description").val(),
                 "products": $("#recipe-products").val()
-            });
+            }),
+            that = this;
 
-        this.collection.push(recipe);
-        this.add(recipe);
+        that.collection.create(recipe, {
+            "success": function (recipe) {
+                that.add(recipe);
+            }
+        });
 
         return false;
     },
@@ -716,22 +739,22 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="image col-xs-3"> <img');
+buf.push('<span title="supprimer" class="delete col-xs-1"><button class="btn btn-danger glyphicon glyphicon-remove"></button></span><div class="image col-xs-3"> <img');
 buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
-buf.push('/></div><div class="col-xs-9"> <div class="name">' + escape((interp = name) == null ? '' : interp) + '</div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/><div class="recipe-products">Produits :<ul>');
+buf.push('/></div><div class="col-xs-8"> <div class="name">' + escape((interp = name) == null ? '' : interp) + '</div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/><div class="recipe-products">Produits :<ul>');
 // iterate products
 ;(function(){
   if ('number' == typeof products.length) {
     for (var $index = 0, $$l = products.length; $index < $$l; $index++) {
       var product = products[$index];
 
-buf.push('<li>' + escape((interp = product) == null ? '' : interp) + '</li>');
+buf.push('<li>' + escape((interp = product.id) == null ? '' : interp) + '</li>');
     }
   } else {
     for (var $index in products) {
       var product = products[$index];
 
-buf.push('<li>' + escape((interp = product) == null ? '' : interp) + '</li>');
+buf.push('<li>' + escape((interp = product.id) == null ? '' : interp) + '</li>');
    }
   }
 }).call(this);

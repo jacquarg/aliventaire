@@ -233,6 +233,15 @@ ol {
 #recipe .recipe-products ul {
   margin: 0;
 }
+#recipe .delete {
+  cursor: pointer;
+}
+#recipe .delete .btn {
+  display: none;
+}
+#recipe .recipe:hover .delete .btn {
+  display: inline;
+}
 
 
 /*# sourceMappingURL=app.css.map*/

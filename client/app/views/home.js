@@ -30,13 +30,13 @@ module.exports = View.extend({
             }
         });
 
-        this.recipes = new Recipes([ 
-            { "name": "Tarte au citron", "description": "Mélanger pendant quelques minutes les jaunes et les oeufs entiers avec le sucre et la Fleur de Maïs Maïzena. Sans cesser de fouetter, ajouter la crème, le jus et les zestes de citron.\nVerser la préparation sur le fond de tarte, et enfourner 35 à 40 minutes.\nDéguster bien frais.",
-              "products": [ "Pate sablee", 
-                            "Boite de 6 oeufs", 
-                            "Fleur de mais",
-                            "Citron jaune 500g" ] },
-        ]);
+        this.recipes = new Recipes();
+        this.recipes.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
+
 
         this.carts = new Carts();
     },
@@ -84,10 +84,12 @@ module.exports = View.extend({
     },
 
     "goFridge": function () {
-        this.productsView = new ProductsView({ 
-            "el": $("#fridge")[0],
-            "collection": this.products
-        });
+        if (!this.productsView) {
+            this.productsView = new ProductsView({ 
+                "el": $("#fridge")[0],
+                "collection": this.products
+            });
+        }
         this.productsView.render();
         this.goPage("fridge");
 
@@ -101,11 +103,13 @@ module.exports = View.extend({
     },
 
     "goRecipe": function () {
-        this.recipesView = new RecipesView({ 
-            "el": $("#recipe")[0],
-            "collection": this.recipes,
-            "products": this.products
-        });
+        if (!this.recipesView) {
+            this.recipesView = new RecipesView({ 
+                "el": $("#recipe")[0],
+                "collection": this.recipes,
+                "products": this.products
+            });
+        }
         this.recipesView.render();
         this.goPage("recipe");
 

@@ -39,10 +39,14 @@ module.exports = View.extend({
                 "name": $("#recipe-name").val(),
                 "description": $("#recipe-description").val(),
                 "products": $("#recipe-products").val()
-            });
+            }),
+            that = this;
 
-        this.collection.push(recipe);
-        this.add(recipe);
+        that.collection.create(recipe, {
+            "success": function (recipe) {
+                that.add(recipe);
+            }
+        });
 
         return false;
     },

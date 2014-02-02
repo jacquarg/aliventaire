@@ -1,10 +1,12 @@
+span.delete.col-xs-1(title="supprimer")
+    button.btn.btn-danger.glyphicon.glyphicon-remove
 .image.col-xs-3 
     img(src="#{image}", alt="image", title="#{name}")
-.col-xs-9 
+.col-xs-8 
     .name #{name}
     .description !{description}
     hr
     .recipe-products Produits :
         ul
            - each product in products
-               li #{product}
+               li #{product.id}

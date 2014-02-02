@@ -4,7 +4,7 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "row",
+    "className": "row recipe",
     "template": template,
 
     "model": Recipe,
@@ -15,13 +15,28 @@ module.exports = View.extend({
             attributes.image = "images/recipe.png";
         }
         if (attributes.description) {
-            attributes.description = attributes.description.replace(/[\r\n]+/g, "<br>");
+            attributes.description = 
+                attributes.description.replace(/[\r\n]+/g, "<br>");
         }
         return attributes;
     },
 
     "initialize": function () {
         this.render();
+    },
+
+    "events": {
+        "click .delete": "destroy",
+    },
+
+    "destroy": function () {
+        var that = this;
+
+        that.model.destroy({
+            "success": function () {
+                that.remove();
+            }
+        });
     }
 
 });

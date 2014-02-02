@@ -6,5 +6,8 @@ var americano = require("americano");
 module.exports = {
     "product": {
         "all": americano.defaultRequests.all,
-    }
+    },
+    "recipe": {
+        "all": americano.defaultRequests.all,
+    },
 };
