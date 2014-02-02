@@ -38,7 +38,8 @@ module.exports = View.extend({
             recipe = new Recipe ({
                 "name": $("#recipe-name").val(),
                 "description": $("#recipe-description").val(),
-                "products": $("#recipe-products").val()
+                "products": $("#recipe-products").val(),
+                "toCook": false
             }),
             that = this;
 

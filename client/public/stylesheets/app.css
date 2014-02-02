@@ -207,6 +207,9 @@ ol {
 #fridge .actions .btn {
   margin: 0.2em;
 }
+#kitchen {
+  font-size: 1.5em;
+}
 #recipes {
   font-size: 2em;
 }
@@ -220,27 +223,35 @@ ol {
 #recipes ul .description {
   text-align: left;
 }
-#recipes ul.recipes > li {
-  border: 1px dotted #000;
-  padding: 0.5em;
-}
-#recipes ul.recipes > li .image {
-  padding: 5px;
-}
 #recipes .recipe-products {
   text-align: left;
 }
 #recipes .recipe-products ul {
   margin: 0;
 }
+#kitchen ul.recipes > li,
+#recipes ul.recipes > li {
+  border: 1px dotted #000;
+  padding: 0.5em;
+}
+#kitchen ul.recipes > li .image,
+#recipes ul.recipes > li .image {
+  padding: 5px;
+}
+#kitchen .delete,
 #recipes .delete {
   cursor: pointer;
 }
+#kitchen .delete .btn,
 #recipes .delete .btn {
   display: none;
 }
+#kitchen .recipe:hover .delete .btn,
 #recipes .recipe:hover .delete .btn {
   display: inline;
+}
+.alert {
+  margin: 0.5em;
 }
 
 

@@ -9,5 +9,10 @@ module.exports = {
     },
     "recipe": {
         "all": americano.defaultRequests.all,
+        "allToCook": function (doc) {
+            if (doc.toCook) {
+                return emit(doc._id, doc);
+            }
+        } 
     },
 };

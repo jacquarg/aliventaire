@@ -14,6 +14,20 @@ module.exports.all = function (req, res) {
     });
 };
 
+module.exports.toCook = function (req, res) {
+    return Recipe.allToCook(function (error, recipes) {
+        if (error) {
+            console.log(error);
+            return res.send({ 
+                "error": true, 
+                "msg": "Server error occured while retrieving data." 
+            });
+        } else {
+            return res.send(recipes);
+        }
+    });
+};
+
 module.exports.create = function (req, res) {
     return Recipe.create(req.body, function(error, recipe) {
         if (error) {
@@ -47,7 +61,7 @@ module.exports.update = function(req, res) {
         if (error || !recipe) {
             return res.send({
                 "error": true,
-                "msg": "Recipe not found"
+                "msg": "Recipe to update not found"
             }, 404);
         } else {
             return recipe.updateAttributes(req.body, function (error) {
@@ -71,7 +85,7 @@ module.exports.del = function(req, res) {
         if (error || !recipe) {
             return res.send({
                 "error": true,
-                "msg": "Recipe not found"
+                "msg": "Recipe to delete not found"
             }, 404);
         } else {
             return recipe.destroy(function (error) {

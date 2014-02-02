@@ -4,7 +4,9 @@ var View         = require("./view"),
     ProductsView = require("./products"),
     Recipe       = require("../models/recipe"),
     Recipes      = require("../models/recipes"),
+    ToCook       = require("../models/to_cook"),
     RecipesView  = require("./recipes"),
+    ToCooksView  = require("./to_cooks"),
     Cart         = require("../models/cart"),
     Carts        = require("../models/carts"),
     CartsView    = require("./carts"),
@@ -37,6 +39,12 @@ module.exports = View.extend({
             }
         });
 
+        this.toCook = new ToCook();
+        this.toCook.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
 
         this.carts = new Carts();
     },
@@ -97,6 +105,13 @@ module.exports = View.extend({
     },
 
     "goKitchen": function () {
+        if (!this.toCookView) {
+            this.toCookView = new ToCooksView({ 
+                "el": $("#kitchen")[0],
+                "collection": this.toCook
+            });
+            this.toCookView.render();
+        }
         this.goPage("kitchen");
 
         return false;

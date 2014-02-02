@@ -19,32 +19,17 @@ module.exports = View.extend({
 
     "render": function () {
         this.$el.html(this.template(this.getRenderData()));
-        this.collection.each(function (cart){
-            this.add(cart);
-        }, this);
-    },
-
-    "add": function (cart) {
-        var cartView = new CartView({ "model": cart });
-        this.$el.find("ul.carts").prepend(cartView.el)
-    },
-
-    "addCart": function (evt) {
-        var $form = $(evt.target),
-            cart = new Cart ({
-                "name": $("#cart-name").val(),
-                "description": $("#cart-description").val(),
-                "products": $("#cart-products").val()
-            });
-
-        this.collection.push(cart);
-        this.add(cart);
-
-        return false;
     },
 
     "events": {
         "click .recipe": "updateCart",
+        "click .order": "order",
+    },
+
+    "findRecipe": function (recipeName) {
+        return _(this.recipes).find(function (recipe) { 
+            return recipe.get("name") == recipeName;
+        });
     },
 
     "updateCart": function (evt) {
@@ -54,9 +39,7 @@ module.exports = View.extend({
             recipe,
             products;
 
-        recipe   = _(this.recipes).find(function (recipe) { 
-            return recipe.get("name") == recipeName;
-        });
+        recipe   = this.findRecipe(recipeName);
         products = recipe.get("products");
 
         $button.toggleClass("glyphicon-unchecked");
@@ -71,5 +54,27 @@ module.exports = View.extend({
         } else {
             $("#shop .products .product").remove();
         }
+    },
+
+    "order": function (evt) {
+        var checked      = $("#shop .recipe .glyphicon-check"),
+            recipesNames = checked.parents(".recipe").find(".name");
+
+        console.log(recipesNames)
+        _(recipesNames).each(function (recipeName) {
+            var recipe = this.findRecipe($(recipeName).html());
+            recipe.save({ "toCook": true }, {
+                "success": function () {
+                    var info = $("<div class='alert alert-success'>");
+                    info.html("Nouvelle recette à préparer ajoutée." +
+                              "<button type='button' class='close' " + 
+                              "data-dismiss='alert' aria-hidden='true'>" + 
+                              "&times;</button>");
+                    $(evt.target).after(info);
+                    info.alert();
+                }
+            });
+        }, this);
+        console.log(recipesNames)
     }
 });

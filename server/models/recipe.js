@@ -7,4 +7,8 @@ var Recipe = americano.getModel("Recipe", {
     "toCook": Boolean
 });
 
+Recipe.allToCook = function (params, callback) {
+    Recipe.request("allToCook", params, callback);
+};
+
 module.exports = Recipe;

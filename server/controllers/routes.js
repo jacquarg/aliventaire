@@ -21,9 +21,12 @@ module.exports = {
         "get": recipes.all,
         "post": recipes.create
     },
+    "recipes/to-cook": {
+        "get": recipes.toCook,
+    },
     "recipes/:id": {
         "get": recipes.read,
         "put": recipes.update,
         "del": recipes.del
-    }
+    },
 };

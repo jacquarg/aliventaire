@@ -211,6 +211,17 @@ module.exports = Collection.extend({
 
 });
 
+;require.register("models/to_cook", function(exports, require, module) {
+var Collection = require("./collection"),
+    Recipe     = require("./recipe");
+
+module.exports = Collection.extend({
+    "model": Recipe,
+    "url": "recipes/to-cook"
+});
+
+});
+
 ;require.register("views/cart", function(exports, require, module) {
 var View     = require("./view"),
     Cart     = require("../models/cart"),
@@ -250,32 +261,17 @@ module.exports = View.extend({
 
     "render": function () {
         this.$el.html(this.template(this.getRenderData()));
-        this.collection.each(function (cart){
-            this.add(cart);
-        }, this);
-    },
-
-    "add": function (cart) {
-        var cartView = new CartView({ "model": cart });
-        this.$el.find("ul.carts").prepend(cartView.el)
-    },
-
-    "addCart": function (evt) {
-        var $form = $(evt.target),
-            cart = new Cart ({
-                "name": $("#cart-name").val(),
-                "description": $("#cart-description").val(),
-                "products": $("#cart-products").val()
-            });
-
-        this.collection.push(cart);
-        this.add(cart);
-
-        return false;
     },
 
     "events": {
         "click .recipe": "updateCart",
+        "click .order": "order",
+    },
+
+    "findRecipe": function (recipeName) {
+        return _(this.recipes).find(function (recipe) { 
+            return recipe.get("name") == recipeName;
+        });
     },
 
     "updateCart": function (evt) {
@@ -285,9 +281,7 @@ module.exports = View.extend({
             recipe,
             products;
 
-        recipe   = _(this.recipes).find(function (recipe) { 
-            return recipe.get("name") == recipeName;
-        });
+        recipe   = this.findRecipe(recipeName);
         products = recipe.get("products");
 
         $button.toggleClass("glyphicon-unchecked");
@@ -302,6 +296,28 @@ module.exports = View.extend({
         } else {
             $("#shop .products .product").remove();
         }
+    },
+
+    "order": function (evt) {
+        var checked      = $("#shop .recipe .glyphicon-check"),
+            recipesNames = checked.parents(".recipe").find(".name");
+
+        console.log(recipesNames)
+        _(recipesNames).each(function (recipeName) {
+            var recipe = this.findRecipe($(recipeName).html());
+            recipe.save({ "toCook": true }, {
+                "success": function () {
+                    var info = $("<div class='alert alert-success'>");
+                    info.html("Nouvelle recette � pr�parer ajout�e." +
+                              "<button type='button' class='close' " + 
+                              "data-dismiss='alert' aria-hidden='true'>" + 
+                              "&times;</button>");
+                    $(evt.target).after(info);
+                    info.alert();
+                }
+            });
+        }, this);
+        console.log(recipesNames)
     }
 });
 
@@ -314,7 +330,9 @@ var View         = require("./view"),
     ProductsView = require("./products"),
     Recipe       = require("../models/recipe"),
     Recipes      = require("../models/recipes"),
+    ToCook       = require("../models/to_cook"),
     RecipesView  = require("./recipes"),
+    ToCooksView  = require("./to_cooks"),
     Cart         = require("../models/cart"),
     Carts        = require("../models/carts"),
     CartsView    = require("./carts"),
@@ -347,6 +365,12 @@ module.exports = View.extend({
             }
         });
 
+        this.toCook = new ToCook();
+        this.toCook.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
 
         this.carts = new Carts();
     },
@@ -407,6 +431,13 @@ module.exports = View.extend({
     },
 
     "goKitchen": function () {
+        if (!this.toCookView) {
+            this.toCookView = new ToCooksView({ 
+                "el": $("#kitchen")[0],
+                "collection": this.toCook
+            });
+            this.toCookView.render();
+        }
         this.goPage("kitchen");
 
         return false;
@@ -644,7 +675,8 @@ module.exports = View.extend({
             recipe = new Recipe ({
                 "name": $("#recipe-name").val(),
                 "description": $("#recipe-description").val(),
-                "products": $("#recipe-products").val()
+                "products": $("#recipe-products").val(),
+                "toCook": false
             }),
             that = this;
 
@@ -696,7 +728,7 @@ buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.at
   }
 }).call(this);
 
-buf.push('</div><div class="swiper-slide cart"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary">Commander</div></div></div></div><div class="navigation right"></div></div>');
+buf.push('</div><div class="swiper-slide cart"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div></div></div></div><div class="navigation right"></div></div>');
 }
 return buf.join("");
 };
@@ -804,6 +836,92 @@ buf.push('</select></div><div class="form-group"><button type="submit" title="aj
 }
 return buf.join("");
 };
+});
+
+;require.register("views/templates/to_cook", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2></div><div class="swiper-slide"> <h2>Recette � cuisiner</h2><ul class="recipes"></ul></div></div></div><div class="navigation right"></div></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/to_cook", function(exports, require, module) {
+var View     = require("./view"),
+    Recipe   = require("../models/recipe"),
+    template = require("./templates/recipe");
+
+module.exports = View.extend({
+    "tagName": "li",
+    "className": "row recipe",
+    "template": template,
+
+    "model": Recipe,
+
+    "getRenderData": function () { 
+        var attributes = this.model.attributes;
+        if (!attributes.image) {
+            attributes.image = "images/recipe.png";
+        }
+        if (attributes.description) {
+            attributes.description = 
+                attributes.description.replace(/[\r\n]+/g, "<br>");
+        }
+        return attributes;
+    },
+
+    "initialize": function () {
+        this.render();
+    },
+
+    "events": {
+        "click .delete": "destroy",
+    },
+
+    "destroy": function () {
+        var that = this;
+
+        this.model.save({ "toCook": false }, {
+            "success": function () {
+                that.remove();
+            }
+        });
+    }
+
+});
+
+
+});
+
+;require.register("views/to_cooks", function(exports, require, module) {
+var View       = require("./view"),
+    Recipe     = require("../models/recipe"),
+    ToCook     = require("../models/to_cook"),
+    ToCookView = require("./to_cook"),
+    template   = require("./templates/to_cook");
+
+module.exports = View.extend({
+    "collection": ToCook,
+    
+    "template": template,
+
+    "render": function () {
+        this.$el.html(this.template(this.getRenderData()));
+        this.collection.each(function (recipe){
+            this.add(recipe);
+        }, this);
+    },
+
+    "add": function (recipe) {
+        var recipeView = new ToCookView({ "model": recipe });
+        this.$el.find("ul.recipes").prepend(recipeView.el)
+    },
+});
+
 });
 
 ;require.register("views/view", function(exports, require, module) {
