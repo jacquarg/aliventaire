@@ -48,9 +48,16 @@ module.exports = View.extend({
     },
 
     "updateCart": function (evt) {
-        var $target = $(evt.currentTarget),
-            $button = $target.find(".btn"),
-            products = this.recipes[0].attributes.products;
+        var $target    = $(evt.currentTarget),
+            $button    = $target.find(".btn"),
+            recipeName = $target.find(".name").html(),
+            recipe,
+            products;
+
+        recipe   = _(this.recipes).find(function (recipe) { 
+            return recipe.get("name") == recipeName;
+        });
+        products = recipe.get("products");
 
         $button.toggleClass("glyphicon-unchecked");
         $button.toggleClass("glyphicon-check");
@@ -58,7 +65,6 @@ module.exports = View.extend({
         if ($button.hasClass("glyphicon-check")) {
             _(products).each(function (product) {
                 var productContainer = $("<div class='product' />");
-                console.log(product)
                 productContainer.html(product.id);
                 $("#shop .products").append(productContainer);
             });

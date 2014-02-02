@@ -12,7 +12,7 @@
                 h2 Choix de la recette
                 - each recipe in recipes
                     .recipe 
-                        | #{recipe.attributes.name}
+                        span.name #{recipe.attributes.name}
                         .btn.glyphicon.glyphicon-unchecked 
             .swiper-slide.cart
                 h2 Panier
