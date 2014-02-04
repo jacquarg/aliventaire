@@ -25,6 +25,13 @@ module.exports = View.extend({
     },
 
     "afterRender": function () {
+        this.carts = new Carts();
+        this.carts.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
+
         this.products = new Products();
         this.products.fetch({
             "error": function (obj, response) {
@@ -45,8 +52,6 @@ module.exports = View.extend({
                 console.log(response.responseText)
             }
         });
-
-        this.carts = new Carts();
     },
 
     "swipers": {},
@@ -82,7 +87,7 @@ module.exports = View.extend({
             this.cartsView = new CartsView({ 
                 "el": $("#shop")[0],
                 "collection": this.carts,
-                "recipes": this.recipes,
+                "recipes": this.recipes
             });
             this.cartsView.render();
         }

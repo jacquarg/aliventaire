@@ -229,10 +229,33 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "row",
+    "className": "cart col-xs-4",
     "template": template,
 
     "model": Cart,
+
+    "getRenderData": function () { 
+        var attributes = this.model.attributes;
+        return attributes;
+    },
+
+    "initialize": function () {
+        this.render();
+    },
+
+    "events": {
+        "click .delete": "destroy",
+    },
+
+    "destroy": function () {
+        var that = this;
+
+        that.model.destroy({
+            "success": function () {
+                that.remove();
+            }
+        });
+    },
 
 });
 
@@ -261,6 +284,14 @@ module.exports = View.extend({
 
     "render": function () {
         this.$el.html(this.template(this.getRenderData()));
+        this.collection.each(function (cart){
+            this.add(cart);
+        }, this);
+    },
+
+    "add": function (cart) {
+        var cartView = new CartView({ "model": cart });
+        this.$el.find("ul.carts").prepend(cartView.el)
     },
 
     "events": {
@@ -272,6 +303,25 @@ module.exports = View.extend({
         return _(this.recipes).find(function (recipe) { 
             return recipe.get("name") == recipeName;
         });
+    },
+
+    "checkedProducts": {},
+
+    "addProductsToCart": function (products) {
+        // TODO: quantity of products and same product in diff recipe
+        _(products).each(function (product) {
+            var productContainer = $("<div class='product' />");
+            productContainer.html(product.id);
+            this.checkedProducts[product.id] = productContainer;
+            $("#shop .products").append(productContainer);
+        }, this);
+    },
+
+    "removeProductsFromCart": function (products) {
+        _(products).each(function (product) {
+            $(this.checkedProducts[product.id]).remove();
+            delete this.checkedProducts[product.id];
+        }, this);
     },
 
     "updateCart": function (evt) {
@@ -288,36 +338,36 @@ module.exports = View.extend({
         $button.toggleClass("glyphicon-check");
 
         if ($button.hasClass("glyphicon-check")) {
-            _(products).each(function (product) {
-                var productContainer = $("<div class='product' />");
-                productContainer.html(product.id);
-                $("#shop .products").append(productContainer);
-            });
+            this.addProductsToCart(products);
         } else {
-            $("#shop .products .product").remove();
+            this.removeProductsFromCart(products);
         }
     },
 
     "order": function (evt) {
         var checked      = $("#shop .recipe .glyphicon-check"),
-            recipesNames = checked.parents(".recipe").find(".name");
+            that         = this,
+            recipesNames = [],
+            cart;
 
-        console.log(recipesNames)
-        _(recipesNames).each(function (recipeName) {
-            var recipe = this.findRecipe($(recipeName).html());
-            recipe.save({ "toCook": true }, {
-                "success": function () {
-                    var info = $("<div class='alert alert-success'>");
-                    info.html("Nouvelle recette � pr�parer ajout�e." +
-                              "<button type='button' class='close' " + 
-                              "data-dismiss='alert' aria-hidden='true'>" + 
-                              "&times;</button>");
-                    $(evt.target).after(info);
-                    info.alert();
-                }
-            });
-        }, this);
-        console.log(recipesNames)
+        checked.parents(".recipe").find(".name").each(function (index, elem) {
+            recipesNames.push($(elem).html());
+        });
+        cart = new Cart ({
+            "name": "Commande : " + recipesNames.join(", "),
+             "products": Object.keys(this.checkedProducts)
+            // TODO: quantity of products and same product in diff recipe
+        });
+
+        that.collection.create(cart, {
+            "success": function (cart) {
+                _(recipesNames).each(function (recipeName) {
+                    var recipe = that.findRecipe(recipeName);
+                    recipe.save({ "toCook": true });
+                });
+                that.add(cart);
+            }
+        });
     }
 });
 
@@ -351,6 +401,13 @@ module.exports = View.extend({
     },
 
     "afterRender": function () {
+        this.carts = new Carts();
+        this.carts.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
+
         this.products = new Products();
         this.products.fetch({
             "error": function (obj, response) {
@@ -371,8 +428,6 @@ module.exports = View.extend({
                 console.log(response.responseText)
             }
         });
-
-        this.carts = new Carts();
     },
 
     "swipers": {},
@@ -408,7 +463,7 @@ module.exports = View.extend({
             this.cartsView = new CartsView({ 
                 "el": $("#shop")[0],
                 "collection": this.carts,
-                "recipes": this.recipes,
+                "recipes": this.recipes
             });
             this.cartsView.render();
         }
@@ -699,6 +754,25 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
+buf.push('<span title="supprimer" class="delete"><button class="btn btn-danger glyphicon glyphicon-remove"></button></span><span class="name">' + escape((interp = name) == null ? '' : interp) + '</span><ul>');
+// iterate products
+;(function(){
+  if ('number' == typeof products.length) {
+    for (var $index = 0, $$l = products.length; $index < $$l; $index++) {
+      var product = products[$index];
+
+buf.push('<li class="product">' + escape((interp = product.id) == null ? '' : interp) + ' </li>');
+    }
+  } else {
+    for (var $index in products) {
+      var product = products[$index];
+
+buf.push('<li class="product">' + escape((interp = product.id) == null ? '' : interp) + ' </li>');
+   }
+  }
+}).call(this);
+
+buf.push('</ul>');
 }
 return buf.join("");
 };
@@ -710,7 +784,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="cart"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des cat�gories</h2></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des cat�gories</h2></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2>');
 // iterate recipes
 ;(function(){
   if ('number' == typeof recipes.length) {
@@ -728,7 +802,7 @@ buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.at
   }
 }).call(this);
 
-buf.push('</div><div class="swiper-slide cart"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div></div></div></div><div class="navigation right"></div></div>');
+buf.push('</div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };

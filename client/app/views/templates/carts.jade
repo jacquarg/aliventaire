@@ -1,22 +1,24 @@
-.cart
-    .navigation.left
-    .swiper-container
-        .swiper-wrapper
-            .swiper-slide 
-                h2 Information de consomation
-            .swiper-slide 
-                h2 Choix des catégories
-            .swiper-slide 
-                h2 Choix du prix
-            .swiper-slide 
-                h2 Choix de la recette
-                - each recipe in recipes
-                    .recipe 
-                        span.name #{recipe.attributes.name}
-                        .btn.glyphicon.glyphicon-unchecked 
-            .swiper-slide.cart
-                h2 Panier
-                .products
-                hr
-                .btn.btn-primary.order Commander
-    .navigation.right
+.navigation.left
+.swiper-container
+    .swiper-wrapper
+        .swiper-slide 
+            h2 Information de consomation
+        .swiper-slide 
+            h2 Choix des catégories
+        .swiper-slide 
+            h2 Choix du prix
+        .swiper-slide 
+            h2 Choix de la recette
+            - each recipe in recipes
+                .recipe 
+                    span.name #{recipe.attributes.name}
+                    .btn.glyphicon.glyphicon-unchecked 
+        .swiper-slide.carts
+            h2 Panier
+            .products
+            hr
+            .btn.btn-primary.order Commander
+            hr
+            h2 Commandes en cours
+            ul.carts.row
+.navigation.right

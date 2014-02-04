@@ -1,6 +1,7 @@
 // See documentation on https://github.com/frankrousseau/americano#routes
 
 var index    = require("./index"),
+    carts    = require("./carts"),
     products = require("./products"),
     recipes  = require("./recipes");
 
@@ -28,5 +29,14 @@ module.exports = {
         "get": recipes.read,
         "put": recipes.update,
         "del": recipes.del
+    },
+    "carts": {
+        "get": carts.all,
+        "post": carts.create
+    },
+    "carts/:id": {
+        "get": carts.read,
+        "put": carts.update,
+        "del": carts.del
     },
 };

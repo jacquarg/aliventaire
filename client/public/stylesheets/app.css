@@ -250,6 +250,16 @@ ol {
 #recipes .recipe:hover .delete .btn {
   display: inline;
 }
+#shop .delete {
+  margin-right: 0.2em;
+  cursor: pointer;
+}
+#shop .delete .btn {
+  display: none;
+}
+#shop .cart:hover .delete .btn {
+  display: inline;
+}
 .alert {
   margin: 0.5em;
 }

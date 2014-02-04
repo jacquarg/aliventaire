@@ -7,6 +7,9 @@ module.exports = {
     "product": {
         "all": americano.defaultRequests.all,
     },
+    "cart": {
+        "all": americano.defaultRequests.all,
+    },
     "recipe": {
         "all": americano.defaultRequests.all,
         "allToCook": function (doc) {
