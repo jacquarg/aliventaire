@@ -31,15 +31,20 @@ module.exports = View.extend({
                 "name": $("#product-name").val(),
                 "quantity": $("#product-quantity").val(),
                 "price": $("#product-price").val(),
+                "image": $("#product-image").val()
             }),
             that = this;
 
+        if (!product.get("image")) {
+            product.set("image", "images/fridge.png");
+        }
         this.collection.create(product, {
             "success": function (product) {
                 that.add(product);
                 $("#product-name").val("");
                 $("#product-quantity").val("");
                 $("#product-price").val("");
+                $("#product-image").val("");
             }
         });
 

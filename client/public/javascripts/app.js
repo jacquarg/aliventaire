@@ -557,10 +557,11 @@ module.exports = View.extend({
 
         that.model.destroy({
             "success": function () {
+                $("#product-image")
+                    .val(that.$el.find(".image img").attr("src"));
                 $("#product-name").val(that.$el.find(".name").text());
                 $("#product-quantity").val(that.$el.find(".quantity").text());
-                $("#product-price")
-                    .val(parseInt(that.$el.find(".price").text()));
+                $("#product-price").val(that.$el.find(".price").text());
                 that.remove();
             }
         });
@@ -630,15 +631,20 @@ module.exports = View.extend({
                 "name": $("#product-name").val(),
                 "quantity": $("#product-quantity").val(),
                 "price": $("#product-price").val(),
+                "image": $("#product-image").val()
             }),
             that = this;
 
+        if (!product.get("image")) {
+            product.set("image", "images/fridge.png");
+        }
         this.collection.create(product, {
             "success": function (product) {
                 that.add(product);
                 $("#product-name").val("");
                 $("#product-quantity").val("");
                 $("#product-price").val("");
+                $("#product-image").val("");
             }
         });
 
@@ -847,7 +853,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantit�" class="form-control"/></div><div class="form-group col-xs-1"><button type="submit" title="ajouter" class="col-xs-1 btn btn-default glyphicon glyphicon-plus"></button></div></div></form><ul class="products"></ul>');
+buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="addresse image" class="form-control"/></div></div><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantit�" class="form-control"/></div><div class="form-group col-xs-1"><button type="submit" title="ajouter" class="col-xs-1 btn btn-default glyphicon glyphicon-plus"></button></div></div></form><ul class="products"></ul>');
 }
 return buf.join("");
 };
