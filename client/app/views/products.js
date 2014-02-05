@@ -37,6 +37,9 @@ module.exports = View.extend({
         this.collection.create(product, {
             "success": function (product) {
                 that.add(product);
+                $("#product-name").val("");
+                $("#product-quantity").val("");
+                $("#product-price").val("");
             }
         });
 

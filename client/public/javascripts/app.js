@@ -557,6 +557,10 @@ module.exports = View.extend({
 
         that.model.destroy({
             "success": function () {
+                $("#product-name").val(that.$el.find(".name").text());
+                $("#product-quantity").val(that.$el.find(".quantity").text());
+                $("#product-price")
+                    .val(parseInt(that.$el.find(".price").text()));
                 that.remove();
             }
         });
@@ -632,6 +636,9 @@ module.exports = View.extend({
         this.collection.create(product, {
             "success": function (product) {
                 that.add(product);
+                $("#product-name").val("");
+                $("#product-quantity").val("");
+                $("#product-price").val("");
             }
         });
 
