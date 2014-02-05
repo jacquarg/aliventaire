@@ -12,7 +12,7 @@ module.exports = View.extend({
     "getRenderData": function () { 
         var attributes = this.model.attributes;
         if (!attributes.image) {
-            attributes.image = "images/fridge.png";
+            attributes.image = "images/product.png";
         }
         return attributes;
     },

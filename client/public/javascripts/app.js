@@ -537,7 +537,7 @@ module.exports = View.extend({
     "getRenderData": function () { 
         var attributes = this.model.attributes;
         if (!attributes.image) {
-            attributes.image = "images/fridge.png";
+            attributes.image = "images/product.png";
         }
         return attributes;
     },
@@ -636,7 +636,7 @@ module.exports = View.extend({
             that = this;
 
         if (!product.get("image")) {
-            product.set("image", "images/fridge.png");
+            product.set("image", "images/product.png");
         }
         this.collection.create(product, {
             "success": function (product) {
@@ -827,7 +827,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/title.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="kitchen"><img src="images/kitchen.png" alt="kitchen" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipes"><img src="images/recipes.png" alt="recipes" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/cook.png" alt="kitchen" title="Ma cuisine" class="kitchen"/><img src="images/recipes.png" alt="recipes" title="Mes recettes" class="recipes"/></div></div><div id="shop" class="shop"></div><div id="fridge" class="fridge"></div><div id="kitchen" class="kitchen"></div><div id="recipes" class="recipes"></div></div></div>');
+buf.push('<div id="content" class="menu"><div class="header"><div class="menu"><img src="images/title.png" alt="aliventaire" title="Aliventaire"/></div><div class="shop"><img src="images/shop.png" alt="shop" title="Retour au menu" class="menu"/><h1>Mes courses</h1><div class="pagination"></div></div><div class="fridge"><img src="images/fridge.png" alt="fridge" title="Retour au menu" class="menu"/><h1>Mon placard</h1><div class="pagination"></div></div><div class="kitchen"><img src="images/kitchen.png" alt="kitchen" title="Retour au menu" class="menu"/><h1>Ma cuisine</h1><div class="pagination"></div></div><div class="recipes"><img src="images/recipes.png" alt="recipes" title="Retour au menu" class="menu"/><h1>Mes recettes</h1><div class="pagination"></div></div></div><div class="page"><div class="menu"><div class="row"><img src="images/shop.png" alt="shop" title="Mes courses" class="shop"/><img src="images/fridge.png" alt="fridge" title="Mon placard" class="fridge"/></div><div class="row"><img src="images/kitchen.png" alt="kitchen" title="Ma cuisine" class="kitchen"/><img src="images/recipes.png" alt="recipes" title="Mes recettes" class="recipes"/></div></div><div id="shop" class="shop"></div><div id="fridge" class="fridge"></div><div id="kitchen" class="kitchen"></div><div id="recipes" class="recipes"></div></div></div>');
 }
 return buf.join("");
 };
@@ -853,7 +853,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="addresse image" class="form-control"/></div></div><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantit�" class="form-control"/></div><div class="form-group col-xs-1"><button type="submit" title="ajouter" class="col-xs-1 btn btn-default glyphicon glyphicon-plus"></button></div></div></form><ul class="products"></ul>');
+buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="adresse image" class="form-control"/></div></div><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantit�" class="form-control"/></div><div class="form-group col-xs-1"><button type="submit" title="ajouter" class="col-xs-1 btn btn-default glyphicon glyphicon-plus"></button></div></div></form><ul class="products"></ul>');
 }
 return buf.join("");
 };
