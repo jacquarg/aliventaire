@@ -20,12 +20,14 @@ exports.config =
       # even if they are not present here.
       order:
         before: [
-          'vendor/javascripts/console-helper.js',
           'vendor/javascripts/jquery-2.1.0.min.js',
+          'vendor/javascripts/console-helper.js',
           'vendor/javascripts/underscore-1.5.2.min.js',
           'vendor/javascripts/backbone-1.1.0.min.js',
           'vendor/javascripts/backbone-mediator.js',
           'vendor/javascripts/bootstrap-3.0.3.min.js',
+          'vendor/javascripts/idangerous.swiper.min.js',
+          'vendor/javascripts/list.js',
         ]
 
     stylesheets:

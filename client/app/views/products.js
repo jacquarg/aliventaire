@@ -14,11 +14,16 @@ module.exports = View.extend({
         this.collection.each(function (product){
             this.add(product);
         }, this);
+        this.searchList = new List(this.$el.find(".products-list")[0], 
+                                   { "valueNames": ["name", 
+                                                    "price", 
+                                                    "quantity"] });
     },
 
     "add": function (product) {
+        // TODO : add new values to search/sort
         var productView = new ProductView({ "model": product });
-        this.$el.find("ul.products").prepend(productView.el)
+        this.$el.find("ul.products").prepend(productView.el);
     },
 
     "events": {

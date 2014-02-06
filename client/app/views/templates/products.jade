@@ -1,10 +1,5 @@
 form.form-inline(role="form")
     .row
-        .form-group.col-xs-11
-            input#product-image(type="text", 
-                                class="form-control",
-                                placeholder="adresse image")
-    .row
         .form-group.col-xs-7
             input#product-name(type="text", 
                                class="form-control",
@@ -27,4 +22,22 @@ form.form-inline(role="form")
             button(type="submit",
                    class="col-xs-1 btn btn-default glyphicon glyphicon-plus",
                    title="ajouter")
-ul.products
+    .row
+        .form-group.col-xs-11
+            input#product-image(type="text", 
+                                class="form-control",
+                                placeholder="adresse image")
+hr
+.products-list
+    .row
+        div.form-group.col-xs-6
+            input.search(type="text",
+                         placeholder="filtrer",
+                         class="form-control")
+        button.sort(data-sort="price"
+                    class="btn btn-default col-xs-2") trier par prix
+        button.sort(data-sort="name"
+                    class="btn btn-default col-xs-2") trier par nom
+        button.sort(data-sort="quantity"
+                    class="btn btn-default col-xs-2") trier par quantité
+    ul.products.list
