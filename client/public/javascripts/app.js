@@ -611,8 +611,10 @@ module.exports = View.extend({
 
     "render": function () {
         this.$el.html(this.template(this.getRenderData()));
+        this.oldProducts = this.$el.find("ul.products.old");
+        this.newProducts = this.$el.find("ul.products.new");
         this.collection.each(function (product){
-            this.add(product);
+            this.add(product, this.oldProducts);
         }, this);
         this.searchList = new List(this.$el.find(".products-list")[0], 
                                    { "valueNames": ["name", 
@@ -620,10 +622,13 @@ module.exports = View.extend({
                                                     "quantity"] });
     },
 
-    "add": function (product) {
-        // TODO : add new values to search/sort
+    "add": function (product, list) {
+        // TODO : do something to removed values
         var productView = new ProductView({ "model": product });
-        this.$el.find("ul.products").prepend(productView.el);
+        if (!list) {
+            list = this.newProducts;
+        }
+        list.prepend(productView.el);
     },
 
     "events": {
@@ -858,7 +863,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantit�" class="form-control"/></div><div class="form-group col-xs-1"><button type="submit" title="ajouter" class="col-xs-1 btn btn-default glyphicon glyphicon-plus"></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="adresse image" class="form-control"/></div></div></form><hr/><div class="products-list"><div class="row"><div class="form-group col-xs-6"><input type="text" placeholder="filtrer" class="search form-control"/></div><button data-sort="price" class="sort btn btn-default col-xs-2">trier par prix</button><button data-sort="name" class="sort btn btn-default col-xs-2">trier par nom</button><button data-sort="quantity" class="sort btn btn-default col-xs-2">trier par quantit�</button></div><ul class="products list"></ul></div>');
+buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantit�" class="form-control"/></div><div class="form-group col-xs-1"><button type="submit" title="ajouter" class="col-xs-1 btn btn-default glyphicon glyphicon-plus"></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="adresse image" class="form-control"/></div></div></form><hr/><div class="products-list"><ul class="products new"></ul><div class="row"><div class="form-group col-xs-6"><input type="text" placeholder="filtrer" class="search form-control"/></div><button title="trier par prix" data-sort="price" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>prix</button><button title="trier par nom" data-sort="name" class="sort btn btn-default col-xs-2"><span class="glyphicon glyphicon-sort"></span>nom</button><button title="trier par quantit�" data-sort="quantity" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>quantit�</button></div><ul class="products old list"></ul></div>');
 }
 return buf.join("");
 };

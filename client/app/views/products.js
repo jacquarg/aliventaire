@@ -11,8 +11,10 @@ module.exports = View.extend({
 
     "render": function () {
         this.$el.html(this.template(this.getRenderData()));
+        this.oldProducts = this.$el.find("ul.products.old");
+        this.newProducts = this.$el.find("ul.products.new");
         this.collection.each(function (product){
-            this.add(product);
+            this.add(product, this.oldProducts);
         }, this);
         this.searchList = new List(this.$el.find(".products-list")[0], 
                                    { "valueNames": ["name", 
@@ -20,10 +22,13 @@ module.exports = View.extend({
                                                     "quantity"] });
     },
 
-    "add": function (product) {
-        // TODO : add new values to search/sort
+    "add": function (product, list) {
+        // TODO : do something to removed values
         var productView = new ProductView({ "model": product });
-        this.$el.find("ul.products").prepend(productView.el);
+        if (!list) {
+            list = this.newProducts;
+        }
+        list.prepend(productView.el);
     },
 
     "events": {
