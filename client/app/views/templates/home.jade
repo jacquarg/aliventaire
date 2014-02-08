@@ -1,49 +1,58 @@
 #content.menu
     .header
         .menu
-            img(src="images/title.png", 
-                alt="aliventaire", 
-                title="Aliventaire")
+            a.menu
+                img(src="images/title.png", 
+                    alt="aliventaire", 
+                    title="Aliventaire")
         .shop
-            img.menu(src="images/shop.png", 
-                     alt="shop", 
-                     title="Retour au menu")
+            a.menu(href="/")
+                img.menu(src="images/shop.png", 
+                         alt="shop", 
+                         title="Retour au menu")
             h1 Mes courses
             .pagination
         .fridge
-            img.menu(src="images/fridge.png", 
-                     alt="fridge", 
-                     title="Retour au menu")
+            a.menu(href="/")
+                img.menu(src="images/fridge.png", 
+                         alt="fridge", 
+                         title="Retour au menu")
             h1 Mon placard
             .pagination
         .kitchen
-            img.menu(src="images/kitchen.png", 
-                     alt="kitchen", 
-                     title="Retour au menu")
+            a.menu(href="/")
+                img.menu(src="images/kitchen.png", 
+                         alt="kitchen", 
+                         title="Retour au menu")
             h1 Ma cuisine
             .pagination
         .recipes
-            img.menu(src="images/recipes.png", 
-                     alt="recipes", 
-                     title="Retour au menu")
+            a.menu(href="/")
+                img.menu(src="images/recipes.png", 
+                         alt="recipes", 
+                         title="Retour au menu")
             h1 Mes recettes
             .pagination
     .page
         .menu
             .row
-                img.shop(src="images/shop.png", 
-                         alt="shop", 
-                         title="Mes courses")
-                img.fridge(src="images/fridge.png", 
-                           alt="fridge", 
-                           title="Mon placard")
+                a.shop(href="/")
+                    img.shop(src="images/shop.png", 
+                             alt="shop", 
+                             title="Mes courses")
+                a.fridge(href="/")
+                    img.fridge(src="images/fridge.png", 
+                               alt="fridge", 
+                               title="Mon placard")
             .row
-                img.kitchen(src="images/kitchen.png", 
-                            alt="kitchen", 
-                            title="Ma cuisine")
-                img.recipes(src="images/recipes.png", 
-                            alt="recipes", 
-                            title="Mes recettes")
+                a.kitchen(href="/")
+                    img.kitchen(src="images/kitchen.png", 
+                                alt="kitchen", 
+                                title="Ma cuisine")
+                a.recipes(href="/")
+                    img.recipes(src="images/recipes.png", 
+                                alt="recipes", 
+                                title="Mes recettes")
         #shop.shop
         #fridge.fridge
         #kitchen.kitchen
