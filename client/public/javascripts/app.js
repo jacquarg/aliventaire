@@ -887,9 +887,9 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<span title="supprimer" class="delete col-xs-1"><button class="btn btn-danger glyphicon glyphicon-remove"></button></span><div class="image col-xs-3"> <img');
+buf.push('<div class="image col-xs-3"> <img');
 buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
-buf.push('/></div><div class="col-xs-8"> <div class="name">' + escape((interp = name) == null ? '' : interp) + '</div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/><div class="recipe-products">Produits :<ul>');
+buf.push('/></div><div class="col-xs-8"> <div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/><div class="recipe-products">Produits :<ul>');
 // iterate products
 ;(function(){
   if ('number' == typeof products.length) {

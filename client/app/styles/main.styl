@@ -224,21 +224,23 @@ ul, ol
 #kitchen
 #recipes
   ul.recipes
+    margin: 0
+    padding: 0
+
     > li
       border: 1px dotted black
       padding: .5em
 
-      .image
-        padding: 5px
 
   .delete
+    margin-right: 1em
     cursor: pointer
     .btn
-      display: none
+      visibility: hidden
   .recipe:hover
     .delete
       .btn
-        display: inline
+        visibility: visible
 
 #shop
   .delete

@@ -400,26 +400,28 @@ ol {
 #recipes .recipe-products ul {
   margin: 0;
 }
+#kitchen ul.recipes,
+#recipes ul.recipes {
+  margin: 0;
+  padding: 0;
+}
 #kitchen ul.recipes > li,
 #recipes ul.recipes > li {
   border: 1px dotted #000;
   padding: 0.5em;
 }
-#kitchen ul.recipes > li .image,
-#recipes ul.recipes > li .image {
-  padding: 5px;
-}
 #kitchen .delete,
 #recipes .delete {
+  margin-right: 1em;
   cursor: pointer;
 }
 #kitchen .delete .btn,
 #recipes .delete .btn {
-  display: none;
+  visibility: hidden;
 }
 #kitchen .recipe:hover .delete .btn,
 #recipes .recipe:hover .delete .btn {
-  display: inline;
+  visibility: visible;
 }
 #shop .delete {
   margin-right: 0.2em;
