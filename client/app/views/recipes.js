@@ -43,10 +43,14 @@ module.exports = View.extend({
                 "name": $("#recipe-name").val(),
                 "description": $("#recipe-description").val(),
                 "products": $("#recipe-products").val(),
+                "image": $("#recipe-image").val(),
                 "toCook": false
             }),
             that = this;
 
+        if (!recipe.get("image")) {
+            recipe.image = "images/recipe.png";
+        }
         that.collection.create(recipe, {
             "success": function (recipe) {
                 that.add(recipe);

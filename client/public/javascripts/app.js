@@ -762,10 +762,14 @@ module.exports = View.extend({
                 "name": $("#recipe-name").val(),
                 "description": $("#recipe-description").val(),
                 "products": $("#recipe-products").val(),
+                "image": $("#recipe-image").val(),
                 "toCook": false
             }),
             that = this;
 
+        if (!recipe.get("image")) {
+            recipe.image = "images/recipe.png";
+        }
         that.collection.create(recipe, {
             "success": function (recipe) {
                 that.add(recipe);
@@ -937,7 +941,7 @@ buf.push('> \n' + escape((interp = product.attributes.name) == null ? '' : inter
   }
 }).call(this);
 
-buf.push('</select></div><div class="form-group"><input id="product-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><ul class="recipes"></ul>');
+buf.push('</select></div><div class="form-group"><input id="recipe-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><ul class="recipes"></ul>');
 }
 return buf.join("");
 };

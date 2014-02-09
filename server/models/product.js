@@ -1,8 +1,8 @@
 var americano = require("americano");
 
 var Product = americano.getModel("Product", {
-    "image": String,
     "name": String,
+    "image": String,
     "quantity": Number,
     "price": Number
 });

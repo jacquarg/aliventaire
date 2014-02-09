@@ -2,6 +2,7 @@ var americano = require("americano");
 
 var Recipe = americano.getModel("Recipe", {
     "name": String,
+    "image": String,
     "description": String,
     "products": [String],
     "toCook": Boolean
