@@ -26,6 +26,7 @@ exports.config =
           'vendor/javascripts/backbone-1.1.0.min.js',
           'vendor/javascripts/backbone-mediator.js',
           'vendor/javascripts/bootstrap-3.0.3.min.js',
+          'vendor/javascripts/bootstrap-select.min.js',
           'vendor/javascripts/idangerous.swiper.min.js',
           'vendor/javascripts/list.js',
         ]

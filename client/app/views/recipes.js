@@ -19,6 +19,10 @@ module.exports = View.extend({
 
     "render": function () {
         this.$el.html(this.template(this.getRenderData()));
+        this.$el.find(".select-picker").selectpicker({
+            "title": "aucun produit",
+            "noneResultsText": "aucun produit contenant"
+        });
         this.collection.each(function (recipe){
             this.add(recipe);
         }, this);
