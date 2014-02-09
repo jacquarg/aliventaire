@@ -1,13 +1,15 @@
-var View     = require("./view"),
-    Cart     = require("../models/cart"),
-    Carts    = require("../models/carts"),
-    CartView = require("./cart"),
-    template = require("./templates/carts");
+var View            = require("./view"),
+    Cart            = require("../models/cart"),
+    Carts           = require("../models/carts"),
+    CartView        = require("./cart"),
+    template        = require("./templates/carts"),
+    templateRecipes = require("./templates/carts-recipes");
 
 module.exports = View.extend({
     "collection": Carts,
     
     "template": template,
+    "templateRecipes": templateRecipes,
 
     "initialize": function (params) {
         this.recipes = params.recipes.models;
@@ -18,10 +20,19 @@ module.exports = View.extend({
     },
 
     "render": function () {
-        this.$el.html(this.template(this.getRenderData()));
+        var data = this.getRenderData();
+
+        this.$el.html(this.template(data));
         this.collection.each(function (cart){
             this.add(cart);
         }, this);
+        this.updateRender(data);
+    },
+
+    "updateRender": function (data) {
+        var data = data || this.getRenderData();
+        // TODO : check already checked recipes
+        this.$el.find(".carts-recipes").html(this.templateRecipes(data));
     },
 
     "add": function (cart) {
@@ -36,7 +47,7 @@ module.exports = View.extend({
 
     "findRecipe": function (recipeName) {
         return _(this.recipes).find(function (recipe) { 
-            return recipe.get("name") == recipeName;
+            return $.trim(recipe.get("name")) == $.trim(recipeName);
         });
     },
 
@@ -62,7 +73,7 @@ module.exports = View.extend({
     "updateCart": function (evt) {
         var $target    = $(evt.currentTarget),
             $button    = $target.find(".btn"),
-            recipeName = $target.find(".name").html(),
+            recipeName = $target.find(".name").text(),
             recipe,
             products;
 

@@ -263,16 +263,18 @@ module.exports = View.extend({
 });
 
 ;require.register("views/carts", function(exports, require, module) {
-var View     = require("./view"),
-    Cart     = require("../models/cart"),
-    Carts    = require("../models/carts"),
-    CartView = require("./cart"),
-    template = require("./templates/carts");
+var View            = require("./view"),
+    Cart            = require("../models/cart"),
+    Carts           = require("../models/carts"),
+    CartView        = require("./cart"),
+    template        = require("./templates/carts"),
+    templateRecipes = require("./templates/carts-recipes");
 
 module.exports = View.extend({
     "collection": Carts,
     
     "template": template,
+    "templateRecipes": templateRecipes,
 
     "initialize": function (params) {
         this.recipes = params.recipes.models;
@@ -283,10 +285,19 @@ module.exports = View.extend({
     },
 
     "render": function () {
-        this.$el.html(this.template(this.getRenderData()));
+        var data = this.getRenderData();
+
+        this.$el.html(this.template(data));
         this.collection.each(function (cart){
             this.add(cart);
         }, this);
+        this.updateRender(data);
+    },
+
+    "updateRender": function (data) {
+        var data = data || this.getRenderData();
+        // TODO : check already checked recipes
+        this.$el.find(".carts-recipes").html(this.templateRecipes(data));
     },
 
     "add": function (cart) {
@@ -301,7 +312,7 @@ module.exports = View.extend({
 
     "findRecipe": function (recipeName) {
         return _(this.recipes).find(function (recipe) { 
-            return recipe.get("name") == recipeName;
+            return $.trim(recipe.get("name")) == $.trim(recipeName);
         });
     },
 
@@ -327,7 +338,7 @@ module.exports = View.extend({
     "updateCart": function (evt) {
         var $target    = $(evt.currentTarget),
             $button    = $target.find(".btn"),
-            recipeName = $target.find(".name").html(),
+            recipeName = $target.find(".name").text(),
             recipe,
             products;
 
@@ -466,6 +477,8 @@ module.exports = View.extend({
                 "recipes": this.recipes
             });
             this.cartsView.render();
+        } else {
+            this.cartsView.updateRender();
         }
         this.goPage("shop");
 
@@ -492,6 +505,8 @@ module.exports = View.extend({
                 "collection": this.toCook
             });
             this.toCookView.render();
+        } else {
+            //this.toCookView.updateRender();
         }
         this.goPage("kitchen");
 
@@ -830,31 +845,41 @@ return buf.join("");
 };
 });
 
-;require.register("views/templates/carts", function(exports, require, module) {
+;require.register("views/templates/carts-recipes", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des catégories</h2></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2>');
 // iterate recipes
 ;(function(){
   if ('number' == typeof recipes.length) {
     for (var $index = 0, $$l = recipes.length; $index < $$l; $index++) {
       var recipe = recipes[$index];
 
-buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '</span><div class="btn glyphicon glyphicon-unchecked"> </div></div>');
+buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '<div class="btn glyphicon glyphicon-unchecked"> </div></span></div>');
     }
   } else {
     for (var $index in recipes) {
       var recipe = recipes[$index];
 
-buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '</span><div class="btn glyphicon glyphicon-unchecked"> </div></div>');
+buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '<div class="btn glyphicon glyphicon-unchecked"> </div></span></div>');
    }
   }
 }).call(this);
 
-buf.push('</div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/carts", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des catégories</h2></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };

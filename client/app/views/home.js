@@ -90,6 +90,8 @@ module.exports = View.extend({
                 "recipes": this.recipes
             });
             this.cartsView.render();
+        } else {
+            this.cartsView.updateRender();
         }
         this.goPage("shop");
 
@@ -116,6 +118,8 @@ module.exports = View.extend({
                 "collection": this.toCook
             });
             this.toCookView.render();
+        } else {
+            //this.toCookView.updateRender();
         }
         this.goPage("kitchen");
 

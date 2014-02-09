@@ -9,10 +9,7 @@
             h2 Choix du prix
         .swiper-slide 
             h2 Choix de la recette
-            - each recipe in recipes
-                .recipe 
-                    span.name #{recipe.attributes.name}
-                    .btn.glyphicon.glyphicon-unchecked 
+            .carts-recipes
         .swiper-slide.carts
             h2 Panier
             .products
