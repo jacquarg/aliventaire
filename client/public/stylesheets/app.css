@@ -172,7 +172,7 @@ h1 {
 }
 h2 {
   font-size: 2em;
-  line-height: 1;
+  line-height: normal;
   margin-bottom: 0.5em;
 }
 p {
@@ -194,6 +194,18 @@ ol {
   list-style-type: none;
 }
 /* Style */
+.btn {
+  line-height: normal;
+  font-size: 0.8em;
+  padding: 0.1em 0.4em;
+}
+.btn-default {
+  color: #868686;
+}
+.glyphicon {
+  font-size: 0.5em;
+  line-height: normal;
+}
 #home-view {
   width: 600px;
   height: 200px;
@@ -295,19 +307,19 @@ ol {
 #content form button {
   margin: 0.1em;
 }
+#content .form-control {
+  line-height: normal;
+}
 #content .form-group {
   padding: 0.1em;
 }
 #content .form-group input,
 #content .form-group select,
 #content .form-group textarea {
+  padding: 0.2em;
   font-size: 0.8em;
 }
 #shop {
-  font-size: 1.5em;
-}
-#shop .recipe,
-#shop .btn-primary {
   font-size: 1.5em;
 }
 #fridge {
@@ -318,11 +330,17 @@ ol {
   text-align: right;
 }
 #fridge ul {
+  padding: 0;
+  margin: 0;
   margin-top: 1em;
 }
 #fridge ul img {
   width: 32px;
   height: 32px;
+}
+#fridge ul .price,
+#fridge ul .quantity {
+  text-align: right;
 }
 #fridge .delete {
   cursor: pointer;

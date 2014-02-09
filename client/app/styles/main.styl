@@ -27,7 +27,7 @@ h1
 
 h2
   font-size: 2em
-  line-height: 1
+  line-height: normal
   margin-bottom: 0.5em
 
 p
@@ -47,6 +47,16 @@ ul, ol
 
 
 /* Style */
+.btn
+  line-height: normal
+  font-size: .8em
+  padding: 0.1em .4em
+.btn-default
+  color: color
+.glyphicon
+  font-size: .5em
+  line-height: normal
+
 #home-view
   width: 600px
   height: 200px
@@ -135,20 +145,19 @@ ul, ol
      button
        margin: .1em
 
+  .form-control
+      line-height: normal
   .form-group
     padding: .1em
 
     input
     select
     textarea
+      padding: .2em
       font-size: .8em
 
 #shop
   font-size: 1.5em
-
-  .recipe
-  .btn-primary
-    font-size: 1.5em
 
 #fridge
   font-size: 2em
@@ -156,11 +165,16 @@ ul, ol
   #product-price
     text-align: right
   ul
+    padding: 0
+    margin: 0
     margin-top: 1em
 
     img
       width: 32px
       height: 32px
+    .price
+    .quantity
+      text-align: right
   .delete
     cursor: pointer
     .btn

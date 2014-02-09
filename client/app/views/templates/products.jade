@@ -18,36 +18,38 @@ form.form-inline(role="form")
                                    pattern="[0-9]+"
                                    title="le nombre de produits de ce type"
                                    placeholder="Quantité")
-        .form-group.col-xs-1
+        .col-xs-1
             button(type="submit",
-                   class="col-xs-1 btn btn-default glyphicon glyphicon-plus",
+                   class="btn btn-default",
                    title="ajouter")
+                span.glyphicon.glyphicon-plus
     .row
         .form-group.col-xs-11
             input#product-image(type="text", 
                                 class="form-control",
                                 placeholder="adresse image")
-hr
 .products-list
     ul.products.new
+    hr
     .row
-        div.form-group.col-xs-6
+        div.form-group.col-xs-10.col-xs-offset-2
             input.search(type="text",
                          placeholder="filtrer",
                          class="form-control")
-        button.sort(class="btn btn-default col-xs-2",
-                    title="trier par prix",
-                    data-sort="price") 
-             span.glyphicon.glyphicon-sort
-             | prix
-        button.sort(class="btn btn-default col-xs-2",
+    .row
+        button.sort(class="btn btn-default col-xs-5 col-xs-offset-2",
                     title="trier par nom",
                     data-sort="name")
              span.glyphicon.glyphicon-sort
              | nom
         button.sort(class="btn btn-default col-xs-2",
+                    title="trier par prix",
+                    data-sort="price") 
+             span.glyphicon.glyphicon-sort
+             | prix
+        button.sort(class="btn btn-default col-xs-3",
                 title="trier par quantité",
                     data-sort="quantity") 
              span.glyphicon.glyphicon-sort
-             | quantitéé
+             | quantité
     ul.products.old.list

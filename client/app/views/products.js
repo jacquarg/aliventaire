@@ -23,7 +23,6 @@ module.exports = View.extend({
     },
 
     "add": function (product, list) {
-        // TODO : do something to removed values
         var productView = new ProductView({ "model": product });
         if (!list) {
             list = this.newProducts;
@@ -33,6 +32,7 @@ module.exports = View.extend({
 
     "events": {
         "submit form": "addProduct",
+        "click .old .delete": "removeFromList"
     },
 
     "addProduct": function (evt) {
@@ -61,4 +61,8 @@ module.exports = View.extend({
         return false;
     },
 
+    "removeFromList": function (evt) {
+        var productName = $(evt.target).parents("li").find(".name").text();
+        this.searchList.remove("name", $.trim(productName));
+    }
 });
