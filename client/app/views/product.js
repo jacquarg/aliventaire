@@ -30,13 +30,14 @@ module.exports = View.extend({
     "destroy": function () {
         var that = this;
 
+        $("#product-image")
+            .val(that.$el.find(".image img").attr("src"));
+        $("#product-name").val(that.$el.find(".name").text());
+        $("#product-quantity").val(that.$el.find(".quantity").text());
+        $("#product-price").val(that.$el.find(".price").text());
+
         that.model.destroy({
             "success": function () {
-                $("#product-image")
-                    .val(that.$el.find(".image img").attr("src"));
-                $("#product-name").val(that.$el.find(".name").text());
-                $("#product-quantity").val(that.$el.find(".quantity").text());
-                $("#product-price").val(that.$el.find(".price").text());
                 that.remove();
             }
         });

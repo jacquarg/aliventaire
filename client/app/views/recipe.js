@@ -30,7 +30,24 @@ module.exports = View.extend({
     },
 
     "destroy": function () {
-        var that = this;
+        var that = this,
+            $recipesProducts = $("#recipe-products");
+
+        $("#recipe-image")
+            .val(that.$el.find(".image img").attr("src"));
+        $("#recipe-name").val(that.$el.find(".name").text());
+        console.log()
+        $("#recipe-description")
+            .val(that.$el.find(".description")
+                    .html()
+                    .replace(/<br>/gi, "\n"));
+
+        $recipesProducts.find("options:selected").prop("selected", false);
+        that.$el.find(".recipe-products li").each(function () {
+            $recipesProducts.find("option[value=" + $(this).text() + "]")
+                .prop("selected", true);
+        });
+        $(".select-picker").selectpicker("refresh");
 
         that.model.destroy({
             "success": function () {
@@ -38,6 +55,5 @@ module.exports = View.extend({
             }
         });
     }
-
 });
 
