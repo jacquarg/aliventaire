@@ -79,7 +79,7 @@ module.exports = View.extend({
                 evt.preventDefault()
                 that.swipers[pageName].swipeNext()
             });
-        }
+        } 
     },
 
     "goShop": function () {
@@ -119,7 +119,7 @@ module.exports = View.extend({
             });
             this.toCookView.render();
         } else {
-            //this.toCookView.updateRender();
+            this.toCookView.updateRender(this.swipers["kitchen"]);
         }
         this.goPage("kitchen");
 

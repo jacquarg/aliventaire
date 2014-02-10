@@ -362,7 +362,7 @@ module.exports = View.extend({
             cart;
 
         checked.parents(".recipe").find(".name").each(function (index, elem) {
-            recipesNames.push($(elem).html());
+            recipesNames.push($(elem).text());
         });
         cart = new Cart ({
             "name": "Commande : " + recipesNames.join(", "),
@@ -373,7 +373,9 @@ module.exports = View.extend({
         that.collection.create(cart, {
             "success": function (cart) {
                 _(recipesNames).each(function (recipeName) {
+                    console.log(recipeName)
                     var recipe = that.findRecipe(recipeName);
+                    console.log(recipe)
                     recipe.save({ "toCook": true });
                 });
                 that.add(cart);
@@ -466,7 +468,7 @@ module.exports = View.extend({
                 evt.preventDefault()
                 that.swipers[pageName].swipeNext()
             });
-        }
+        } 
     },
 
     "goShop": function () {
@@ -506,7 +508,7 @@ module.exports = View.extend({
             });
             this.toCookView.render();
         } else {
-            //this.toCookView.updateRender();
+            this.toCookView.updateRender(this.swipers["kitchen"]);
         }
         this.goPage("kitchen");
 
@@ -1061,15 +1063,40 @@ module.exports = View.extend({
     "template": template,
 
     "render": function () {
+        var that = this;
         this.$el.html(this.template(this.getRenderData()));
         this.collection.each(function (recipe){
-            this.add(recipe);
-        }, this);
+            that.add(recipe);
+        });
+    },
+
+    "updateRender": function (swiper) {
+        var that = this,
+            $recipes = this.$el.find("ul.recipes");
+
+        that.$el.find("ul.recipes").html("");
+        that.collection.fetch({
+            "success": function (collection) {
+                that.collection = collection;
+                that.height = 0;
+                collection.each(function (recipe){
+                    that.add(recipe);
+                });
+                // TODO: see how to solve this :
+                // idangerous doesnt update his heigth after dom change ...
+                $recipes.height(that.height);
+                $recipes.parents(".swiper-slide").height(that.height + 500);
+                $recipes.parents(".swiper-wrapper").height(that.height + 500);
+                swiper.resizeFix();
+            }
+        });
     },
 
     "add": function (recipe) {
-        var recipeView = new ToCookView({ "model": recipe });
-        this.$el.find("ul.recipes").prepend(recipeView.el)
+        var recipeView = new ToCookView({ "model": recipe }),
+            $recipes = this.$el.find("ul.recipes");
+        $recipes.prepend(recipeView.el);
+        this.height = this.height + recipeView.$el.height();
     },
 });
 

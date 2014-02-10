@@ -10,14 +10,39 @@ module.exports = View.extend({
     "template": template,
 
     "render": function () {
+        var that = this;
         this.$el.html(this.template(this.getRenderData()));
         this.collection.each(function (recipe){
-            this.add(recipe);
-        }, this);
+            that.add(recipe);
+        });
+    },
+
+    "updateRender": function (swiper) {
+        var that = this,
+            $recipes = this.$el.find("ul.recipes");
+
+        that.$el.find("ul.recipes").html("");
+        that.collection.fetch({
+            "success": function (collection) {
+                that.collection = collection;
+                that.height = 0;
+                collection.each(function (recipe){
+                    that.add(recipe);
+                });
+                // TODO: see how to solve this :
+                // idangerous doesnt update his heigth after dom change ...
+                $recipes.height(that.height);
+                $recipes.parents(".swiper-slide").height(that.height + 500);
+                $recipes.parents(".swiper-wrapper").height(that.height + 500);
+                swiper.resizeFix();
+            }
+        });
     },
 
     "add": function (recipe) {
-        var recipeView = new ToCookView({ "model": recipe });
-        this.$el.find("ul.recipes").prepend(recipeView.el)
+        var recipeView = new ToCookView({ "model": recipe }),
+            $recipes = this.$el.find("ul.recipes");
+        $recipes.prepend(recipeView.el);
+        this.height = this.height + recipeView.$el.height();
     },
 });

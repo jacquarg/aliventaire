@@ -97,7 +97,7 @@ module.exports = View.extend({
             cart;
 
         checked.parents(".recipe").find(".name").each(function (index, elem) {
-            recipesNames.push($(elem).html());
+            recipesNames.push($(elem).text());
         });
         cart = new Cart ({
             "name": "Commande : " + recipesNames.join(", "),
@@ -108,7 +108,9 @@ module.exports = View.extend({
         that.collection.create(cart, {
             "success": function (cart) {
                 _(recipesNames).each(function (recipeName) {
+                    console.log(recipeName)
                     var recipe = that.findRecipe(recipeName);
+                    console.log(recipe)
                     recipe.save({ "toCook": true });
                 });
                 that.add(cart);
