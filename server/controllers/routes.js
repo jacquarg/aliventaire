@@ -3,7 +3,8 @@
 var index    = require("./index"),
     carts    = require("./carts"),
     products = require("./products"),
-    recipes  = require("./recipes");
+    recipes  = require("./recipes"),
+    receipts = require("./receipts");
 
 module.exports = {
     "foo": {
@@ -38,5 +39,11 @@ module.exports = {
         "get": carts.read,
         "put": carts.update,
         "del": carts.del
+    },
+    "receipts": {
+        "get": receipts.all,
+    },
+    "receipts/:id": {
+        "get": receipts.read,
     },
 };

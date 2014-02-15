@@ -18,4 +18,24 @@ module.exports = {
             }
         } 
     },
+    "receipt": {
+        "all": americano.defaultRequests.all,
+        "byReceiptId": function(doc) {
+            if (doc.receiptId) {
+                emit(doc.receiptId, doc);
+            }
+        },
+    },
+    "receipt_detail": {
+        "all": americano.defaultRequests.all,
+        "byReceiptId": function(doc) {
+            if (doc.receiptId) {
+                emit(doc.receiptId, doc);
+            } else {
+                // Old receiptDetail format.
+                // doc.receiptId = doc.ticketId;
+                emit(doc.ticketId, doc);
+            }
+        },
+    },
 };
