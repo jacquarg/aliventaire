@@ -371,6 +371,13 @@ ol {
 #kitchen {
   font-size: 2em;
 }
+#kitchen .details {
+  font-size: 0.8em;
+}
+#kitchen li.recipe {
+  margin: 0;
+  padding: 0;
+}
 #recipes {
   font-size: 2em;
 }
@@ -422,10 +429,6 @@ ol {
 #kitchen .recipe:hover .delete .btn,
 #recipes .recipe:hover .delete .btn {
   visibility: visible;
-}
-#kitchen li.recipe {
-  margin: 0;
-  padding: 0;
 }
 #shop .delete {
   margin-right: 0.2em;

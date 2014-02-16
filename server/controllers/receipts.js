@@ -24,13 +24,15 @@ module.exports.read = function(req, res) {
             }, 404);
         } else {
             details = ReceiptDetail
-                .withReceiptId(receipt.receiptId, 
-                               function (error, receiptDetails) {
-                                   if (!error && receiptDetails) {
-                                       receipt.details = receiptDetails;
-                                   }
-                                   res.send(receipt);
-                               });
+                .byReceiptId(receipt.receiptId, 
+                             function (error, receiptDetails) {
+                                  if (!error && receiptDetails) {
+                                      receipt = JSON.stringify(receipt);
+                                      receipt = JSON.parse(receipt);
+                                      receipt.details = receiptDetails;
+                                  }
+                                  res.send(receipt);
+                              });
             return receipt;
         }
     });

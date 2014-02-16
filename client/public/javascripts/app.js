@@ -756,14 +756,16 @@ module.exports = View.extend({
 });
 
 ;require.register("views/receipt", function(exports, require, module) {
-var View     = require("./view"),
-    Receipt  = require("../models/receipt"),
-    template = require("./templates/receipt");
+var View           = require("./view"),
+    Receipt        = require("../models/receipt"),
+    template       = require("./templates/receipt"),
+    templateDetail = require("./templates/receipt-detail");
 
 module.exports = View.extend({
     "tagName": "li",
     "className": "row receipt",
     "template": template,
+    "templateDetail": templateDetail,
 
     "model": Receipt,
 
@@ -783,10 +785,38 @@ module.exports = View.extend({
 
     "events": {
         "click .validate": "validate",
+        "click": "details"
+    },
+
+    "details": function () {
+        var that = this;
+        if (that.$el.find(".details").length) {
+            that.$el.find(".details").remove();
+        } else {
+            this.model.fetch({ 
+                "success": function (detailed) {
+                    var $ul = $("<ul class='details' />"),
+                        $li,
+                        detail,
+                        details,
+                        i;
+                    that.$el.append($ul);
+                    details = detailed.get("details");
+                    for (i = 0; i < details.length; i++) {
+                        detail = details[i];
+                        if (!detail.label) {
+                            detail.label = "";
+                        }
+                        $ul.append(that.templateDetail(details[i]));
+                    }
+                }
+            });
+        }
     },
 
     "validate": function () {
         console.log("validate")
+        return false;
     }
 });
 
@@ -1070,6 +1100,18 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantité" class="form-control"/></div><div class="col-xs-1"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div></div></form><div class="products-list"><ul class="products new"></ul><hr/><div class="row"><div class="form-group col-xs-10 col-xs-offset-2"><input type="text" placeholder="filtrer" class="search form-control"/></div></div><div class="row"><button title="trier par nom" data-sort="name" class="sort btn btn-default col-xs-5 col-xs-offset-2"><span class="glyphicon glyphicon-sort"></span>nom</button><button title="trier par prix" data-sort="price" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>prix</button><button title="trier par quantité" data-sort="quantity" class="sort btn btn-default col-xs-3"> <span class="glyphicon glyphicon-sort"></span>quantité</button></div><ul class="products old list"></ul></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/receipt-detail", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<li class="row"><span class="col-xs-1">' + escape((interp = amount) == null ? '' : interp) + '</span><span class="col-xs-8">' + escape((interp = label) == null ? '' : interp) + '</span><span class="col-xs-3">' + escape((interp = price) == null ? '' : interp) + '</span></li>');
 }
 return buf.join("");
 };
