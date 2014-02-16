@@ -191,6 +191,26 @@ module.exports = Collection.extend({
 
 });
 
+;require.register("models/receipt", function(exports, require, module) {
+var Model = require("./model");
+
+module.exports = Model.extend({
+    "urlRoot": "receipts"
+});
+
+});
+
+;require.register("models/receipts", function(exports, require, module) {
+var Collection = require("./collection"),
+    Receipt    = require("./receipt");
+
+module.exports = Collection.extend({
+    "model": Receipt,
+    "url": "receipts"
+});
+
+});
+
 ;require.register("models/recipe", function(exports, require, module) {
 var Model = require("./model");
 
@@ -388,17 +408,15 @@ module.exports = View.extend({
 
 ;require.register("views/home", function(exports, require, module) {
 var View         = require("./view"),
-    Product      = require("../models/product"),
-    Products     = require("../models/products"),
-    ProductsView = require("./products"),
-    Recipe       = require("../models/recipe"),
-    Recipes      = require("../models/recipes"),
-    ToCook       = require("../models/to_cook"),
-    RecipesView  = require("./recipes"),
-    ToCooksView  = require("./to_cooks"),
-    Cart         = require("../models/cart"),
     Carts        = require("../models/carts"),
     CartsView    = require("./carts"),
+    Products     = require("../models/products"),
+    ProductsView = require("./products"),
+    Receipts     = require("../models/receipts"),
+    ToCook       = require("../models/to_cook"),
+    KitchenView  = require("./kitchen"),
+    Recipes      = require("../models/recipes"),
+    RecipesView  = require("./recipes"),
     template     = require("./templates/home");
 
 module.exports = View.extend({
@@ -437,6 +455,13 @@ module.exports = View.extend({
 
         this.toCook = new ToCook();
         this.toCook.fetch({
+            "error": function (obj, response) {
+                console.log(response.responseText)
+            }
+        });
+
+        this.receipts = new Receipts();
+        this.receipts.fetch({
             "error": function (obj, response) {
                 console.log(response.responseText)
             }
@@ -501,14 +526,15 @@ module.exports = View.extend({
     },
 
     "goKitchen": function () {
-        if (!this.toCookView) {
-            this.toCookView = new ToCooksView({ 
+        if (!this.kitchenView) {
+            this.kitchenView = new KitchenView({ 
                 "el": $("#kitchen")[0],
-                "collection": this.toCook
+                "receipts": this.receipts,
+                "toCook": this.toCook
             });
-            this.toCookView.render();
+            this.kitchenView.render();
         } else {
-            this.toCookView.updateRender(this.swipers["kitchen"]);
+            this.kitchenView.updateRender(this.swipers["kitchen"]);
         }
         this.goPage("kitchen");
 
@@ -535,6 +561,48 @@ module.exports = View.extend({
         return false;
     }
 
+});
+
+});
+
+;require.register("views/kitchen", function(exports, require, module) {
+var View         = require("./view"),
+    Receipts     = require("../models/receipts"),
+    ReceiptsView = require("./receipts"),
+    ToCooksView  = require("./to_cooks"),
+    template     = require("./templates/kitchen");
+
+module.exports = View.extend({
+    "id": "kitchen",
+    "template": template,
+
+    "initialize": function (params) {
+        this.receipts = params.receipts;
+        this.toCook   = params.toCook;
+
+        this.receiptsView = new ReceiptsView({ 
+            "el": $("#receipts")[0],
+            "collection": this.receipts
+        });
+        this.toCooksView = new ToCooksView({ 
+            "el": $("#recipes-to-cook")[0],
+            "collection": this.toCook
+        });
+    },
+
+    "render": function () {
+        this.$el.html(this.template());
+
+        this.receiptsView.render();
+        this.$el.append(this.receiptsView.el);
+        this.toCooksView.render();
+        this.$el.append(this.toCooksView.el);
+    },
+
+    "updateRender": function (swiper) {
+        this.receiptsView.updateRender();
+        this.toCooksView.updateRender();
+    },
 });
 
 });
@@ -683,6 +751,76 @@ module.exports = View.extend({
         var productName = $(evt.target).parents("li").find(".name").text();
         this.searchList.remove("name", $.trim(productName));
     }
+});
+
+});
+
+;require.register("views/receipt", function(exports, require, module) {
+var View     = require("./view"),
+    Receipt  = require("../models/receipt"),
+    template = require("./templates/receipt");
+
+module.exports = View.extend({
+    "tagName": "li",
+    "className": "row receipt",
+    "template": template,
+
+    "model": Receipt,
+
+    "initialize": function () {
+        this.render();
+    },
+
+    "getRenderData": function () { 
+        var attributes = this.model.attributes;
+        attributes.date = new Date(attributes.timestamp).toString("d/M/yyyy");
+        return attributes;
+    },
+
+    "render": function () {
+        this.$el.html(this.template(this.getRenderData()));
+    },
+
+    "events": {
+        "click .validate": "validate",
+    },
+
+    "validate": function () {
+        console.log("validate")
+    }
+});
+
+
+});
+
+;require.register("views/receipts", function(exports, require, module) {
+var View        = require("./view"),
+    Receipt     = require("../models/receipt"),
+    Receipts    = require("../models/receipts"),
+    ReceiptView = require("./receipt"),
+    template    = require("./templates/receipts");
+
+module.exports = View.extend({
+    "collection": Receipts,
+    
+    "template": template,
+
+    "render": function () {
+        this.$el.html(this.template(this.getRenderData()));
+        this.receiptsList = this.$el.find("ul.receipts");
+        this.collection.each(function (receipt){
+            this.add(receipt);
+        }, this);
+    },
+
+    "updateRender": function (swiper) {
+        console.log("this is a prototype, recepts list doesnt update")
+    },
+
+    "add": function (receipt) {
+        var receiptView = new ReceiptView({ "model": receipt });
+        this.receiptsList.prepend(receiptView.el);
+    },
 });
 
 });
@@ -899,6 +1037,18 @@ return buf.join("");
 };
 });
 
+;require.register("views/templates/kitchen", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2><div id="receipts"></div></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
+}
+return buf.join("");
+};
+});
+
 ;require.register("views/templates/product", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
@@ -920,6 +1070,30 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantité" class="form-control"/></div><div class="col-xs-1"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div></div></form><div class="products-list"><ul class="products new"></ul><hr/><div class="row"><div class="form-group col-xs-10 col-xs-offset-2"><input type="text" placeholder="filtrer" class="search form-control"/></div></div><div class="row"><button title="trier par nom" data-sort="name" class="sort btn btn-default col-xs-5 col-xs-offset-2"><span class="glyphicon glyphicon-sort"></span>nom</button><button title="trier par prix" data-sort="price" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>prix</button><button title="trier par quantité" data-sort="quantity" class="sort btn btn-default col-xs-3"> <span class="glyphicon glyphicon-sort"></span>quantité</button></div><ul class="products old list"></ul></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/receipt", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="transaction col-xs-3">' + escape((interp = date) == null ? '' : interp) + '</div><div class="receipt-id col-xs-3">' + escape((interp = receiptId) == null ? '' : interp) + '</div><div class="total col-xs-3">' + escape((interp = total) == null ? '' : interp) + '</div><div title="valider" class="validate col-xs-3"><button class="btn btn-info"><span class="glyphicon glyphicon-check"></span></button></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/receipts", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<ul class="receipts"></ul>');
 }
 return buf.join("");
 };
@@ -991,13 +1165,13 @@ return buf.join("");
 };
 });
 
-;require.register("views/templates/to_cook", function(exports, require, module) {
+;require.register("views/templates/to_cooks", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><ul class="recipes"></ul></div></div></div><div class="navigation right"></div></div>');
+buf.push('<ul class="recipes"></ul>');
 }
 return buf.join("");
 };
@@ -1055,7 +1229,7 @@ var View       = require("./view"),
     Recipe     = require("../models/recipe"),
     ToCook     = require("../models/to_cook"),
     ToCookView = require("./to_cook"),
-    template   = require("./templates/to_cook");
+    template   = require("./templates/to_cooks");
 
 module.exports = View.extend({
     "collection": ToCook,
@@ -1065,6 +1239,8 @@ module.exports = View.extend({
     "render": function () {
         var that = this;
         this.$el.html(this.template(this.getRenderData()));
+
+        this.recipeList = this.$el.find("ul.recipes");
         this.collection.each(function (recipe){
             that.add(recipe);
         });
@@ -1094,8 +1270,9 @@ module.exports = View.extend({
 
     "add": function (recipe) {
         var recipeView = new ToCookView({ "model": recipe }),
-            $recipes = this.$el.find("ul.recipes");
+            $recipes = this.recipesList;
         $recipes.prepend(recipeView.el);
+
         this.height = this.height + recipeView.$el.height();
     },
 });

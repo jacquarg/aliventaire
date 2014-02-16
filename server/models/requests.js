@@ -19,7 +19,11 @@ module.exports = {
         } 
     },
     "receipt": {
-        "all": americano.defaultRequests.all,
+        "all": function(doc) {
+            if (doc.timestamp) {
+                emit(doc.timestamp, doc);
+            }
+        },
         "byReceiptId": function(doc) {
             if (doc.receiptId) {
                 emit(doc.receiptId, doc);

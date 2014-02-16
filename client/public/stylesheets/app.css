@@ -423,6 +423,10 @@ ol {
 #recipes .recipe:hover .delete .btn {
   visibility: visible;
 }
+#kitchen li.recipe {
+  margin: 0;
+  padding: 0;
+}
 #shop .delete {
   margin-right: 0.2em;
   cursor: pointer;

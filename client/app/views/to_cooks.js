@@ -2,7 +2,7 @@ var View       = require("./view"),
     Recipe     = require("../models/recipe"),
     ToCook     = require("../models/to_cook"),
     ToCookView = require("./to_cook"),
-    template   = require("./templates/to_cook");
+    template   = require("./templates/to_cooks");
 
 module.exports = View.extend({
     "collection": ToCook,
@@ -12,6 +12,8 @@ module.exports = View.extend({
     "render": function () {
         var that = this;
         this.$el.html(this.template(this.getRenderData()));
+
+        this.recipeList = this.$el.find("ul.recipes");
         this.collection.each(function (recipe){
             that.add(recipe);
         });
@@ -41,8 +43,9 @@ module.exports = View.extend({
 
     "add": function (recipe) {
         var recipeView = new ToCookView({ "model": recipe }),
-            $recipes = this.$el.find("ul.recipes");
+            $recipes = this.recipesList;
         $recipes.prepend(recipeView.el);
+
         this.height = this.height + recipeView.$el.height();
     },
 });
