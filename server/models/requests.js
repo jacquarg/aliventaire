@@ -6,6 +6,11 @@ var americano = require("americano");
 module.exports = {
     "product": {
         "all": americano.defaultRequests.all,
+        "byName": function(doc) {
+            if (doc.name) {
+                emit(doc.name, doc);
+            }
+        }
     },
     "cart": {
         "all": americano.defaultRequests.all,

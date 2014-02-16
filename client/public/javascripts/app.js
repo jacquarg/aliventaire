@@ -513,14 +513,21 @@ module.exports = View.extend({
     },
 
     "goFridge": function () {
-        if (!this.productsView) {
-            this.productsView = new ProductsView({ 
-                "el": $("#fridge")[0],
-                "collection": this.products
-            });
-        }
-        this.productsView.render();
-        this.goPage("fridge");
+        var that = this;
+
+        this.products.fetch({
+            "success": function () {
+                if (!that.productsView) {
+                    that.productsView = new ProductsView({ 
+                        "el": $("#fridge")[0],
+                        "collection": that.products
+                    });
+                    that.productsView.render();
+                }
+                that.productsView.render();
+                that.goPage("fridge");
+            }
+        });
 
         return false;
     },
@@ -542,15 +549,21 @@ module.exports = View.extend({
     },
 
     "goRecipes": function () {
-        if (!this.recipesView) {
-            this.recipesView = new RecipesView({ 
-                "el": $("#recipes")[0],
-                "collection": this.recipes,
-                "products": this.products
-            });
-        }
-        this.recipesView.render();
-        this.goPage("recipes");
+        var that = this;
+
+        this.products.fetch({
+            "success": function () {
+                if (!that.recipesView) {
+                    that.recipesView = new RecipesView({ 
+                        "el": $("#recipes")[0],
+                        "collection": that.recipes,
+                        "products": that.products
+                    });
+                }
+                that.recipesView.render();
+                that.goPage("recipes");
+            }
+        });
 
         return false;
     },
@@ -757,6 +770,7 @@ module.exports = View.extend({
 
 ;require.register("views/receipt", function(exports, require, module) {
 var View           = require("./view"),
+    Product        = require("../models/product"),
     Receipt        = require("../models/receipt"),
     template       = require("./templates/receipt"),
     templateDetail = require("./templates/receipt-detail");
@@ -814,12 +828,87 @@ module.exports = View.extend({
         }
     },
 
+    "iBarCode": function (bar12) {
+        var even,
+            odd,
+            checksum = "",
+            i;
+
+        if (bar12.lenght === 12) {
+            even = 0 ;
+            odd  = 0 ;
+
+            for (i = 0; i < 6; i++) {
+                even += parseInt(bar12[2 * i + 1]);
+                odd  += parseInt(bar12[2 * i]);
+            }
+            checksum = 10 - (3 * even + odd) % 10 ;
+        }
+
+        return "0" + bar12 + checksum.toString() ;
+    },
+
+    "addProduct": function (label, product) {
+        var iUrl="http://drive.intermarche.com/ressources/images/produit/zoom/",
+            iExt = ".jpg",
+            product;
+
+        product = new Product ({
+            "name": label,
+            "quantity": product.amount,
+            "price": product.price,
+            "image": iUrl + this.iBarCode(product.barcode) + iExt
+        });
+        if ($.trim(label.toLowerCase()) !== "nr") {
+            product.save();
+        }
+    },
+
+    "updateProduct": function (data, detail) {
+        var product = new Product(data);
+        product.set("quantity", product.get("quantity") + detail.amount);
+        product.set("price", detail.price / detail.amount);
+        product.save();
+    },
+
+    "updateProducts": function (details) {
+        // TODO: add a field without special caracters different
+        //       from the full name
+        var that = this,
+            label,
+            detail;
+
+        if (details.length) {
+            detail = details[0];
+            if (detail.label && detail.label) {
+                label = detail.label.replace(/[\/&?%= ]/g, "-");
+                $.ajax({
+                    "dataType": "json",
+                    "url": "products/name/" + label,
+                    "success": function (data) {
+                        if (data.length === 0) {
+                            that.addProduct(label, detail);
+                        } else {
+                            that.updateProduct(data[0], detail);
+                        }
+                        that.updateProducts(details.slice(1));
+                    }
+                });
+            }
+        }
+    },
+
     "validate": function () {
-        console.log("validate")
+        var that = this;
+
+        this.model.fetch({ 
+            "success": function (detailed) {
+                that.updateProducts(detailed.get("details"));
+            }
+        });
         return false;
     }
 });
-
 
 });
 
@@ -848,7 +937,8 @@ module.exports = View.extend({
     },
 
     "add": function (receipt) {
-        var receiptView = new ReceiptView({ "model": receipt });
+        var receiptView = new ReceiptView({ "model": receipt, 
+                                            "products": this.products });
         this.receiptsList.prepend(receiptView.el);
     },
 });
@@ -1086,7 +1176,7 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<div title="supprimer" class="delete col-xs-1"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></div><div class="image col-xs-1"> <img');
-buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
+buf.push(attrs({ 'src':("" + (image) + ""), 'alt':(""), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
 buf.push('/></div><div class="name col-xs-5">' + escape((interp = name) == null ? '' : interp) + '</div><div class="price col-xs-2">' + escape((interp = price) == null ? '' : interp) + '</div><div class="quantity col-xs-3">' + escape((interp = quantity) == null ? '' : interp) + '<span class="actions"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></div>');
 }
 return buf.join("");

@@ -7,4 +7,13 @@ var Product = americano.getModel("Product", {
     "price": Number
 });
 
+Product.byName = function(name, callback) {
+    Product
+        .request("byName", 
+                { "keys": [name] },
+                function(err, instances) {
+                    callback(null, instances);
+                });
+};
+
 module.exports = Product;

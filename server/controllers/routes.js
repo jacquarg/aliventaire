@@ -19,6 +19,9 @@ module.exports = {
         "put": products.update,
         "del": products.del
     },
+    "products/name/:name": {
+        "get": products.byName,
+    },
     "recipes": {
         "get": recipes.all,
         "post": recipes.create

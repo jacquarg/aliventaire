@@ -22,7 +22,8 @@ module.exports = View.extend({
     },
 
     "add": function (receipt) {
-        var receiptView = new ReceiptView({ "model": receipt });
+        var receiptView = new ReceiptView({ "model": receipt, 
+                                            "products": this.products });
         this.receiptsList.prepend(receiptView.el);
     },
 });

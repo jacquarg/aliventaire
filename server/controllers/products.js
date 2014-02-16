@@ -42,6 +42,20 @@ module.exports.read = function(req, res) {
     });
 };
 
+module.exports.byName = function(req, res) {
+    return Product.byName(req.params.name, function (error, product) {
+        if (error || !product) {
+            return res.send({
+                "error": true,
+                "msg": "Product not found"
+            }, 404);
+        } else {
+            res.send(product);
+            return product;
+        }
+    });
+};
+
 module.exports.update = function(req, res) {
     return Product.find(req.body.id, function (error, product) {
         if (error || !product) {

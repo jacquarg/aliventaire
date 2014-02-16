@@ -104,14 +104,21 @@ module.exports = View.extend({
     },
 
     "goFridge": function () {
-        if (!this.productsView) {
-            this.productsView = new ProductsView({ 
-                "el": $("#fridge")[0],
-                "collection": this.products
-            });
-        }
-        this.productsView.render();
-        this.goPage("fridge");
+        var that = this;
+
+        this.products.fetch({
+            "success": function () {
+                if (!that.productsView) {
+                    that.productsView = new ProductsView({ 
+                        "el": $("#fridge")[0],
+                        "collection": that.products
+                    });
+                    that.productsView.render();
+                }
+                that.productsView.render();
+                that.goPage("fridge");
+            }
+        });
 
         return false;
     },
@@ -133,15 +140,21 @@ module.exports = View.extend({
     },
 
     "goRecipes": function () {
-        if (!this.recipesView) {
-            this.recipesView = new RecipesView({ 
-                "el": $("#recipes")[0],
-                "collection": this.recipes,
-                "products": this.products
-            });
-        }
-        this.recipesView.render();
-        this.goPage("recipes");
+        var that = this;
+
+        this.products.fetch({
+            "success": function () {
+                if (!that.recipesView) {
+                    that.recipesView = new RecipesView({ 
+                        "el": $("#recipes")[0],
+                        "collection": that.recipes,
+                        "products": that.products
+                    });
+                }
+                that.recipesView.render();
+                that.goPage("recipes");
+            }
+        });
 
         return false;
     },
