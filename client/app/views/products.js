@@ -45,9 +45,6 @@ module.exports = View.extend({
             }),
             that = this;
 
-        if (!product.get("image")) {
-            product.set("image", "images/product.png");
-        }
         this.collection.create(product, {
             "success": function (product) {
                 that.add(product);

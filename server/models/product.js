@@ -2,6 +2,7 @@ var americano = require("americano");
 
 var Product = americano.getModel("Product", {
     "name": String,
+    "normalizedName": String,
     "image": String,
     "quantity": Number,
     "price": Number

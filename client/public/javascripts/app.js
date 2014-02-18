@@ -175,7 +175,26 @@ module.exports = Backbone.Model.extend({
 var Model = require("./model");
 
 module.exports = Model.extend({
-    "urlRoot": "products"
+    "urlRoot": "products",
+
+    // TODO: allow different places
+    "urlImageRoot": 
+        "http://drive.intermarche.com/ressources/images/produit/zoom/",
+    "noImageUrl": "images/product.png",
+    "urlImageExt": ".jpg", 
+
+    "normalizeName": function (name) {
+        return name.replace(/[\/&?%= ]/g, "-");
+    },
+
+    "initialize": function (params) {
+        if (!params.normalizedName) {
+            this.set("normalizedName", this.normalizeName(params.name));
+        }
+        if (!params.image) {
+            this.set("image", this.noImageUrl);
+        }
+    }
 });
 
 });
@@ -744,9 +763,6 @@ module.exports = View.extend({
             }),
             that = this;
 
-        if (!product.get("image")) {
-            product.set("image", "images/product.png");
-        }
         this.collection.create(product, {
             "success": function (product) {
                 that.add(product);
@@ -848,18 +864,18 @@ module.exports = View.extend({
         return "0" + bar12 + checksum.toString() ;
     },
 
-    "addProduct": function (label, product) {
-        var iUrl="http://drive.intermarche.com/ressources/images/produit/zoom/",
-            iExt = ".jpg",
+    "addProduct": function (product) {
+        var iUrl = Product.prototype.urlImageRoot,
+            iExt = Product.prototype.urlImageExt,
             product;
 
         product = new Product ({
-            "name": label,
+            "name": product.label,
             "quantity": product.amount,
             "price": product.price,
             "image": iUrl + this.iBarCode(product.barcode) + iExt
         });
-        if ($.trim(label.toLowerCase()) !== "nr") {
+        if ($.trim(product.get("name").toLowerCase()) !== "nr") {
             product.save();
         }
     },
@@ -881,13 +897,13 @@ module.exports = View.extend({
         if (details.length) {
             detail = details[0];
             if (detail.label && detail.label) {
-                label = detail.label.replace(/[\/&?%= ]/g, "-");
+                label = Product.prototype.normalizeName(detail.label);
                 $.ajax({
                     "dataType": "json",
                     "url": "products/name/" + label,
                     "success": function (data) {
                         if (data.length === 0) {
-                            that.addProduct(label, detail);
+                            that.addProduct(detail);
                         } else {
                             that.updateProduct(data[0], detail);
                         }

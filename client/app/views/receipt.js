@@ -77,18 +77,18 @@ module.exports = View.extend({
         return "0" + bar12 + checksum.toString() ;
     },
 
-    "addProduct": function (label, product) {
-        var iUrl="http://drive.intermarche.com/ressources/images/produit/zoom/",
-            iExt = ".jpg",
+    "addProduct": function (product) {
+        var iUrl = Product.prototype.urlImageRoot,
+            iExt = Product.prototype.urlImageExt,
             product;
 
         product = new Product ({
-            "name": label,
+            "name": product.label,
             "quantity": product.amount,
             "price": product.price,
             "image": iUrl + this.iBarCode(product.barcode) + iExt
         });
-        if ($.trim(label.toLowerCase()) !== "nr") {
+        if ($.trim(product.get("name").toLowerCase()) !== "nr") {
             product.save();
         }
     },
@@ -110,13 +110,13 @@ module.exports = View.extend({
         if (details.length) {
             detail = details[0];
             if (detail.label && detail.label) {
-                label = detail.label.replace(/[\/&?%= ]/g, "-");
+                label = Product.prototype.normalizeName(detail.label);
                 $.ajax({
                     "dataType": "json",
                     "url": "products/name/" + label,
                     "success": function (data) {
                         if (data.length === 0) {
-                            that.addProduct(label, detail);
+                            that.addProduct(detail);
                         } else {
                             that.updateProduct(data[0], detail);
                         }

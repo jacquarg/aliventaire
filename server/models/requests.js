@@ -7,8 +7,8 @@ module.exports = {
     "product": {
         "all": americano.defaultRequests.all,
         "byName": function(doc) {
-            if (doc.name) {
-                emit(doc.name, doc);
+            if (doc.normalizedName) {
+                emit(doc.normalizedName, doc);
             }
         }
     },
