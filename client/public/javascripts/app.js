@@ -995,7 +995,8 @@ module.exports = View.extend({
 
     "destroy": function () {
         var that = this,
-            $recipesProducts = $("#recipe-products");
+            $recipesProducts = $("#recipe-products"),
+            $recipesTags = $("#recipe-tags");
 
         $("#recipe-image")
             .val(that.$el.find(".image img").attr("src"));
@@ -1008,7 +1009,12 @@ module.exports = View.extend({
 
         $recipesProducts.find("options:selected").prop("selected", false);
         that.$el.find(".recipe-products li").each(function () {
-            $recipesProducts.find("option[value=" + $(this).text() + "]")
+            $recipesProducts.find("option[value='" + $(this).text() + "']")
+                .prop("selected", true);
+        });
+        that.$el.find(".recipe-tags span").each(function () {
+            console.log(this)
+            $recipesTags.find("option[value='" + $.trim($(this).text()) + "']")
                 .prop("selected", true);
         });
         $(".select-picker").selectpicker("refresh");
@@ -1070,6 +1076,7 @@ module.exports = View.extend({
                 "name": $("#recipe-name").val(),
                 "description": $("#recipe-description").val(),
                 "products": $("#recipe-products").val(),
+                "tags": $("#recipe-tags").val(),
                 "image": $("#recipe-image").val(),
                 "toCook": false
             }),
@@ -1255,7 +1262,25 @@ with (locals || {}) {
 var interp;
 buf.push('<div class="image col-xs-3"> <img');
 buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
-buf.push('/></div><div class="col-xs-8"> <div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/><div class="recipe-products">Produits :<ul>');
+buf.push('/></div><div class="col-xs-8"> <div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="recipe-tags"> ');
+// iterate tags
+;(function(){
+  if ('number' == typeof tags.length) {
+    for (var $index = 0, $$l = tags.length; $index < $$l; $index++) {
+      var tag = tags[$index];
+
+buf.push('<span class="tag">' + escape((interp = tag.id) == null ? '' : interp) + ' </span>');
+    }
+  } else {
+    for (var $index in tags) {
+      var tag = tags[$index];
+
+buf.push('<span class="tag">' + escape((interp = tag.id) == null ? '' : interp) + ' </span>');
+   }
+  }
+}).call(this);
+
+buf.push('</div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/><div class="recipe-products">Produits :<ul>');
 // iterate products
 ;(function(){
   if ('number' == typeof products.length) {
@@ -1307,7 +1332,7 @@ buf.push('> \n' + escape((interp = product.attributes.name) == null ? '' : inter
   }
 }).call(this);
 
-buf.push('</select></div><div class="form-group"><input id="recipe-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><ul class="recipes"></ul>');
+buf.push('</select><label for="recipe-products">Catégoriess :</label><select id="recipe-tags" multiple="multiple" class="form-control select-picker"><option value="cheap">pas cher</option><option value="quick">rapide</option><option value="organic">bio</option><option value="light">light</option></select></div><div class="form-group"><input id="recipe-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><ul class="recipes"></ul>');
 }
 return buf.join("");
 };

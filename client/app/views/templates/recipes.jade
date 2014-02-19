@@ -16,6 +16,13 @@ form(role="form")
             - each product in products
                 option(value="#{product.attributes.name}") 
                     | #{product.attributes.name}
+        label(for="recipe-products") Catégoriess :
+        select#recipe-tags(multiple="multiple",
+                           class="form-control select-picker")
+                option(value="cheap") pas cher
+                option(value="quick") rapide
+                option(value="organic") bio
+                option(value="light") light
     .form-group
         input#recipe-image(type="text", 
                            class="form-control",

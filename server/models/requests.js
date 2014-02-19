@@ -19,7 +19,12 @@ module.exports = {
         "all": americano.defaultRequests.all,
         "allToCook": function (doc) {
             if (doc.toCook) {
-                return emit(doc._id, doc);
+                return emit(doc.name, doc);
+            }
+        }, 
+        "byTag": function (doc) {
+            if (doc.tags) {
+                return emit(doc.tags, doc);
             }
         } 
     },

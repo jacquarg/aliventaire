@@ -31,7 +31,8 @@ module.exports = View.extend({
 
     "destroy": function () {
         var that = this,
-            $recipesProducts = $("#recipe-products");
+            $recipesProducts = $("#recipe-products"),
+            $recipesTags = $("#recipe-tags");
 
         $("#recipe-image")
             .val(that.$el.find(".image img").attr("src"));
@@ -44,7 +45,12 @@ module.exports = View.extend({
 
         $recipesProducts.find("options:selected").prop("selected", false);
         that.$el.find(".recipe-products li").each(function () {
-            $recipesProducts.find("option[value=" + $(this).text() + "]")
+            $recipesProducts.find("option[value='" + $(this).text() + "']")
+                .prop("selected", true);
+        });
+        that.$el.find(".recipe-tags span").each(function () {
+            console.log(this)
+            $recipesTags.find("option[value='" + $.trim($(this).text()) + "']")
                 .prop("selected", true);
         });
         $(".select-picker").selectpicker("refresh");
