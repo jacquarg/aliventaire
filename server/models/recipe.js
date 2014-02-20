@@ -13,8 +13,8 @@ Recipe.allToCook = function (params, callback) {
     Recipe.request("allToCook", params, callback);
 };
 
-Recipe.allToCook = function (params, callback) {
-    Recipe.request("byTag", params, callback);
+Recipe.byTag = function (tags, callback) {
+    Recipe.request("byTag", { "keys": [tags] }, callback);
 };
 
 module.exports = Recipe;

@@ -12,23 +12,22 @@ module.exports = View.extend({
         this.receipts = params.receipts;
         this.toCook   = params.toCook;
 
-        this.receiptsView = new ReceiptsView({ 
-            "el": $("#receipts")[0],
-            "collection": this.receipts
-        });
-        this.toCooksView = new ToCooksView({ 
-            "el": $("#recipes-to-cook")[0],
-            "collection": this.toCook
-        });
     },
 
     "render": function () {
         this.$el.html(this.template());
 
+        this.receiptsView = new ReceiptsView({ 
+            "el": $("#receipts")[0],
+            "collection": this.receipts
+        });
         this.receiptsView.render();
-        this.$el.append(this.receiptsView.el);
+
+        this.toCooksView = new ToCooksView({ 
+            "el": $("#recipes-to-cook")[0],
+            "collection": this.toCook
+        });
         this.toCooksView.render();
-        this.$el.append(this.toCooksView.el);
     },
 
     "updateRender": function (swiper) {

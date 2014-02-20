@@ -13,7 +13,7 @@ module.exports = View.extend({
         var that = this;
         this.$el.html(this.template(this.getRenderData()));
 
-        this.recipeList = this.$el.find("ul.recipes");
+        this.recipesList = this.$el.find("ul.recipes");
         this.collection.each(function (recipe){
             that.add(recipe);
         });
@@ -21,9 +21,9 @@ module.exports = View.extend({
 
     "updateRender": function (swiper) {
         var that = this,
-            $recipes = this.$el.find("ul.recipes");
+            $recipes = this.recipesList;
 
-        that.$el.find("ul.recipes").html("");
+        $recipes.html("");
         that.collection.fetch({
             "success": function (collection) {
                 that.collection = collection;

@@ -12,11 +12,11 @@ module.exports = View.extend({
     "templateRecipes": templateRecipes,
 
     "initialize": function (params) {
-        this.recipes = params.recipes.models;
+        this.recipes = params.recipes;
     },
 
     "getRenderData": function () {
-        return { "recipes": this.recipes }
+        return { "recipes": this.recipes.models }
     },
 
     "render": function () {
@@ -43,10 +43,30 @@ module.exports = View.extend({
     "events": {
         "click .recipe": "updateCart",
         "click .order": "order",
+        "click .tag": "selectTag",
+    },
+
+    "selectTag": function (evt) {
+        var $elem = $(evt.currentTarget),
+            selected,
+            that = this;
+        $(".selected").removeClass("selected");
+        $elem.addClass("selected");
+        selected = $(".tag.selected img");
+        selected.each(function () {
+            var tag = $(this).attr("class");
+            that.recipes.fetch({ 
+                "data": { "tags": tag },
+                "success": function (data) {
+                    that.updateRender();
+                }
+            });
+        });
+
     },
 
     "findRecipe": function (recipeName) {
-        return _(this.recipes).find(function (recipe) { 
+        return _(this.recipes.models).find(function (recipe) { 
             return $.trim(recipe.get("name")) == $.trim(recipeName);
         });
     },
@@ -108,9 +128,7 @@ module.exports = View.extend({
         that.collection.create(cart, {
             "success": function (cart) {
                 _(recipesNames).each(function (recipeName) {
-                    console.log(recipeName)
                     var recipe = that.findRecipe(recipeName);
-                    console.log(recipe)
                     recipe.save({ "toCook": true });
                 });
                 that.add(cart);

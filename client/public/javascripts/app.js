@@ -268,7 +268,7 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "cart col-xs-4",
+    "className": "cart col-xs-6",
     "template": template,
 
     "model": Cart,
@@ -316,11 +316,11 @@ module.exports = View.extend({
     "templateRecipes": templateRecipes,
 
     "initialize": function (params) {
-        this.recipes = params.recipes.models;
+        this.recipes = params.recipes;
     },
 
     "getRenderData": function () {
-        return { "recipes": this.recipes }
+        return { "recipes": this.recipes.models }
     },
 
     "render": function () {
@@ -347,10 +347,30 @@ module.exports = View.extend({
     "events": {
         "click .recipe": "updateCart",
         "click .order": "order",
+        "click .tag": "selectTag",
+    },
+
+    "selectTag": function (evt) {
+        var $elem = $(evt.currentTarget),
+            selected,
+            that = this;
+        $(".selected").removeClass("selected");
+        $elem.addClass("selected");
+        selected = $(".tag.selected img");
+        selected.each(function () {
+            var tag = $(this).attr("class");
+            that.recipes.fetch({ 
+                "data": { "tags": tag },
+                "success": function (data) {
+                    that.updateRender();
+                }
+            });
+        });
+
     },
 
     "findRecipe": function (recipeName) {
-        return _(this.recipes).find(function (recipe) { 
+        return _(this.recipes.models).find(function (recipe) { 
             return $.trim(recipe.get("name")) == $.trim(recipeName);
         });
     },
@@ -412,9 +432,7 @@ module.exports = View.extend({
         that.collection.create(cart, {
             "success": function (cart) {
                 _(recipesNames).each(function (recipeName) {
-                    console.log(recipeName)
                     var recipe = that.findRecipe(recipeName);
-                    console.log(recipe)
                     recipe.save({ "toCook": true });
                 });
                 that.add(cart);
@@ -612,23 +630,22 @@ module.exports = View.extend({
         this.receipts = params.receipts;
         this.toCook   = params.toCook;
 
-        this.receiptsView = new ReceiptsView({ 
-            "el": $("#receipts")[0],
-            "collection": this.receipts
-        });
-        this.toCooksView = new ToCooksView({ 
-            "el": $("#recipes-to-cook")[0],
-            "collection": this.toCook
-        });
     },
 
     "render": function () {
         this.$el.html(this.template());
 
+        this.receiptsView = new ReceiptsView({ 
+            "el": $("#receipts")[0],
+            "collection": this.receipts
+        });
         this.receiptsView.render();
-        this.$el.append(this.receiptsView.el);
+
+        this.toCooksView = new ToCooksView({ 
+            "el": $("#recipes-to-cook")[0],
+            "collection": this.toCook
+        });
         this.toCooksView.render();
-        this.$el.append(this.toCooksView.el);
     },
 
     "updateRender": function (swiper) {
@@ -1111,13 +1128,13 @@ buf.push('<span title="supprimer" class="delete"><button class="btn btn-danger g
     for (var $index = 0, $$l = products.length; $index < $$l; $index++) {
       var product = products[$index];
 
-buf.push('<li class="product">' + escape((interp = product.id) == null ? '' : interp) + ' </li>');
+buf.push('<li class="product">+ ' + escape((interp = product.id) == null ? '' : interp) + ' </li>');
     }
   } else {
     for (var $index in products) {
       var product = products[$index];
 
-buf.push('<li class="product">' + escape((interp = product.id) == null ? '' : interp) + ' </li>');
+buf.push('<li class="product">+ ' + escape((interp = product.id) == null ? '' : interp) + ' </li>');
    }
   }
 }).call(this);
@@ -1162,7 +1179,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des catégories</h2></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="orgnanic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };
@@ -1413,7 +1430,7 @@ module.exports = View.extend({
         var that = this;
         this.$el.html(this.template(this.getRenderData()));
 
-        this.recipeList = this.$el.find("ul.recipes");
+        this.recipesList = this.$el.find("ul.recipes");
         this.collection.each(function (recipe){
             that.add(recipe);
         });
@@ -1421,9 +1438,9 @@ module.exports = View.extend({
 
     "updateRender": function (swiper) {
         var that = this,
-            $recipes = this.$el.find("ul.recipes");
+            $recipes = this.recipesList;
 
-        that.$el.find("ul.recipes").html("");
+        $recipes.html("");
         that.collection.fetch({
             "success": function (collection) {
                 that.collection = collection;

@@ -1,17 +1,33 @@
 Recipe = require("../models/recipe");
 
 module.exports.all = function (req, res) {
-    return Recipe.all(function (error, recipes) {
-        if (error) {
-            console.log(error);
-            return res.send({ 
-                "error": true, 
-                "msg": "Server error occured while retrieving data." 
-            });
-        } else {
-            return res.send(recipes);
-        }
-    });
+    if (req.query && req.query.tags) {
+        result = Recipe.byTag(req.query.tags, function (error, recipes) {
+            if (error) {
+                console.log(error);
+                return res.send({ 
+                    "error": true, 
+                    "msg": "Server error occured while retrieving data." 
+                });
+                console.log("hu")
+            } else {
+                return res.send(recipes);
+            }
+        });
+    } else {
+        result = Recipe.all(function (error, recipes) {
+            if (error) {
+                console.log(error);
+                return res.send({ 
+                    "error": true, 
+                    "msg": "Server error occured while retrieving data." 
+                });
+            } else {
+                return res.send(recipes);
+            }
+        });
+    }
+    return result;
 };
 
 module.exports.toCook = function (req, res) {

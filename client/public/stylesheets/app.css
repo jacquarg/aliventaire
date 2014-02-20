@@ -443,6 +443,27 @@ ol {
 #shop .cart:hover .delete .btn {
   display: inline;
 }
+#shop .tag {
+  cursor: pointer;
+  opacity: 0.8;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  filter: alpha(opacity=80);
+}
+#shop .tag:hover {
+  opacity: 0.9;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+  filter: alpha(opacity=90);
+}
+#shop .tag.selected {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+  color: #008000;
+}
+#shop .tag img {
+  width: 64px;
+  height: 64px;
+}
 .alert {
   margin: 0.5em;
 }
