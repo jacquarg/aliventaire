@@ -6,31 +6,36 @@ Application to help users to chose a recipe and buy its products.
 # TODO
 
 * shop page
-  * display history
-  * chose the kind of a recipe
-  * chose the max price of a recipe
-  * display the list of recipe regarding previous choices
-  * change the choices of kind and price
   * chose the number of plates
   * display the missing products
   * buy the products online
 * fridge page
-  * modify the price and the name of a product
   * attach tags to a product
-  * add products from a shop ticket
   * add products from an online shop
-  * sort and filter products
 * kitchen page
-  * update the products quantities with the shop ticket
   * update the products quantities after validating a cooked recipe
 * recipe page
-  * modify a recipe
-  * attach tags to a recipe
   * create recipe from an online site
 
 
 # Changelog
 
+* v0.0.4
+    * shop page
+      * display history
+      * chose the kind of a recipe
+      * chose the max price of a recipe
+      * display the list of recipe regarding previous choices
+      * change the choices of kind and price
+    * fridge page
+      * modify the price and the name of a product
+      * add products from a shop ticket
+      * sort and filter products
+    * kitchen page
+      * update the products quantities with the shop ticket
+    * recipe page
+      * modify a recipe
+      * attach tags to a recipe
 * v0.0.3
     * shop page
       * go back to menu
