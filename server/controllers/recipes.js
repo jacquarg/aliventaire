@@ -1,4 +1,66 @@
-Recipe = require("../models/recipe");
+async  = require("async");
+
+Recipe  = require("../models/recipe");
+Product = require("../models/product");
+
+// TODO: move to model
+function getFull(recipe, callback) {
+    var products = [],
+        product,
+        i,
+        price = 0;
+    for (i = 0; i < recipe.products.items.length; i++) {
+        products.push(recipe.products.items[i].id);
+    }
+
+    Product.byFullName(products, function (err, products) {
+        for (i = 0; i < products.length; i++) {
+            product = products[i];
+            price += product.price;
+        }
+        recipe = JSON.parse(JSON.stringify(recipe));
+        recipe.products = products;
+        recipe.price    = price;
+        callback(null, recipe);
+    });
+}
+
+function filterPrice(recipes, price, callback) {
+
+    // dunno how to do that with couchdb ...
+    if (!price) {
+        async.map(recipes, getFull, function (error, results) {
+            if (error) {
+                callback({ 
+                    "error": true, 
+                    "msg": "Server error occured while retrieving data." 
+                });
+            } else {
+                callback(results);
+            }
+        });
+    } else {
+        async.map(recipes, getFull, function (error, results) {
+            if (error) {
+                callback({ 
+                    "error": true, 
+                    "msg": "Server error occured while retrieving data." 
+                });
+            } else {
+                var filtered = [], 
+                    i,
+                    result;
+                for (i = 0; i < results.length; i++) {
+                    result = results[i];
+                    if (result.price <= price) {
+                        filtered.push(result);
+                    }
+                }
+                callback(filtered);
+            }
+        });
+    }
+}
 
 module.exports.all = function (req, res) {
     if (req.query && req.query.tags) {
@@ -9,9 +71,10 @@ module.exports.all = function (req, res) {
                     "error": true, 
                     "msg": "Server error occured while retrieving data." 
                 });
-                console.log("hu")
             } else {
-                return res.send(recipes);
+                return filterPrice(recipes, req.query.price, function (result) {
+                    res.send(result);
+                });
             }
         });
     } else {
@@ -23,7 +86,9 @@ module.exports.all = function (req, res) {
                     "msg": "Server error occured while retrieving data." 
                 });
             } else {
-                return res.send(recipes);
+                return filterPrice(recipes, req.query.price, function (result) {
+                    res.send(result);
+                });
             }
         });
     }

@@ -17,4 +17,13 @@ Product.byName = function(name, callback) {
                 });
 };
 
+Product.byFullName = function(name, callback) {
+    Product
+        .request("byFullName", 
+                { "keys": name },
+                function(err, instances) {
+                    callback(null, instances);
+                });
+};
+
 module.exports = Product;

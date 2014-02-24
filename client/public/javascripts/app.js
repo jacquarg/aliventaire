@@ -348,6 +348,19 @@ module.exports = View.extend({
         "click .recipe": "updateCart",
         "click .order": "order",
         "click .tag": "selectTag",
+        "submit .price": "selectPrice",
+    },
+
+    "query": function () {
+        var that = this;
+        
+        this.recipes.fetch({ 
+            "data": { "tags": this.tags,
+                      "price": this.price },
+            "success": function (data) {
+                that.updateRender();
+            }
+        });
     },
 
     "selectTag": function (evt) {
@@ -356,17 +369,20 @@ module.exports = View.extend({
             that = this;
         $(".selected").removeClass("selected");
         $elem.addClass("selected");
-        selected = $(".tag.selected img");
+        selected  = $(".tag.selected img");
+        this.tags = [];
         selected.each(function () {
             var tag = $(this).attr("class");
-            that.recipes.fetch({ 
-                "data": { "tags": tag },
-                "success": function (data) {
-                    that.updateRender();
-                }
-            });
+            that.tags.push(tag);
         });
+        this.query();
+    },
 
+    "selectPrice": function () {
+        this.price = $("#cart-price").val();
+        this.query();
+
+        return false;
     },
 
     "findRecipe": function (recipeName) {
@@ -381,16 +397,16 @@ module.exports = View.extend({
         // TODO: quantity of products and same product in diff recipe
         _(products).each(function (product) {
             var productContainer = $("<div class='product' />");
-            productContainer.html(product.id);
-            this.checkedProducts[product.id] = productContainer;
+            productContainer.html(product.name);
+            this.checkedProducts[product.name] = productContainer;
             $("#shop .products").append(productContainer);
         }, this);
     },
 
     "removeProductsFromCart": function (products) {
         _(products).each(function (product) {
-            $(this.checkedProducts[product.id]).remove();
-            delete this.checkedProducts[product.id];
+            $(this.checkedProducts[product.name]).remove();
+            delete this.checkedProducts[product.name];
         }, this);
     },
 
@@ -438,7 +454,8 @@ module.exports = View.extend({
                 that.add(cart);
             }
         });
-    }
+    },
+
 });
 
 });
@@ -1179,7 +1196,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="orgnanic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="orgnanic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" name="price" class="form-control"/></div></form></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };
@@ -1304,13 +1321,13 @@ buf.push('</div><div class="description">' + ((interp = description) == null ? '
     for (var $index = 0, $$l = products.length; $index < $$l; $index++) {
       var product = products[$index];
 
-buf.push('<li>' + escape((interp = product.id) == null ? '' : interp) + '</li>');
+buf.push('<li>' + escape((interp = product.name) == null ? '' : interp) + '</li>');
     }
   } else {
     for (var $index in products) {
       var product = products[$index];
 
-buf.push('<li>' + escape((interp = product.id) == null ? '' : interp) + '</li>');
+buf.push('<li>' + escape((interp = product.name) == null ? '' : interp) + '</li>');
    }
   }
 }).call(this);

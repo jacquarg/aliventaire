@@ -22,6 +22,12 @@
                             img.light(alt="light")
         .swiper-slide 
             h2 Choix du prix
+            form.price.row
+                .form-group.col-xs-offset-4.col-xs-4
+                    input#cart-price(class="form-control", 
+                                     placeholder="Prix",
+                                     required="required",
+                                     name="price")
         .swiper-slide 
             h2 Choix de la recette
             .carts-recipes

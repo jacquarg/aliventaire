@@ -6,9 +6,15 @@ var americano = require("americano");
 module.exports = {
     "product": {
         "all": americano.defaultRequests.all,
+        // TODO: rename
         "byName": function(doc) {
             if (doc.normalizedName) {
                 emit(doc.normalizedName, doc);
+            }
+        },
+        "byFullName": function(doc) {
+            if (doc.name) {
+                emit(doc.name, doc);
             }
         }
     },
@@ -26,7 +32,7 @@ module.exports = {
             for (i in doc.tags) {
                 emit(doc.tags[i].id, doc);
             }
-        } 
+        }
     },
     "receipt": {
         "all": function(doc) {

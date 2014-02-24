@@ -14,7 +14,7 @@ Recipe.allToCook = function (params, callback) {
 };
 
 Recipe.byTag = function (tags, callback) {
-    Recipe.request("byTag", { "keys": [tags] }, callback);
+    Recipe.request("byTag", { "keys": tags }, callback);
 };
 
 module.exports = Recipe;

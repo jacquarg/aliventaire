@@ -44,6 +44,19 @@ module.exports = View.extend({
         "click .recipe": "updateCart",
         "click .order": "order",
         "click .tag": "selectTag",
+        "submit .price": "selectPrice",
+    },
+
+    "query": function () {
+        var that = this;
+        
+        this.recipes.fetch({ 
+            "data": { "tags": this.tags,
+                      "price": this.price },
+            "success": function (data) {
+                that.updateRender();
+            }
+        });
     },
 
     "selectTag": function (evt) {
@@ -52,17 +65,20 @@ module.exports = View.extend({
             that = this;
         $(".selected").removeClass("selected");
         $elem.addClass("selected");
-        selected = $(".tag.selected img");
+        selected  = $(".tag.selected img");
+        this.tags = [];
         selected.each(function () {
             var tag = $(this).attr("class");
-            that.recipes.fetch({ 
-                "data": { "tags": tag },
-                "success": function (data) {
-                    that.updateRender();
-                }
-            });
+            that.tags.push(tag);
         });
+        this.query();
+    },
 
+    "selectPrice": function () {
+        this.price = $("#cart-price").val();
+        this.query();
+
+        return false;
     },
 
     "findRecipe": function (recipeName) {
@@ -77,16 +93,16 @@ module.exports = View.extend({
         // TODO: quantity of products and same product in diff recipe
         _(products).each(function (product) {
             var productContainer = $("<div class='product' />");
-            productContainer.html(product.id);
-            this.checkedProducts[product.id] = productContainer;
+            productContainer.html(product.name);
+            this.checkedProducts[product.name] = productContainer;
             $("#shop .products").append(productContainer);
         }, this);
     },
 
     "removeProductsFromCart": function (products) {
         _(products).each(function (product) {
-            $(this.checkedProducts[product.id]).remove();
-            delete this.checkedProducts[product.id];
+            $(this.checkedProducts[product.name]).remove();
+            delete this.checkedProducts[product.name];
         }, this);
     },
 
@@ -134,5 +150,6 @@ module.exports = View.extend({
                 that.add(cart);
             }
         });
-    }
+    },
+
 });
