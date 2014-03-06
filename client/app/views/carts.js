@@ -19,20 +19,85 @@ module.exports = View.extend({
         return { "recipes": this.recipes.models }
     },
 
+    "R": 200,
+    "RDecrement": 25,
+    "RTotal": 50,
+
+    "drawMarks": function (R, total) {
+        var out = this.r.set(),
+            marksAttr = { "fill": "#aaa", "stroke": "none"};
+
+        for (var value = 0; value < total; value++) {
+            var alpha = 360 / total * value,
+                    a = (90 - alpha) * Math.PI / 180,
+                    x = 300 + R * Math.cos(a),
+                    y = 300 - R * Math.sin(a);
+            out.push(this.r.circle(x, y, 1).attr(marksAttr));
+        }
+        return out;
+    },
+
     "render": function () {
-        var data = this.getRenderData();
+        var data = this.getRenderData(),
+            R = this.R;
 
         this.$el.html(this.template(data));
         this.collection.each(function (cart){
             this.add(cart);
         }, this);
+
+        this.r = Raphael("holder", 600, 600);
+        this.r.customAttributes.arc = function (value, total, R, name) {
+            var alpha = 360 / total * value,
+                a = (90 - alpha) * Math.PI / 180,
+                x = 300 + R * Math.cos(a),
+                y = 300 - R * Math.sin(a),
+                color = "hsb(".concat(Math.round(R) / 200, ",", 
+                             value / total, ", .75)"),
+                path;
+            if (total == value) {
+                path = [["M", 300, 300 - R], 
+                        ["A", R, R, 0, 1, 1, 299.99, 300 - R]]; 
+            } else {
+                path = [["M", 300, 300 - R], 
+                        ["A", R, R, 0, +(alpha > 180), 1, x, y]];
+            }
+            return { "path": path, "stroke": color, "title": name };
+        };
+
+        for (var i = 0; i < 6; i++) {
+            this.drawMarks(R, this.RTotal);
+            R -= this.RDecrement;
+        }
         this.updateRender(data);
     },
 
+    "updateValue": function (value, R, total, name) {
+        var hand,
+            param = { "stroke": "#fff", "stroke-width": 20 };
+        hand = this.r.path().attr(param).attr({ "arc": [0, total, R, name] });
+        hand.animate({ "arc": [value, total, R, name] }, 750, "elastic");
+    },
+
     "updateRender": function (data) {
-        var data = data || this.getRenderData();
+        var data  = data || this.getRenderData(),
+            total = this.RTotal,
+            R     = this.R;
         // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
+
+
+        this.updateValue(30, R, total, "consomation de viande");
+        R -= this.RDecrement;
+        this.updateValue(10, R, total, "consomation de poisson");
+        R -= this.RDecrement;
+        this.updateValue(42, R, total, "consomation de fruits");
+        R -= this.RDecrement;
+        this.updateValue(15, R, total, "consomation de légumes");
+        R -= this.RDecrement;
+        this.updateValue(47, R, total, "consomation de sucreries");
+        R -= this.RDecrement;
+        this.updateValue(12, R, total, "consomation de laitages");
     },
 
     "add": function (cart) {

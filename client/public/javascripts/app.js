@@ -323,20 +323,85 @@ module.exports = View.extend({
         return { "recipes": this.recipes.models }
     },
 
+    "R": 200,
+    "RDecrement": 25,
+    "RTotal": 50,
+
+    "drawMarks": function (R, total) {
+        var out = this.r.set(),
+            marksAttr = { "fill": "#aaa", "stroke": "none"};
+
+        for (var value = 0; value < total; value++) {
+            var alpha = 360 / total * value,
+                    a = (90 - alpha) * Math.PI / 180,
+                    x = 300 + R * Math.cos(a),
+                    y = 300 - R * Math.sin(a);
+            out.push(this.r.circle(x, y, 1).attr(marksAttr));
+        }
+        return out;
+    },
+
     "render": function () {
-        var data = this.getRenderData();
+        var data = this.getRenderData(),
+            R = this.R;
 
         this.$el.html(this.template(data));
         this.collection.each(function (cart){
             this.add(cart);
         }, this);
+
+        this.r = Raphael("holder", 600, 600);
+        this.r.customAttributes.arc = function (value, total, R, name) {
+            var alpha = 360 / total * value,
+                a = (90 - alpha) * Math.PI / 180,
+                x = 300 + R * Math.cos(a),
+                y = 300 - R * Math.sin(a),
+                color = "hsb(".concat(Math.round(R) / 200, ",", 
+                             value / total, ", .75)"),
+                path;
+            if (total == value) {
+                path = [["M", 300, 300 - R], 
+                        ["A", R, R, 0, 1, 1, 299.99, 300 - R]]; 
+            } else {
+                path = [["M", 300, 300 - R], 
+                        ["A", R, R, 0, +(alpha > 180), 1, x, y]];
+            }
+            return { "path": path, "stroke": color, "title": name };
+        };
+
+        for (var i = 0; i < 6; i++) {
+            this.drawMarks(R, this.RTotal);
+            R -= this.RDecrement;
+        }
         this.updateRender(data);
     },
 
+    "updateValue": function (value, R, total, name) {
+        var hand,
+            param = { "stroke": "#fff", "stroke-width": 20 };
+        hand = this.r.path().attr(param).attr({ "arc": [0, total, R, name] });
+        hand.animate({ "arc": [value, total, R, name] }, 750, "elastic");
+    },
+
     "updateRender": function (data) {
-        var data = data || this.getRenderData();
+        var data  = data || this.getRenderData(),
+            total = this.RTotal,
+            R     = this.R;
         // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
+
+
+        this.updateValue(30, R, total, "consomation de viande");
+        R -= this.RDecrement;
+        this.updateValue(10, R, total, "consomation de poisson");
+        R -= this.RDecrement;
+        this.updateValue(42, R, total, "consomation de fruits");
+        R -= this.RDecrement;
+        this.updateValue(15, R, total, "consomation de légumes");
+        R -= this.RDecrement;
+        this.updateValue(47, R, total, "consomation de sucreries");
+        R -= this.RDecrement;
+        this.updateValue(12, R, total, "consomation de laitages");
     },
 
     "add": function (cart) {
@@ -1196,7 +1261,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="orgnanic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" name="price" class="form-control"/></div></form></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="orgnanic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" name="price" class="form-control"/></div></form></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };

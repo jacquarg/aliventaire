@@ -29,6 +29,8 @@ exports.config =
           'vendor/javascripts/bootstrap-select.min.js',
           'vendor/javascripts/idangerous.swiper.min.js',
           'vendor/javascripts/list.js',
+          'vendor/javascripts/date.js',
+          'vendor/javascripts/raphael-2.1.2.min.js',
         ]
 
     stylesheets:

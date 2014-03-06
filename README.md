@@ -5,7 +5,10 @@ Application to help users to chose a recipe and buy its products.
 
 # TODO
 
+* general
+  * add inline help
 * shop page
+  * display history
   * chose the number of plates
   * display the missing products
   * buy the products online
@@ -22,7 +25,6 @@ Application to help users to chose a recipe and buy its products.
 
 * v0.0.4
     * shop page
-      * display history
       * chose the kind of a recipe
       * chose the max price of a recipe
       * display the list of recipe regarding previous choices
