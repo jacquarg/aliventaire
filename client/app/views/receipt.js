@@ -1,5 +1,6 @@
 var View           = require("./view"),
     Product        = require("../models/product"),
+    Products       = require("../models/products"),
     Receipt        = require("../models/receipt"),
     template       = require("./templates/receipt"),
     templateDetail = require("./templates/receipt-detail");
@@ -28,10 +29,10 @@ module.exports = View.extend({
 
     "events": {
         "click .validate": "validate",
-        "click": "details"
+        "click": "displayDetails"
     },
 
-    "details": function () {
+    "displayDetails": function () {
         var that = this;
 
         if (that.$el.find(".details").length) {
@@ -58,77 +59,6 @@ module.exports = View.extend({
         }
     },
 
-    "iBarCode": function (bar12) {
-        var even,
-            odd,
-            checksum = "",
-            i;
-
-        if (bar12.lenght === 12) {
-            even = 0 ;
-            odd  = 0 ;
-
-            for (i = 0; i < 6; i++) {
-                even += parseInt(bar12[2 * i + 1]);
-                odd  += parseInt(bar12[2 * i]);
-            }
-            checksum = 10 - (3 * even + odd) % 10 ;
-        }
-
-        return "0" + bar12 + checksum.toString() ;
-    },
-
-    "addProduct": function (product) {
-        var iUrl = Product.prototype.urlImageRoot,
-            iExt = Product.prototype.urlImageExt,
-            product;
-
-        product = new Product ({
-            "name": product.label,
-            "quantity": product.amount,
-            "price": product.price,
-            "image": iUrl + this.iBarCode(product.barcode) + iExt
-        });
-        if ($.trim(product.get("name").toLowerCase()) !== "nr") {
-            product.save();
-        }
-    },
-
-    "updateProduct": function (data, detail) {
-        var product = new Product(data);
-        product.set("quantity", product.get("quantity") + detail.amount);
-        product.set("price", detail.price / detail.amount);
-        product.save();
-    },
-
-    "updateProducts": function (details, callback) {
-        // TODO: add a field without special caracters different
-        //       from the full name
-        var that = this,
-            label,
-            detail;
-
-        if (details.length) {
-            detail = details[0];
-            if (detail.label && detail.label) {
-                label = Product.prototype.normalizeName(detail.label);
-                $.ajax({
-                    "dataType": "json",
-                    "url": "products/name/" + label,
-                    "success": function (data) {
-                        if (data.length === 0) {
-                            that.addProduct(detail);
-                            callback.call();
-                        } else {
-                            that.updateProduct(data[0], detail);
-                        }
-                        that.updateProducts(details.slice(1), callback);
-                    }
-                });
-            }
-        }
-    },
-
     "validate": function (evt) {
         var that    = this,
             $target = $(evt.target);
@@ -137,7 +67,8 @@ module.exports = View.extend({
         $target.addClass("btn-warning");
         this.model.fetch({ 
             "success": function (detailed) {
-                that.updateProducts(detailed.get("details"), function () {
+                Products.prototype.addProducts(detailed.get("details"), 
+                                               function () {
                     $target.removeClass("btn-warning");
                     $target.addClass("btn-success");
                 });

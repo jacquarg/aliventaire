@@ -194,7 +194,28 @@ module.exports = Model.extend({
         if (!params.image) {
             this.set("image", this.noImageUrl);
         }
+    },
+
+    "iBarCode": function (bar12) {
+        var even,
+            odd,
+            checksum = "",
+            i;
+
+        if (bar12.lenght === 12) {
+            even = 0 ;
+            odd  = 0 ;
+
+            for (i = 0; i < 6; i++) {
+                even += parseInt(bar12[2 * i + 1]);
+                odd  += parseInt(bar12[2 * i]);
+            }
+            checksum = 10 - (3 * even + odd) % 10 ;
+        }
+
+        return "0" + bar12 + checksum.toString() ;
     }
+
 });
 
 });
@@ -205,7 +226,80 @@ var Collection = require("./collection"),
 
 module.exports = Collection.extend({
     "model": Product,
-    "url": "products"
+    "url": "products",
+
+    "addProduct": function (product) {
+        var iUrl = Product.prototype.urlImageRoot,
+            iExt = Product.prototype.urlImageExt,
+            product;
+
+        product = new Product ({
+            "name": product.label,
+            "quantity": product.amount,
+            "price": product.price,
+            "image": iUrl + Product.prototype.iBarCode(product.barcode) + iExt
+        });
+        if ($.trim(product.get("name").toLowerCase()) !== "nr") {
+            product.save();
+        }
+    },
+
+    "updateProduct": function (data, detail) {
+        var product = new Product(data);
+        if (detail.amount) {
+            product.set("quantity", product.get("quantity") + detail.amount);
+            if (detail.price) {
+                product.set("price", detail.price / detail.amount);
+            }
+        }
+        product.save();
+    },
+
+    "updateProducts": function (details, callback, update) {
+        // TODO: add a field without special caracters different
+        //       from the full name
+        var that = this,
+            label,
+            detail;
+
+        if (details.length) {
+            detail = details[0];
+            if (detail.label && detail.label) {
+                label = Product.prototype.normalizeName(detail.label);
+                $.ajax({
+                    "dataType": "json",
+                    "url": "products/name/" + label,
+                    "success": function (data) {
+                        update.apply(this, [data, detail])
+                        that.updateProducts(details.slice(1), callback, update);
+                    }
+                });
+            }
+        } else {
+            callback.call();
+        }
+    },
+
+    "addProducts": function (details, callback) {
+        var that = this;
+        this.updateProducts(details, callback, function (data, detail) {
+            if (data.length === 0) {
+                that.addProduct(detail);
+            } else {
+                that.updateProduct(data[0], detail);
+            }
+        });
+    },
+
+    "removeProducts": function (details, callback) {
+        var that = this;
+        this.updateProducts(details, callback, function (data, detail) {
+            if (data.length > 0) {
+                that.updateProduct(data[0], detail);
+            }
+        });
+    }
+
 });
 
 });
@@ -886,6 +980,7 @@ module.exports = View.extend({
 ;require.register("views/receipt", function(exports, require, module) {
 var View           = require("./view"),
     Product        = require("../models/product"),
+    Products       = require("../models/products"),
     Receipt        = require("../models/receipt"),
     template       = require("./templates/receipt"),
     templateDetail = require("./templates/receipt-detail");
@@ -914,10 +1009,10 @@ module.exports = View.extend({
 
     "events": {
         "click .validate": "validate",
-        "click": "details"
+        "click": "displayDetails"
     },
 
-    "details": function () {
+    "displayDetails": function () {
         var that = this;
 
         if (that.$el.find(".details").length) {
@@ -944,77 +1039,6 @@ module.exports = View.extend({
         }
     },
 
-    "iBarCode": function (bar12) {
-        var even,
-            odd,
-            checksum = "",
-            i;
-
-        if (bar12.lenght === 12) {
-            even = 0 ;
-            odd  = 0 ;
-
-            for (i = 0; i < 6; i++) {
-                even += parseInt(bar12[2 * i + 1]);
-                odd  += parseInt(bar12[2 * i]);
-            }
-            checksum = 10 - (3 * even + odd) % 10 ;
-        }
-
-        return "0" + bar12 + checksum.toString() ;
-    },
-
-    "addProduct": function (product) {
-        var iUrl = Product.prototype.urlImageRoot,
-            iExt = Product.prototype.urlImageExt,
-            product;
-
-        product = new Product ({
-            "name": product.label,
-            "quantity": product.amount,
-            "price": product.price,
-            "image": iUrl + this.iBarCode(product.barcode) + iExt
-        });
-        if ($.trim(product.get("name").toLowerCase()) !== "nr") {
-            product.save();
-        }
-    },
-
-    "updateProduct": function (data, detail) {
-        var product = new Product(data);
-        product.set("quantity", product.get("quantity") + detail.amount);
-        product.set("price", detail.price / detail.amount);
-        product.save();
-    },
-
-    "updateProducts": function (details, callback) {
-        // TODO: add a field without special caracters different
-        //       from the full name
-        var that = this,
-            label,
-            detail;
-
-        if (details.length) {
-            detail = details[0];
-            if (detail.label && detail.label) {
-                label = Product.prototype.normalizeName(detail.label);
-                $.ajax({
-                    "dataType": "json",
-                    "url": "products/name/" + label,
-                    "success": function (data) {
-                        if (data.length === 0) {
-                            that.addProduct(detail);
-                            callback.call();
-                        } else {
-                            that.updateProduct(data[0], detail);
-                        }
-                        that.updateProducts(details.slice(1), callback);
-                    }
-                });
-            }
-        }
-    },
-
     "validate": function (evt) {
         var that    = this,
             $target = $(evt.target);
@@ -1023,7 +1047,8 @@ module.exports = View.extend({
         $target.addClass("btn-warning");
         this.model.fetch({ 
             "success": function (detailed) {
-                that.updateProducts(detailed.get("details"), function () {
+                Products.prototype.addProducts(detailed.get("details"), 
+                                               function () {
                     $target.removeClass("btn-warning");
                     $target.addClass("btn-success");
                 });
@@ -1297,7 +1322,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2><h3>valider les tickets de caisse pour mettre à jour les produits du frigo !</h3><div id="receipts"></div></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
+buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2><h3>Validez les tickets de caisse pour mettre les produits dans le frigo !</h3><div id="receipts"></div></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><h3>Validez les recettes à cuisiner pour enlever les produits du frigo !</h3><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
 }
 return buf.join("");
 };
@@ -1464,6 +1489,8 @@ return buf.join("");
 ;require.register("views/to_cook", function(exports, require, module) {
 var View     = require("./view"),
     Recipe   = require("../models/recipe"),
+    Product  = require("../models/product"),
+    Products = require("../models/products"),
     template = require("./templates/recipe");
 
 module.exports = View.extend({
@@ -1494,17 +1521,25 @@ module.exports = View.extend({
     },
 
     "destroy": function () {
-        var that = this;
+        var that = this,
+            i,
+            product,
+            products = this.model.get("products"),
+            details = [];
 
-        this.model.save({ "toCook": false }, {
-            "success": function () {
-                that.remove();
-            }
+        for (var i = 0; i < products.length; i++) {
+            product = products[i];
+            details.push({ "label": product.name, "amount": -1 })
+        }
+        Products.prototype.removeProducts(details, function () {
+            that.model.save({ "toCook": false }, {
+                "success": function () {
+                    that.remove();
+                }
+            });
         });
     }
-
 });
-
 
 });
 

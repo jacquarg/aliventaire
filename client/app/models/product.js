@@ -20,5 +20,26 @@ module.exports = Model.extend({
         if (!params.image) {
             this.set("image", this.noImageUrl);
         }
+    },
+
+    "iBarCode": function (bar12) {
+        var even,
+            odd,
+            checksum = "",
+            i;
+
+        if (bar12.lenght === 12) {
+            even = 0 ;
+            odd  = 0 ;
+
+            for (i = 0; i < 6; i++) {
+                even += parseInt(bar12[2 * i + 1]);
+                odd  += parseInt(bar12[2 * i]);
+            }
+            checksum = 10 - (3 * even + odd) % 10 ;
+        }
+
+        return "0" + bar12 + checksum.toString() ;
     }
+
 });

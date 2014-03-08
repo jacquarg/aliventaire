@@ -1,5 +1,7 @@
 var View     = require("./view"),
     Recipe   = require("../models/recipe"),
+    Product  = require("../models/product"),
+    Products = require("../models/products"),
     template = require("./templates/recipe");
 
 module.exports = View.extend({
@@ -30,14 +32,22 @@ module.exports = View.extend({
     },
 
     "destroy": function () {
-        var that = this;
+        var that = this,
+            i,
+            product,
+            products = this.model.get("products"),
+            details = [];
 
-        this.model.save({ "toCook": false }, {
-            "success": function () {
-                that.remove();
-            }
+        for (var i = 0; i < products.length; i++) {
+            product = products[i];
+            details.push({ "label": product.name, "amount": -1 })
+        }
+        Products.prototype.removeProducts(details, function () {
+            that.model.save({ "toCook": false }, {
+                "success": function () {
+                    that.remove();
+                }
+            });
         });
     }
-
 });
-
