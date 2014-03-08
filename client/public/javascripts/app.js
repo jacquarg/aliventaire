@@ -919,6 +919,7 @@ module.exports = View.extend({
 
     "details": function () {
         var that = this;
+
         if (that.$el.find(".details").length) {
             that.$el.find(".details").remove();
         } else {
@@ -986,7 +987,7 @@ module.exports = View.extend({
         product.save();
     },
 
-    "updateProducts": function (details) {
+    "updateProducts": function (details, callback) {
         // TODO: add a field without special caracters different
         //       from the full name
         var that = this,
@@ -1003,22 +1004,33 @@ module.exports = View.extend({
                     "success": function (data) {
                         if (data.length === 0) {
                             that.addProduct(detail);
+                            callback.call();
                         } else {
                             that.updateProduct(data[0], detail);
                         }
-                        that.updateProducts(details.slice(1));
+                        that.updateProducts(details.slice(1), callback);
                     }
                 });
             }
         }
     },
 
-    "validate": function () {
-        var that = this;
+    "validate": function (evt) {
+        var that    = this,
+            $target = $(evt.target);
 
+        $target.removeClass("btn-info");
+        $target.addClass("btn-warning");
         this.model.fetch({ 
             "success": function (detailed) {
-                that.updateProducts(detailed.get("details"));
+                that.updateProducts(detailed.get("details"), function () {
+                    $target.removeClass("btn-warning");
+                    $target.addClass("btn-success");
+                });
+            },
+            "error": function (data) {
+                $target.removeClass("btn-warning");
+                $target.addClass("btn-error");
             }
         });
         return false;
@@ -1285,7 +1297,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2><div id="receipts"></div></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
+buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2><h3>valider les tickets de caisse pour mettre à jour les produits du frigo !</h3><div id="receipts"></div></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
 }
 return buf.join("");
 };
@@ -1335,7 +1347,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="transaction col-xs-3">' + escape((interp = date) == null ? '' : interp) + '</div><div class="receipt-id col-xs-3">' + escape((interp = receiptId) == null ? '' : interp) + '</div><div class="total col-xs-3">' + escape((interp = total) == null ? '' : interp) + '</div><div title="valider" class="validate col-xs-3"><button class="btn btn-info"><span class="glyphicon glyphicon-check"></span></button></div>');
+buf.push('<div class="transaction col-xs-3">' + escape((interp = date) == null ? '' : interp) + '</div><div title="afficher le détail du ticket de caisse" class="receipt-id col-xs-3">' + escape((interp = receiptId) == null ? '' : interp) + '</div><div class="total col-xs-3">' + escape((interp = total) == null ? '' : interp) + '</div><div title="valider" class="validate col-xs-3"><button class="btn btn-info"><span class="glyphicon glyphicon-check"></span></button></div>');
 }
 return buf.join("");
 };

@@ -33,6 +33,7 @@ module.exports = View.extend({
 
     "details": function () {
         var that = this;
+
         if (that.$el.find(".details").length) {
             that.$el.find(".details").remove();
         } else {
@@ -100,7 +101,7 @@ module.exports = View.extend({
         product.save();
     },
 
-    "updateProducts": function (details) {
+    "updateProducts": function (details, callback) {
         // TODO: add a field without special caracters different
         //       from the full name
         var that = this,
@@ -117,22 +118,33 @@ module.exports = View.extend({
                     "success": function (data) {
                         if (data.length === 0) {
                             that.addProduct(detail);
+                            callback.call();
                         } else {
                             that.updateProduct(data[0], detail);
                         }
-                        that.updateProducts(details.slice(1));
+                        that.updateProducts(details.slice(1), callback);
                     }
                 });
             }
         }
     },
 
-    "validate": function () {
-        var that = this;
+    "validate": function (evt) {
+        var that    = this,
+            $target = $(evt.target);
 
+        $target.removeClass("btn-info");
+        $target.addClass("btn-warning");
         this.model.fetch({ 
             "success": function (detailed) {
-                that.updateProducts(detailed.get("details"));
+                that.updateProducts(detailed.get("details"), function () {
+                    $target.removeClass("btn-warning");
+                    $target.addClass("btn-success");
+                });
+            },
+            "error": function (data) {
+                $target.removeClass("btn-warning");
+                $target.addClass("btn-error");
             }
         });
         return false;
