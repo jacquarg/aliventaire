@@ -608,7 +608,7 @@ module.exports = View.extend({
             "success": function (cart) {
                 _(recipesNames).each(function (recipeName) {
                     var recipe = that.findRecipe(recipeName);
-                    recipe.save({ "toCook": true });
+                    recipe.save({ "toCook": recipe.get("toCook") + 1 });
                 });
                 that.add(cart);
             }
@@ -1532,9 +1532,14 @@ module.exports = View.extend({
             details.push({ "label": product.name, "amount": -1 })
         }
         Products.prototype.removeProducts(details, function () {
-            that.model.save({ "toCook": false }, {
-                "success": function () {
-                    that.remove();
+            console.log(that.model)
+            // TODO: increment and decrement toCook in a model function
+            //       to prevent < 0
+            that.model.save({ "toCook": that.model.get("toCook") - 1 }, {
+                "success": function (data) {
+                    if (!data.attributes.toCook) {
+                        that.remove();
+                    }
                 }
             });
         });

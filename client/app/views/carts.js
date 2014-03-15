@@ -210,7 +210,7 @@ module.exports = View.extend({
             "success": function (cart) {
                 _(recipesNames).each(function (recipeName) {
                     var recipe = that.findRecipe(recipeName);
-                    recipe.save({ "toCook": true });
+                    recipe.save({ "toCook": recipe.get("toCook") + 1 });
                 });
                 that.add(cart);
             }
