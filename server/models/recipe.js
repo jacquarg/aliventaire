@@ -6,7 +6,9 @@ var Recipe = americano.getModel("Recipe", {
     "description": String,
     "tags": [String],
     "products": [String],
-    "toCook": Number
+    "toCook": Number,
+    // this should be a list of dates ... later
+    "cooked": Number
 });
 
 Recipe.allToCook = function (params, callback) {

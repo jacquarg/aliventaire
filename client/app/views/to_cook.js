@@ -43,10 +43,18 @@ module.exports = View.extend({
             details.push({ "label": product.name, "amount": -1 })
         }
         Products.prototype.removeProducts(details, function () {
-            console.log(that.model)
+            var cooked,
+                toCook;
             // TODO: increment and decrement toCook in a model function
             //       to prevent < 0
-            that.model.save({ "toCook": that.model.get("toCook") - 1 }, {
+            toCook = that.model.get("toCook") - 1;
+            cooked = that.model.get("cooked");
+            if (cooked) {
+                cooked++;
+            } else {
+                cooked = 1;
+            }
+            that.model.save({ "toCook": toCook, "cooked": cooked }, {
                 "success": function (data) {
                     if (!data.attributes.toCook) {
                         that.remove();
