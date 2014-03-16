@@ -118,7 +118,9 @@ module.exports.create = function (req, res) {
                 "msg": "Server error while creating recipe."
             }, 500);
         } else {
-            return res.send(recipe);
+            return getFull(recipe, function (error, recipe) {
+                res.send(recipe);
+            });
         }
     });
 };
