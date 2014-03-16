@@ -399,6 +399,7 @@ module.exports = View.extend({
 var View            = require("./view"),
     Cart            = require("../models/cart"),
     Carts           = require("../models/carts"),
+    Recipes         = require("../models/recipes"),
     CartView        = require("./cart"),
     template        = require("./templates/carts"),
     templateRecipes = require("./templates/carts-recipes");
@@ -410,7 +411,8 @@ module.exports = View.extend({
     "templateRecipes": templateRecipes,
 
     "initialize": function (params) {
-        this.recipes = params.recipes;
+        this.allRecipes = params.recipes;
+        this.recipes    = new Recipes();
     },
 
     "getRenderData": function () {
@@ -492,8 +494,8 @@ module.exports = View.extend({
         // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
 
-        for (i = 0; i < this.recipes.models.length; i++) {
-            recipe = this.recipes.models[i];
+        for (i = 0; i < this.allRecipes.models.length; i++) {
+            recipe = this.allRecipes.models[i];
             tags   = recipe.get("tags");
             for (j = 0; j < tags.length; j++) {
                 tag = tags[j];
