@@ -499,10 +499,11 @@ module.exports = View.extend({
             tags   = recipe.get("tags");
             for (j = 0; j < tags.length; j++) {
                 tag = tags[j];
-                byTag[tag.id] += recipe.get("cooked");
+                if (recipe.get("cooked")) {
+                    byTag[tag.id] += recipe.get("cooked");
+                }
             }
         }
-
 
         this.updateValue(byTag["organic"], R, total, "bio");
         R -= this.RDecrement;
