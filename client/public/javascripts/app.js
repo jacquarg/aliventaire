@@ -473,6 +473,7 @@ module.exports = View.extend({
     "updateValue": function (value, R, total, name) {
         var hand,
             param = { "stroke": "#fff", "stroke-width": 20 };
+        name += " : " + value + " repas.";
         hand = this.r.path().attr(param).attr({ "arc": [0, total, R, name] });
         hand.animate({ "arc": [value, total, R, name] }, 750, "elastic");
     },
@@ -480,22 +481,38 @@ module.exports = View.extend({
     "updateRender": function (data) {
         var data  = data || this.getRenderData(),
             total = this.RTotal,
-            R     = this.R;
+            R     = this.R,
+            recipe,
+            tag,
+            tags,
+            i,
+            j,
+            byTag = { "organic": 0, "cheap": 0, "quick": 0, "light": 0 };
+
         // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
 
+        for (i = 0; i < this.recipes.models.length; i++) {
+            recipe = this.recipes.models[i];
+            tags   = recipe.get("tags");
+            for (j = 0; j < tags.length; j++) {
+                tag = tags[j];
+                byTag[tag.id] += recipe.get("cooked");
+            }
+        }
 
-        this.updateValue(30, R, total, "consomation de viande");
+
+        this.updateValue(byTag["organic"], R, total, "bio");
         R -= this.RDecrement;
-        this.updateValue(10, R, total, "consomation de poisson");
+        this.updateValue(byTag["cheap"], R, total, "pas cher");
         R -= this.RDecrement;
-        this.updateValue(42, R, total, "consomation de fruits");
+        this.updateValue(byTag["quick"], R, total, "rapide");
         R -= this.RDecrement;
-        this.updateValue(15, R, total, "consomation de légumes");
+        this.updateValue(byTag["light"], R, total, "light");
         R -= this.RDecrement;
-        this.updateValue(47, R, total, "consomation de sucreries");
+        this.updateValue(47, R, total, "???");
         R -= this.RDecrement;
-        this.updateValue(12, R, total, "consomation de laitages");
+        this.updateValue(12, R, total, "???");
     },
 
     "add": function (cart) {
