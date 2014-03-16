@@ -489,7 +489,12 @@ module.exports = View.extend({
             tags,
             i,
             j,
-            byTag = { "organic": 0, "cheap": 0, "quick": 0, "light": 0 };
+            byTag = { "organic": 0, 
+                      "cheap": 0, 
+                      "quick": 0, 
+                      "light": 0,
+                      "vegetarian": 0,
+                      "sugar": 0 };
 
         // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
@@ -513,9 +518,9 @@ module.exports = View.extend({
         R -= this.RDecrement;
         this.updateValue(byTag["light"], R, total, "light");
         R -= this.RDecrement;
-        this.updateValue(47, R, total, "???");
+        this.updateValue(byTag["vegetarian"], R, total, "végétarien");
         R -= this.RDecrement;
-        this.updateValue(12, R, total, "???");
+        this.updateValue(byTag["sugar"], R, total, "sucré");
     },
 
     "add": function (cart) {
@@ -1318,7 +1323,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="orgnanic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" name="price" class="form-control"/></div></form></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="organic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="végétarien" class="vegetarian"/></span></div><div class="col-xs-2"><span class="tag"><img alt="sucré" class="sugar"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" name="price" class="form-control"/></div></form></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };
@@ -1488,7 +1493,7 @@ buf.push('> \n' + escape((interp = product.attributes.name) == null ? '' : inter
   }
 }).call(this);
 
-buf.push('</select><label for="recipe-products">Catégoriess :</label><select id="recipe-tags" multiple="multiple" class="form-control select-picker"><option value="cheap">pas cher</option><option value="quick">rapide</option><option value="organic">bio</option><option value="light">light</option></select></div><div class="form-group"><input id="recipe-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><ul class="recipes"></ul>');
+buf.push('</select><label for="recipe-products">Catégoriess :</label><select id="recipe-tags" multiple="multiple" class="form-control select-picker"><option value="cheap">pas cher</option><option value="quick">rapide</option><option value="organic">bio</option><option value="light">light</option><option value="vegetarian">végétarien</option><option value="sugar">sucré</option></select></div><div class="form-group"><input id="recipe-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><ul class="recipes"></ul>');
 }
 return buf.join("");
 };

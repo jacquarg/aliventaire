@@ -91,7 +91,12 @@ module.exports = View.extend({
             tags,
             i,
             j,
-            byTag = { "organic": 0, "cheap": 0, "quick": 0, "light": 0 };
+            byTag = { "organic": 0, 
+                      "cheap": 0, 
+                      "quick": 0, 
+                      "light": 0,
+                      "vegetarian": 0,
+                      "sugar": 0 };
 
         // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
@@ -115,9 +120,9 @@ module.exports = View.extend({
         R -= this.RDecrement;
         this.updateValue(byTag["light"], R, total, "light");
         R -= this.RDecrement;
-        this.updateValue(47, R, total, "???");
+        this.updateValue(byTag["vegetarian"], R, total, "végétarien");
         R -= this.RDecrement;
-        this.updateValue(12, R, total, "???");
+        this.updateValue(byTag["sugar"], R, total, "sucré");
     },
 
     "add": function (cart) {
