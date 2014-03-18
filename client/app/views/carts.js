@@ -183,9 +183,11 @@ module.exports = View.extend({
         // TODO: quantity of products and same product in diff recipe
         _(products).each(function (product) {
             var productContainer = $("<div class='product' />");
-            productContainer.html(product.name);
-            this.checkedProducts[product.name] = productContainer;
-            $("#shop .products").append(productContainer);
+            if (!product.quantity) {
+                productContainer.html(product.name);
+                this.checkedProducts[product.name] = productContainer;
+                $("#shop .products").append(productContainer);
+            }
         }, this);
     },
 
