@@ -412,7 +412,9 @@ module.exports = View.extend({
 
     "initialize": function (params) {
         this.allRecipes = params.recipes;
+        this.tags       = [];
         this.recipes    = new Recipes();
+        this.selectPrice();
     },
 
     "getRenderData": function () {
@@ -554,7 +556,6 @@ module.exports = View.extend({
         $(".selected").removeClass("selected");
         $elem.addClass("selected");
         selected  = $(".tag.selected img");
-        this.tags = [];
         selected.each(function () {
             var tag = $(this).attr("class");
             that.tags.push(tag);
@@ -1164,7 +1165,6 @@ module.exports = View.extend({
         $("#recipe-image")
             .val(that.$el.find(".image img").attr("src"));
         $("#recipe-name").val(that.$el.find(".name").text());
-        console.log()
         $("#recipe-description")
             .val(that.$el.find(".description")
                     .html()
@@ -1176,7 +1176,6 @@ module.exports = View.extend({
                 .prop("selected", true);
         });
         that.$el.find(".recipe-tags span").each(function () {
-            console.log(this)
             $recipesTags.find("option[value='" + $.trim($(this).text()) + "']")
                 .prop("selected", true);
         });
@@ -1325,7 +1324,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="organic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="végétarien" class="vegetarian"/></span></div><div class="col-xs-2"><span class="tag"><img alt="sucré" class="sugar"/></span></div></div></div></div><div class="swiper-slide"> <h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" name="price" class="form-control"/></div></form></div><div class="swiper-slide"> <h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="swiper-slide carts"><h2>Panier</h2><div class="products"></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Information de consomation</h2><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="organic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="végétarien" class="vegetarian"/></span></div><div class="col-xs-2"><span class="tag"><img alt="sucré" class="sugar"/></span></div></div></div><h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" value="10" name="price" class="form-control"/></div></form></div><div class="swiper-slide carts"><div class="row"><div class="choose-recipe col-xs-6"><h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="choose-products col-xs-6"><h2>Panier</h2><div class="products"></div></div></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };

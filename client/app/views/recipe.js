@@ -37,7 +37,6 @@ module.exports = View.extend({
         $("#recipe-image")
             .val(that.$el.find(".image img").attr("src"));
         $("#recipe-name").val(that.$el.find(".name").text());
-        console.log()
         $("#recipe-description")
             .val(that.$el.find(".description")
                     .html()
@@ -49,7 +48,6 @@ module.exports = View.extend({
                 .prop("selected", true);
         });
         that.$el.find(".recipe-tags span").each(function () {
-            console.log(this)
             $recipesTags.find("option[value='" + $.trim($(this).text()) + "']")
                 .prop("selected", true);
         });

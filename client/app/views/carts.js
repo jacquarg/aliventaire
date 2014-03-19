@@ -14,7 +14,9 @@ module.exports = View.extend({
 
     "initialize": function (params) {
         this.allRecipes = params.recipes;
+        this.tags       = [];
         this.recipes    = new Recipes();
+        this.selectPrice();
     },
 
     "getRenderData": function () {
@@ -156,7 +158,6 @@ module.exports = View.extend({
         $(".selected").removeClass("selected");
         $elem.addClass("selected");
         selected  = $(".tag.selected img");
-        this.tags = [];
         selected.each(function () {
             var tag = $(this).attr("class");
             that.tags.push(tag);

@@ -29,20 +29,22 @@
                     .col-xs-2
                         span.tag
                             img.sugar(alt="sucré")
-        .swiper-slide 
             h2 Choix du prix
             form.price.row
                 .form-group.col-xs-offset-4.col-xs-4
                     input#cart-price(class="form-control", 
                                      placeholder="Prix",
                                      required="required",
+                                     value="10",
                                      name="price")
-        .swiper-slide 
-            h2 Choix de la recette
-            .carts-recipes
         .swiper-slide.carts
-            h2 Panier
-            .products
+            .row
+                div.choose-recipe.col-xs-6
+                    h2 Choix de la recette
+                    .carts-recipes
+                div.choose-products.col-xs-6
+                    h2 Panier
+                    .products
             hr
             .btn.btn-primary.order Commander
             hr
