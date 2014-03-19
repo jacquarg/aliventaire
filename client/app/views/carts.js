@@ -180,23 +180,25 @@ module.exports = View.extend({
 
     "checkedProducts": {},
 
-    "addProductsToCart": function (products) {
+    "addProductsToCart": function (recipe, products) {
         // TODO: quantity of products and same product in diff recipe
+        if (!this.checkedProducts.recipe) {
+            this.checkedProducts[recipe] = {};
+        }
         _(products).each(function (product) {
-            var productContainer = $("<div class='product' />");
+            var productContainer = $("<div class='product-to-buy' />");
+            productContainer.addClass(recipe);
             if (!product.quantity) {
                 productContainer.html(product.name);
-                this.checkedProducts[product.name] = productContainer;
+                this.checkedProducts[recipe][product.name] = productContainer;
                 $("#shop .products").append(productContainer);
             }
         }, this);
     },
 
-    "removeProductsFromCart": function (products) {
-        _(products).each(function (product) {
-            $(this.checkedProducts[product.name]).remove();
-            delete this.checkedProducts[product.name];
-        }, this);
+    "removeProductsFromCart": function (recipe) {
+        delete this.checkedProducts[recipe];
+        $(".product-to-buy." + recipe).remove();
     },
 
     "updateCart": function (evt) {
@@ -212,10 +214,11 @@ module.exports = View.extend({
         $button.toggleClass("glyphicon-unchecked");
         $button.toggleClass("glyphicon-check");
 
+        recipeName = $.trim(recipeName).replace(" ", "");
         if ($button.hasClass("glyphicon-check")) {
-            this.addProductsToCart(products);
+            this.addProductsToCart(recipeName, products);
         } else {
-            this.removeProductsFromCart(products);
+            this.removeProductsFromCart(recipeName);
         }
     },
 
@@ -223,14 +226,24 @@ module.exports = View.extend({
         var checked      = $("#shop .recipe .glyphicon-check"),
             that         = this,
             recipesNames = [],
-            cart;
+            recipeName,
+            cart,
+            products = [],
+            productsNames,
+            i, j;
 
-        checked.parents(".recipe").find(".name").each(function (index, elem) {
-            recipesNames.push($(elem).text());
-        });
+        recipesNames = Object.keys(this.checkedProducts);
+        for (i = 0; i < recipesNames.length; i++) {
+            recipeName    = recipesNames[i];
+            productsNames = Object.keys(this.checkedProducts[recipeName]);
+            for (j = 0; j < productsNames.length; j++) {
+                products.push(productsNames[j]);
+            }
+        }
+
         cart = new Cart ({
             "name": "Commande : " + recipesNames.join(", "),
-             "products": Object.keys(this.checkedProducts)
+             "products": products
             // TODO: quantity of products and same product in diff recipe
         });
 
