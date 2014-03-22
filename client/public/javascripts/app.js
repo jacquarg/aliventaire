@@ -455,7 +455,7 @@ module.exports = View.extend({
                 x = 300 + R * Math.cos(a),
                 y = 300 - R * Math.sin(a),
                 color = "hsb(".concat(Math.round(R) / 200, ",", 
-                             value / total, ", .75)"),
+                             value / total, ", .85)"),
                 path;
             if (total == value) {
                 path = [["M", 300, 300 - R], 
@@ -484,7 +484,7 @@ module.exports = View.extend({
 
     "updateRender": function (data) {
         var data  = data || this.getRenderData(),
-            total = this.RTotal,
+            total,
             R     = this.R,
             recipe,
             tag,
@@ -498,9 +498,11 @@ module.exports = View.extend({
                       "vegetarian": 0,
                       "sugar": 0 };
 
+
         // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
 
+        total = 6;
         for (i = 0; i < this.allRecipes.models.length; i++) {
             recipe = this.allRecipes.models[i];
             tags   = recipe.get("tags");
@@ -508,6 +510,7 @@ module.exports = View.extend({
                 tag = tags[j];
                 if (recipe.get("cooked")) {
                     byTag[tag.id] += recipe.get("cooked");
+                    total += recipe.get("cooked");
                 }
             }
         }
