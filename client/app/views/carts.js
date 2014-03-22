@@ -5,12 +5,14 @@ var View            = require("./view"),
     CartView        = require("./cart"),
     template        = require("./templates/carts"),
     templateRecipes = require("./templates/carts-recipes");
+    templateProduct = require("./templates/product-to-buy");
 
 module.exports = View.extend({
     "collection": Carts,
     
     "template": template,
     "templateRecipes": templateRecipes,
+    "templateProduct": templateProduct,
 
     "initialize": function (params) {
         this.allRecipes = params.recipes;
@@ -137,9 +139,25 @@ module.exports = View.extend({
 
     "events": {
         "click .recipe": "updateCart",
+        "click .product-to-buy": "updateProduct",
         "click .order": "order",
         "click .tag": "selectTag",
         "submit .price": "selectPrice",
+    },
+
+    "updateProduct": function (evt) {
+        var $number = $(evt.currentTarget).find(".quantity"),
+            currentNumber;
+        currentNumber = parseInt($.trim($number.text()));
+        if ($(evt.target).hasClass("glyphicon-minus")) {
+            currentNumber--;
+            if (currentNumber < 0) {
+                currentNumber = 0;
+            }
+        } else {
+            currentNumber++;
+        }
+        $number.text(currentNumber);
     },
 
     "query": function () {
@@ -177,49 +195,68 @@ module.exports = View.extend({
 
     "findRecipe": function (recipeName) {
         return _(this.recipes.models).find(function (recipe) { 
-            return $.trim(recipe.get("name")) == $.trim(recipeName);
+            return recipe.get("name").replace(/ /g, "") == 
+                recipeName.replace(/ /g, "");
         });
     },
 
     "checkedProducts": {},
 
-    "addProductsToCart": function (recipe, products) {
+    "addProductsToCart": function (recipe, products, recipeNumber) {
         // TODO: quantity of products and same product in diff recipe
+        this.removeProductsFromCart(recipe);
         if (!this.checkedProducts.recipe) {
             this.checkedProducts[recipe] = {};
         }
         _(products).each(function (product) {
-            var productContainer = $("<div class='product-to-buy' />");
-            productContainer.addClass(recipe);
-            if (!product.quantity) {
-                productContainer.html(product.name);
+            var productContainer,
+                quantity = product.quantity;
+            if (quantity < recipeNumber) {
+                productContainer = $(this.templateProduct({ 
+                    "name": product.name, 
+                    "recipe": recipe.replace(/ /g, ""),
+                    "quantity": recipeNumber - quantity 
+                }));
                 this.checkedProducts[recipe][product.name] = productContainer;
-                $("#shop .products").append(productContainer);
+                $("#shop .products").prepend(productContainer);
             }
         }, this);
     },
 
     "removeProductsFromCart": function (recipe) {
         delete this.checkedProducts[recipe];
-        $(".product-to-buy." + recipe).remove();
+        $(".product-to-buy." + recipe.replace(/ /g, "")).remove();
     },
 
     "updateCart": function (evt) {
-        var $target    = $(evt.currentTarget),
-            $button    = $target.find(".btn"),
-            recipeName = $target.find(".name").text(),
+        var $target     = $(evt.currentTarget),
+            $button     = $target.find(".btn"),
+            recipeName  = $target.find(".name").text(),
             recipe,
-            products;
+            products,
+            currentNumber,
+            $number;
 
         recipe   = this.findRecipe(recipeName);
         products = recipe.get("products");
 
-        $button.toggleClass("glyphicon-unchecked");
-        $button.toggleClass("glyphicon-check");
+        $number = $target.find(".to-cook");
+        currentNumber = parseInt($.trim($number.text()));
+        if ($(evt.target).hasClass("glyphicon-minus")) {
+            currentNumber--;
+            if (currentNumber < 0) {
+                currentNumber = 0;
+                $target.removeClass("checked");
+            }
+        } else {
+            currentNumber++;
+            $target.addClass("checked");
+        }
+        $number.text(currentNumber);
 
-        recipeName = $.trim(recipeName).replace(" ", "");
-        if ($button.hasClass("glyphicon-check")) {
-            this.addProductsToCart(recipeName, products);
+        recipeName = $.trim(recipeName);
+        if ($target.hasClass("checked")) {
+            this.addProductsToCart(recipeName, products, currentNumber);
         } else {
             this.removeProductsFromCart(recipeName);
         }
@@ -233,6 +270,8 @@ module.exports = View.extend({
             cart,
             products = [],
             productsNames,
+            productName,
+            productQuantity,
             i, j;
 
         recipesNames = Object.keys(this.checkedProducts);
@@ -240,12 +279,23 @@ module.exports = View.extend({
             recipeName    = recipesNames[i];
             productsNames = Object.keys(this.checkedProducts[recipeName]);
             for (j = 0; j < productsNames.length; j++) {
-                products.push(productsNames[j]);
+                productName = productsNames[j];
+                productQuantity = 
+                    this.checkedProducts[recipeName][productName]
+                        .find(".quantity")
+                        .text();
+                if (parseInt(productQuantity) > 0) {
+                    if (parseInt(productQuantity) > 1) {
+                        productName = 
+                            $.trim(productQuantity) + " x " + productName;
+                    }
+                    products.push(productName);
+                }
             }
         }
 
         cart = new Cart ({
-            "name": "Commande : " + recipesNames.join(", "),
+            "name": recipesNames.join(", "),
              "products": products
             // TODO: quantity of products and same product in diff recipe
         });

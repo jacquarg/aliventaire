@@ -7,10 +7,15 @@ Product = require("../models/product");
 function getFull(recipe, callback) {
     var products = [],
         product,
+        name,
         i,
         price = 0;
     for (i = 0; i < recipe.products.items.length; i++) {
-        products.push(recipe.products.items[i].id);
+        name = recipe.products.items[i].name;
+        if (!name) {
+            name = recipe.products.items[i].id;
+        }
+        products.push(name);
     }
 
     Product.byFullName(products, function (err, products) {

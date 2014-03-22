@@ -1,5 +1,6 @@
 - each recipe in recipes
-    .recipe 
-        span.name #{recipe.attributes.name}
-            .btn.glyphicon.glyphicon-unchecked 
-
+    .recipe.row(class="#{recipe.attributes.name}")
+        span.name.col-xs-8 #{recipe.attributes.name}
+        .btn.col-xs-1.glyphicon.glyphicon-minus 
+        .btn.col-xs-1.glyphicon.glyphicon-plus 
+        span.col-xs-2.to-cook 0

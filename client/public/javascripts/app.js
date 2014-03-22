@@ -403,12 +403,14 @@ var View            = require("./view"),
     CartView        = require("./cart"),
     template        = require("./templates/carts"),
     templateRecipes = require("./templates/carts-recipes");
+    templateProduct = require("./templates/product-to-buy");
 
 module.exports = View.extend({
     "collection": Carts,
     
     "template": template,
     "templateRecipes": templateRecipes,
+    "templateProduct": templateProduct,
 
     "initialize": function (params) {
         this.allRecipes = params.recipes;
@@ -535,9 +537,25 @@ module.exports = View.extend({
 
     "events": {
         "click .recipe": "updateCart",
+        "click .product-to-buy": "updateProduct",
         "click .order": "order",
         "click .tag": "selectTag",
         "submit .price": "selectPrice",
+    },
+
+    "updateProduct": function (evt) {
+        var $number = $(evt.currentTarget).find(".quantity"),
+            currentNumber;
+        currentNumber = parseInt($.trim($number.text()));
+        if ($(evt.target).hasClass("glyphicon-minus")) {
+            currentNumber--;
+            if (currentNumber < 0) {
+                currentNumber = 0;
+            }
+        } else {
+            currentNumber++;
+        }
+        $number.text(currentNumber);
     },
 
     "query": function () {
@@ -575,49 +593,68 @@ module.exports = View.extend({
 
     "findRecipe": function (recipeName) {
         return _(this.recipes.models).find(function (recipe) { 
-            return $.trim(recipe.get("name")) == $.trim(recipeName);
+            return recipe.get("name").replace(/ /g, "") == 
+                recipeName.replace(/ /g, "");
         });
     },
 
     "checkedProducts": {},
 
-    "addProductsToCart": function (recipe, products) {
+    "addProductsToCart": function (recipe, products, recipeNumber) {
         // TODO: quantity of products and same product in diff recipe
+        this.removeProductsFromCart(recipe);
         if (!this.checkedProducts.recipe) {
             this.checkedProducts[recipe] = {};
         }
         _(products).each(function (product) {
-            var productContainer = $("<div class='product-to-buy' />");
-            productContainer.addClass(recipe);
-            if (!product.quantity) {
-                productContainer.html(product.name);
+            var productContainer,
+                quantity = product.quantity;
+            if (quantity < recipeNumber) {
+                productContainer = $(this.templateProduct({ 
+                    "name": product.name, 
+                    "recipe": recipe.replace(/ /g, ""),
+                    "quantity": recipeNumber - quantity 
+                }));
                 this.checkedProducts[recipe][product.name] = productContainer;
-                $("#shop .products").append(productContainer);
+                $("#shop .products").prepend(productContainer);
             }
         }, this);
     },
 
     "removeProductsFromCart": function (recipe) {
         delete this.checkedProducts[recipe];
-        $(".product-to-buy." + recipe).remove();
+        $(".product-to-buy." + recipe.replace(/ /g, "")).remove();
     },
 
     "updateCart": function (evt) {
-        var $target    = $(evt.currentTarget),
-            $button    = $target.find(".btn"),
-            recipeName = $target.find(".name").text(),
+        var $target     = $(evt.currentTarget),
+            $button     = $target.find(".btn"),
+            recipeName  = $target.find(".name").text(),
             recipe,
-            products;
+            products,
+            currentNumber,
+            $number;
 
         recipe   = this.findRecipe(recipeName);
         products = recipe.get("products");
 
-        $button.toggleClass("glyphicon-unchecked");
-        $button.toggleClass("glyphicon-check");
+        $number = $target.find(".to-cook");
+        currentNumber = parseInt($.trim($number.text()));
+        if ($(evt.target).hasClass("glyphicon-minus")) {
+            currentNumber--;
+            if (currentNumber < 0) {
+                currentNumber = 0;
+                $target.removeClass("checked");
+            }
+        } else {
+            currentNumber++;
+            $target.addClass("checked");
+        }
+        $number.text(currentNumber);
 
-        recipeName = $.trim(recipeName).replace(" ", "");
-        if ($button.hasClass("glyphicon-check")) {
-            this.addProductsToCart(recipeName, products);
+        recipeName = $.trim(recipeName);
+        if ($target.hasClass("checked")) {
+            this.addProductsToCart(recipeName, products, currentNumber);
         } else {
             this.removeProductsFromCart(recipeName);
         }
@@ -631,6 +668,8 @@ module.exports = View.extend({
             cart,
             products = [],
             productsNames,
+            productName,
+            productQuantity,
             i, j;
 
         recipesNames = Object.keys(this.checkedProducts);
@@ -638,12 +677,23 @@ module.exports = View.extend({
             recipeName    = recipesNames[i];
             productsNames = Object.keys(this.checkedProducts[recipeName]);
             for (j = 0; j < productsNames.length; j++) {
-                products.push(productsNames[j]);
+                productName = productsNames[j];
+                productQuantity = 
+                    this.checkedProducts[recipeName][productName]
+                        .find(".quantity")
+                        .text();
+                if (parseInt(productQuantity) > 0) {
+                    if (parseInt(productQuantity) > 1) {
+                        productName = 
+                            $.trim(productQuantity) + " x " + productName;
+                    }
+                    products.push(productName);
+                }
             }
         }
 
         cart = new Cart ({
-            "name": "Commande : " + recipesNames.join(", "),
+            "name": recipesNames.join(", "),
              "products": products
             // TODO: quantity of products and same product in diff recipe
         });
@@ -1282,7 +1332,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<span title="supprimer" class="delete"><button class="btn btn-danger glyphicon glyphicon-remove"></button></span><span class="name">' + escape((interp = name) == null ? '' : interp) + '</span><ul>');
+buf.push('<span title="supprimer" class="delete"><button class="btn btn-danger glyphicon glyphicon-remove"></button></span><span class="name">Recettes : ' + escape((interp = name) == null ? '' : interp) + '</span><ul>');
 // iterate products
 ;(function(){
   if ('number' == typeof products.length) {
@@ -1318,13 +1368,17 @@ var interp;
     for (var $index = 0, $$l = recipes.length; $index < $$l; $index++) {
       var recipe = recipes[$index];
 
-buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '<div class="btn glyphicon glyphicon-unchecked"> </div></span></div>');
+buf.push('<div');
+buf.push(attrs({ "class": ('recipe') + ' ' + ('row') + ' ' + ("" + (recipe.attributes.name) + "") }, {"class":true}));
+buf.push('><span class="name col-xs-8">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '</span><div class="btn col-xs-1 glyphicon glyphicon-minus"> </div><div class="btn col-xs-1 glyphicon glyphicon-plus"> </div><span class="col-xs-2 to-cook">0</span></div>');
     }
   } else {
     for (var $index in recipes) {
       var recipe = recipes[$index];
 
-buf.push('<div class="recipe"> <span class="name">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '<div class="btn glyphicon glyphicon-unchecked"> </div></span></div>');
+buf.push('<div');
+buf.push(attrs({ "class": ('recipe') + ' ' + ('row') + ' ' + ("" + (recipe.attributes.name) + "") }, {"class":true}));
+buf.push('><span class="name col-xs-8">' + escape((interp = recipe.attributes.name) == null ? '' : interp) + '</span><div class="btn col-xs-1 glyphicon glyphicon-minus"> </div><div class="btn col-xs-1 glyphicon glyphicon-plus"> </div><span class="col-xs-2 to-cook">0</span></div>');
    }
   }
 }).call(this);
@@ -1340,7 +1394,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Informations de consommation</h2><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="organic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="végétarien" class="vegetarian"/></span></div><div class="col-xs-2"><span class="tag"><img alt="sucré" class="sugar"/></span></div></div></div><h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" value="10" name="price" class="form-control"/></div></form></div><div class="swiper-slide carts"><div class="row"><div class="choose-recipe col-xs-6"><h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="choose-products col-xs-6"><h2>Panier</h2><div class="products"></div></div></div><hr/><div class="btn btn-primary order">Commander</div><hr/><h2>Commandes en cours</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Informations de consommation</h2><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <h2>Choix des catégories</h2><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="organic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="végétarien" class="vegetarian"/></span></div><div class="col-xs-2"><span class="tag"><img alt="sucré" class="sugar"/></span></div></div></div><h2>Choix du prix</h2><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" value="10" name="price" class="form-control"/></div></form></div><div class="swiper-slide carts"><div class="row"><div class="choose-recipe col-xs-6"><h2>Choix de la recette</h2><div class="carts-recipes"></div></div><div class="choose-products col-xs-6"><h2>Panier</h2><div class="products"></div></div></div><hr/><div class="btn btn-primary order">Créer une liste de courses</div><hr/><h2>Listes de courses</h2><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };
@@ -1365,6 +1419,20 @@ var buf = [];
 with (locals || {}) {
 var interp;
 buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2><h3>Validez les tickets de caisse pour mettre les produits dans le frigo !</h3><div id="receipts"></div></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><h3>Validez les recettes à cuisiner pour enlever les produits du frigo !</h3><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/product-to-buy", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div');
+buf.push(attrs({ "class": ('product-to-buy') + ' ' + ("" + (recipe) + "") }, {"class":true}));
+buf.push('><span class="name col-xs-8">' + escape((interp = name) == null ? '' : interp) + '</span><div class="btn col-xs-1 glyphicon glyphicon-minus"> </div><div class="btn col-xs-1 glyphicon glyphicon-plus"> </div><span class="col-xs-2 quantity">' + escape((interp = quantity) == null ? '' : interp) + '</span></div>');
 }
 return buf.join("");
 };
