@@ -109,7 +109,9 @@ module.exports.toCook = function (req, res) {
                 "msg": "Server error occured while retrieving data." 
             });
         } else {
-            return res.send(recipes);
+            return filterPrice(recipes, undefined, function (result) {
+                res.send(result);
+            });
         }
     });
 };
@@ -138,8 +140,9 @@ module.exports.read = function(req, res) {
                 "msg": "Recipe not found"
             }, 404);
         } else {
-            res.send(recipe);
-            return recipe;
+            return getFull(recipe, function (error, recipe) {
+                res.send(recipe);
+            });
         }
     });
 };

@@ -1,0 +1,24 @@
+.image.col-xs-3 
+    img(src="#{image}", alt="image", title="#{name}")
+.col-xs-8 
+    .name 
+        span.delete(title="supprimer")
+            button.btn.btn-danger
+                span.glyphicon.glyphicon-remove
+        span #{name}
+    .recipe-tags 
+        - each tag in tags
+            span.tag #{tag.id} 
+    .description !{description}
+    hr
+.recipe-products Produits :
+    ul
+    - each product in products
+        li.row 
+            span.name.col-xs-8 #{product.name}
+            span.quantity.col-xs-2 #{product.quantity}
+            span.actions.col-xs-2
+                button.minus.btn.btn-default
+                    span.glyphicon.glyphicon-minus
+                button.plus.btn.btn-default
+                    span.glyphicon.glyphicon-plus

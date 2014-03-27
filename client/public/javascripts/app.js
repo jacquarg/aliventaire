@@ -1500,6 +1500,56 @@ return buf.join("");
 };
 });
 
+;require.register("views/templates/recipe-to-cook", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<div class="image col-xs-3"> <img');
+buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
+buf.push('/></div><div class="col-xs-8"> <div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="recipe-tags"> ');
+// iterate tags
+;(function(){
+  if ('number' == typeof tags.length) {
+    for (var $index = 0, $$l = tags.length; $index < $$l; $index++) {
+      var tag = tags[$index];
+
+buf.push('<span class="tag">' + escape((interp = tag.id) == null ? '' : interp) + ' </span>');
+    }
+  } else {
+    for (var $index in tags) {
+      var tag = tags[$index];
+
+buf.push('<span class="tag">' + escape((interp = tag.id) == null ? '' : interp) + ' </span>');
+   }
+  }
+}).call(this);
+
+buf.push('</div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/></div><div class="recipe-products">Produits :<ul></ul>');
+// iterate products
+;(function(){
+  if ('number' == typeof products.length) {
+    for (var $index = 0, $$l = products.length; $index < $$l; $index++) {
+      var product = products[$index];
+
+buf.push('<li class="row"> <span class="name col-xs-8">' + escape((interp = product.name) == null ? '' : interp) + '</span><span class="quantity col-xs-2">' + escape((interp = product.quantity) == null ? '' : interp) + '</span><span class="actions col-xs-2"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></li>');
+    }
+  } else {
+    for (var $index in products) {
+      var product = products[$index];
+
+buf.push('<li class="row"> <span class="name col-xs-8">' + escape((interp = product.name) == null ? '' : interp) + '</span><span class="quantity col-xs-2">' + escape((interp = product.quantity) == null ? '' : interp) + '</span><span class="actions col-xs-2"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></li>');
+   }
+  }
+}).call(this);
+
+buf.push('</div>');
+}
+return buf.join("");
+};
+});
+
 ;require.register("views/templates/recipe", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
@@ -1601,7 +1651,7 @@ var View     = require("./view"),
     Recipe   = require("../models/recipe"),
     Product  = require("../models/product"),
     Products = require("../models/products"),
-    template = require("./templates/recipe");
+    template = require("./templates/recipe-to-cook");
 
 module.exports = View.extend({
     "tagName": "li",
@@ -1628,6 +1678,34 @@ module.exports = View.extend({
 
     "events": {
         "click .delete": "destroy",
+        "click .plus": "plus",
+        "click .minus": "minus",
+    },
+
+    "change": function (evt, amount) {
+        var that = this,
+            details = [],
+            $target = $(evt.currentTarget).parents(".row:first");
+            $product = $target.find(".name"),
+            $quantity = $target.find(".quantity"),
+            productName = $.trim($product.text());
+
+        details.push({ "label": productName, "amount": amount });
+
+        Products.prototype.removeProducts(details, function (data) {
+            var newQuantity = parseInt($.trim($quantity.text())) + amount;
+            if (newQuantity >= 0) {
+                $quantity.html(newQuantity);
+            }
+        });
+    },
+
+    "minus": function (evt) {
+        this.change(evt, -1);
+    },
+
+    "plus": function (evt) {
+        this.change(evt, 1);
     },
 
     "destroy": function () {
@@ -1637,29 +1715,19 @@ module.exports = View.extend({
             products = this.model.get("products"),
             details = [];
 
-        for (var i = 0; i < products.length; i++) {
-            product = products[i];
-            details.push({ "label": product.name, "amount": -1 })
+        toCook = that.model.get("toCook") - 1;
+        cooked = that.model.get("cooked");
+        if (cooked) {
+            cooked++;
+        } else {
+            cooked = 1;
         }
-        Products.prototype.removeProducts(details, function () {
-            var cooked,
-                toCook;
-            // TODO: increment and decrement toCook in a model function
-            //       to prevent < 0
-            toCook = that.model.get("toCook") - 1;
-            cooked = that.model.get("cooked");
-            if (cooked) {
-                cooked++;
-            } else {
-                cooked = 1;
-            }
-            that.model.save({ "toCook": toCook, "cooked": cooked }, {
-                "success": function (data) {
-                    if (!data.attributes.toCook) {
-                        that.remove();
-                    }
+        that.model.save({ "toCook": toCook, "cooked": cooked }, {
+            "success": function (data) {
+                if (!data.attributes.toCook) {
+                    that.remove();
                 }
-            });
+            }
         });
     }
 });
