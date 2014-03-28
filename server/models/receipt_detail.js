@@ -1,6 +1,6 @@
 var americano = require("americano");
 
-var ReceiptDetail = americano.getModel("Receiptdetail", {
+var ReceiptDetail = americano.getModel("ReceiptDetail", {
     "origin": String,
     "order": Number,
     "barcode": String,
@@ -16,7 +16,7 @@ var ReceiptDetail = americano.getModel("Receiptdetail", {
     "receiptId": String,
     "intermarcheShopId": String,
     "timestamp": Date,
-    "isOnlineBuy": Boolean,
+    "isOnlineBuy": Boolean
 });
 
 ReceiptDetail.byReceiptId = function(receiptId, callback) {

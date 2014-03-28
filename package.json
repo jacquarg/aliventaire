@@ -1,10 +1,10 @@
 {
   "name": "aliventaire",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": [
     "node = 0.8.x"
   ],
-  "description": "Chose your receipe and buy what you miss",
+  "description": "Choisissez vos recettes à préparer sans avoir peur d'oublier d'acheter un ingrédient !",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -12,8 +12,8 @@
   },
   "main": "server.js",
   "dependencies": {
-    "americano": "0.2.10",
-    "americano-cozy": "0.1.4",
+    "americano": "0.3.3",
+    "americano-cozy": "0.2.2",
     "async": "0.2.10"
   },
   "devDependencies": {
@@ -27,6 +27,22 @@
     "test": "cake tests",
     "start": "node server.js"
   },
-  "cozy-permissions": {},
+  "cozy-permissions": {
+    "Cart": {
+      "description": "Vos commandes de produits, pour savoir ce que vous avez commandé"
+    },
+    "Product": {
+      "description": "Les produits de votre frigo, pour savoir ce que vous avez déjà"
+    },
+    "Receipt": {
+      "description": "Vos tickets de caisse, pour savoir ce que vous avez acheté"
+    },
+    "ReceiptDetail": {
+      "description": "Le détails de vos tickets de caisse, pour savoir précisément ce que vous avez acheté"
+    },
+    "Recipe": {
+      "description": "Vos recettes, pour pouvoir choisir et préparer ce que vous allez manger"
+    }
+  },
   "cozy-displayName": "Aliventaire"
 }

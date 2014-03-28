@@ -3538,19 +3538,19 @@ var testReceiptDetails = [
 }
 ]
 
-testReceipts.forEach(function (receipt) {
-    Receipt.byReceiptId(receipt.receiptId, function (error, receipts) {
-        if (error || !receipts.length) {
-            Receipt.create(receipt);
-        }
-    });
-});
+//testReceipts.forEach(function (receipt) {
+//    Receipt.byReceiptId(receipt.receiptId, function (error, receipts) {
+//        if (error || !receipts.length) {
+//            Receipt.create(receipt);
+//        }
+//    });
+//});
 
-testReceiptDetails.forEach(function (receiptDetail) {
-    ReceiptDetail.byReceiptId(receiptDetail.receiptId, 
-                              function (error, receiptDetails) {
-                                  if (error || !receiptDetails.length) {
-                                      ReceiptDetail.create(receiptDetail);
-                                  }
-                              });
-});
+//testReceiptDetails.forEach(function (receiptDetail) {
+//    ReceiptDetail.byReceiptId(receiptDetail.receiptId, 
+//                              function (error, receiptDetails) {
+//                                  if (error || !receiptDetails.length) {
+//                                      ReceiptDetail.create(receiptDetail);
+//                                  }
+//                              });
+//});
