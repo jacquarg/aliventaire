@@ -8,21 +8,23 @@ Application to help users to chose a recipe and buy its products.
 * general
   * add inline help
 * shop page
-  * display history
-  * chose the number of plates
-  * display the missing products
   * buy the products online
 * fridge page
   * attach tags to a product
   * add products from an online shop
-* kitchen page
-  * update the products quantities after validating a cooked recipe
 * recipe page
   * create recipe from an online site
 
 
 # Changelog
 
+* v0.0.5
+    * shop page
+      * display history
+      * chose the number of plates
+      * display the missing products
+    * kitchen page
+      * update the products quantities after validating a cooked recipe
 * v0.0.4
     * shop page
       * chose the kind of a recipe
