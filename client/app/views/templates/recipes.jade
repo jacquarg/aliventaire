@@ -1,4 +1,12 @@
 form(role="form")
+    .row
+        hr
+        span Créer une recette
+        span.tooltips(data-toggle="tooltip",
+         data-placement="bottom",
+         title="Pour créer une recette, remplissez les champs ci-dessous et validez en cliquant sur l'icone '+'.")
+            span.glyphicon.glyphicon-question-sign
+        hr
     .form-group
         input#recipe-name(type="text", 
                           class="form-control",
@@ -16,7 +24,7 @@ form(role="form")
             - each product in products
                 option(value="#{product.attributes.name}") 
                     | #{product.attributes.name}
-        label(for="recipe-products") Catégoriess :
+        label(for="recipe-products") Catégories :
         select#recipe-tags(multiple="multiple",
                            class="form-control select-picker")
                 option(value="cheap") pas cher
@@ -34,5 +42,13 @@ form(role="form")
                class="btn btn-default",
                title="ajouter")
             span.glyphicon.glyphicon-plus
+.row
+    hr
+    span Liste de vos recettes
+    span.tooltips(data-toggle="tooltip",
+     data-placement="bottom",
+     title="Ceci est la liste des recettes pouvant être proposées dans la partie 'Mes courses'. Pour modifier une recette, supprimez la en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. La recette est alors supprimée, mais ces informations sont placées dans le formulaire d'ajout, il ne reste plus qu'à les modifier et ajouter la recette à nouveau.")
+        span.glyphicon.glyphicon-question-sign
+    hr
 ul.recipes
 

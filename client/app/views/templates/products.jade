@@ -1,9 +1,12 @@
 form.form-inline(role="form")
-    .row Ajouter un produit
+    .row 
+        hr
+        span Ajouter un produit
         span.tooltips(data-toggle="tooltip",
          data-placement="bottom",
          title="Pour ajouter un produit, remplissez les champs ci-dessous et validez en cliquant sur l'icone '+'. Il apparaîtra tout d'abord sous le formulaire, et rejoindra les autres produits par la suite. Une fois ajouté, il sera disponible pour faire partie d'une recette.")
             span.glyphicon.glyphicon-question-sign
+        hr
     .row
         .form-group.col-xs-7
             input#product-name(type="text", 

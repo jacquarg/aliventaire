@@ -1200,19 +1200,36 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "row recipe",
+    "className": "row recipe well",
     "template": template,
 
     "model": Recipe,
 
     "getRenderData": function () { 
-        var attributes = this.model.attributes;
+        var attributes = this.model.attributes,
+            i,
+            tag,
+            tagName;
         if (!attributes.image) {
             attributes.image = "images/recipe.png";
         }
         if (attributes.description) {
             attributes.description = 
                 attributes.description.replace(/[\r\n]+/g, "<br>");
+        }
+        if (attributes.tags) {
+            for (i = 0; i < attributes.tags.length; i++) {
+                tag = attributes.tags[i];
+                tagName = tag["id"];
+                tagName = tagName.replace("cheap", "pas cher");
+                tagName = tagName.replace("cheap", "pas cher");
+                tagName = tagName.replace("quick", "rapide");
+                tagName = tagName.replace("organic", "bio");
+                tagName = tagName.replace("light", "light");
+                tagName = tagName.replace("vegetarian", "végétarien");
+                tagName = tagName.replace("sugar", "sucré");
+                tag["id"] = tagName;
+            }
         }
         return attributes;
     },
@@ -1282,9 +1299,12 @@ module.exports = View.extend({
 
     "render": function () {
         this.$el.html(this.template(this.getRenderData()));
-        this.$el.find(".select-picker").selectpicker({
+        this.$el.find("#recipe-products").selectpicker({
             "title": "aucun produit",
             "noneResultsText": "aucun produit contenant"
+        });
+        this.$el.find("#recipe-tags").selectpicker({
+            "title": "aucune catégorie"
         });
         this.collection.each(function (recipe){
             this.add(recipe);
@@ -1460,7 +1480,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<form role="form" class="form-inline"><div class="row">Ajouter un produit<span data-toggle="tooltip" data-placement="bottom" title="Pour ajouter un produit, remplissez les champs ci-dessous et validez en cliquant sur l\'icone \'+\'. Il apparaîtra tout d\'abord sous le formulaire, et rejoindra les autres produits par la suite. Une fois ajouté, il sera disponible pour faire partie d\'une recette." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></div><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" title="Veuillez entrer le nom du produit à ajouter" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="Veuillez entrer le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="Veuillez entrer le nombre de produits de ce type que vous possédez" placeholder="Quantité" class="form-control"/></div><div class="col-xs-1"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" title="Veuillez entrer l\'adresse de l\'image du produit si il y en a une (ex : http://monimage.fr/monimage.png)" placeholder="adresse de l\'image" class="form-control"/></div></div></form><div class="products-list"><ul class="products new"></ul><hr/><span>Les produits de mon frigo</span><span data-toggle="tooltip" data-placement="bottom" title="Ceci est la liste des produits de votre frigo, gérez les quantités avec les boutons \'+\' et \'-\', Pour éditer le nom ou le prix d\'un produit, supprimez le en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. Le produit est alors supprimé, mais ces informations sont placées dans le formulaire d\'ajout, il ne reste plus qu\'à les modifier et ajouter le produit de nouveau." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span><hr/><div class="row"><div class="form-group col-xs-10 col-xs-offset-2"><input type="text" placeholder="filtrer" title="filtrer la liste des produit" class="search form-control"/></div></div><div class="row"><button title="trier par nom" data-sort="name" class="sort btn btn-default col-xs-5 col-xs-offset-2"><span class="glyphicon glyphicon-sort"></span>nom</button><button title="trier par prix" data-sort="price" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>prix (€)</button><button title="trier par quantité" data-sort="quantity" class="sort btn btn-default col-xs-3"> <span class="glyphicon glyphicon-sort"></span>quantité</button></div><ul class="products old list"></ul></div>');
+buf.push('<form role="form" class="form-inline"><div class="row"> <hr/><span>Ajouter un produit</span><span data-toggle="tooltip" data-placement="bottom" title="Pour ajouter un produit, remplissez les champs ci-dessous et validez en cliquant sur l\'icone \'+\'. Il apparaîtra tout d\'abord sous le formulaire, et rejoindra les autres produits par la suite. Une fois ajouté, il sera disponible pour faire partie d\'une recette." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span><hr/></div><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" title="Veuillez entrer le nom du produit à ajouter" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="Veuillez entrer le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="Veuillez entrer le nombre de produits de ce type que vous possédez" placeholder="Quantité" class="form-control"/></div><div class="col-xs-1"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" title="Veuillez entrer l\'adresse de l\'image du produit si il y en a une (ex : http://monimage.fr/monimage.png)" placeholder="adresse de l\'image" class="form-control"/></div></div></form><div class="products-list"><ul class="products new"></ul><hr/><span>Les produits de mon frigo</span><span data-toggle="tooltip" data-placement="bottom" title="Ceci est la liste des produits de votre frigo, gérez les quantités avec les boutons \'+\' et \'-\', Pour éditer le nom ou le prix d\'un produit, supprimez le en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. Le produit est alors supprimé, mais ces informations sont placées dans le formulaire d\'ajout, il ne reste plus qu\'à les modifier et ajouter le produit de nouveau." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span><hr/><div class="row"><div class="form-group col-xs-10 col-xs-offset-2"><input type="text" placeholder="filtrer" title="filtrer la liste des produit" class="search form-control"/></div></div><div class="row"><button title="trier par nom" data-sort="name" class="sort btn btn-default col-xs-5 col-xs-offset-2"><span class="glyphicon glyphicon-sort"></span>nom</button><button title="trier par prix" data-sort="price" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>prix (€)</button><button title="trier par quantité" data-sort="quantity" class="sort btn btn-default col-xs-3"> <span class="glyphicon glyphicon-sort"></span>quantité</button></div><ul class="products old list"></ul></div>');
 }
 return buf.join("");
 };
@@ -1558,9 +1578,9 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="image col-xs-3"> <img');
+buf.push('<div class="image col-xs-3"> <span class="img well"><img');
 buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
-buf.push('/></div><div class="col-xs-8"> <div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="recipe-tags"> ');
+buf.push('/></span></div><div class="col-xs-8"> <div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="recipe-tags"> ');
 // iterate tags
 ;(function(){
   if ('number' == typeof tags.length) {
@@ -1608,7 +1628,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<form role="form"><div class="form-group"><input id="recipe-name" type="text" required="required" placeholder="Nom de la recette" class="form-control"/></div><div class="form-group col-xs-6"><textarea id="recipe-description" type="text" placeholder="Description de la recette" class="form-control"></textarea></div><div class="form-group col-xs-6"><label for="recipe-products">Produits nécessaires :</label><select id="recipe-products" multiple="multiple" data-live-search="true" class="form-control select-picker">');
+buf.push('<form role="form"><div class="row"><hr/><span>Créer une recette</span><span data-toggle="tooltip" data-placement="bottom" title="Pour créer une recette, remplissez les champs ci-dessous et validez en cliquant sur l\'icone \'+\'." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span><hr/></div><div class="form-group"><input id="recipe-name" type="text" required="required" placeholder="Nom de la recette" class="form-control"/></div><div class="form-group col-xs-6"><textarea id="recipe-description" type="text" placeholder="Description de la recette" class="form-control"></textarea></div><div class="form-group col-xs-6"><label for="recipe-products">Produits nécessaires :</label><select id="recipe-products" multiple="multiple" data-live-search="true" class="form-control select-picker">');
 // iterate products
 ;(function(){
   if ('number' == typeof products.length) {
@@ -1630,7 +1650,7 @@ buf.push('> \n' + escape((interp = product.attributes.name) == null ? '' : inter
   }
 }).call(this);
 
-buf.push('</select><label for="recipe-products">Catégoriess :</label><select id="recipe-tags" multiple="multiple" class="form-control select-picker"><option value="cheap">pas cher</option><option value="quick">rapide</option><option value="organic">bio</option><option value="light">light</option><option value="vegetarian">végétarien</option><option value="sugar">sucré</option></select></div><div class="form-group"><input id="recipe-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><ul class="recipes"></ul>');
+buf.push('</select><label for="recipe-products">Catégories :</label><select id="recipe-tags" multiple="multiple" class="form-control select-picker"><option value="cheap">pas cher</option><option value="quick">rapide</option><option value="organic">bio</option><option value="light">light</option><option value="vegetarian">végétarien</option><option value="sugar">sucré</option></select></div><div class="form-group"><input id="recipe-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div><div class="form-group"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></form><div class="row"><hr/><span>Liste de vos recettes</span><span data-toggle="tooltip" data-placement="bottom" title="Ceci est la liste des recettes pouvant être proposées dans la partie \'Mes courses\'. Pour modifier une recette, supprimez la en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. La recette est alors supprimée, mais ces informations sont placées dans le formulaire d\'ajout, il ne reste plus qu\'à les modifier et ajouter la recette à nouveau." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span><hr/></div><ul class="recipes"></ul>');
 }
 return buf.join("");
 };

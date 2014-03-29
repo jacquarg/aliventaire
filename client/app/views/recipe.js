@@ -4,19 +4,36 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "row recipe",
+    "className": "row recipe well",
     "template": template,
 
     "model": Recipe,
 
     "getRenderData": function () { 
-        var attributes = this.model.attributes;
+        var attributes = this.model.attributes,
+            i,
+            tag,
+            tagName;
         if (!attributes.image) {
             attributes.image = "images/recipe.png";
         }
         if (attributes.description) {
             attributes.description = 
                 attributes.description.replace(/[\r\n]+/g, "<br>");
+        }
+        if (attributes.tags) {
+            for (i = 0; i < attributes.tags.length; i++) {
+                tag = attributes.tags[i];
+                tagName = tag["id"];
+                tagName = tagName.replace("cheap", "pas cher");
+                tagName = tagName.replace("cheap", "pas cher");
+                tagName = tagName.replace("quick", "rapide");
+                tagName = tagName.replace("organic", "bio");
+                tagName = tagName.replace("light", "light");
+                tagName = tagName.replace("vegetarian", "végétarien");
+                tagName = tagName.replace("sugar", "sucré");
+                tag["id"] = tagName;
+            }
         }
         return attributes;
     },
