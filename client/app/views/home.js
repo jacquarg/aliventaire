@@ -68,7 +68,7 @@ module.exports = View.extend({
         $("#content").removeClass();
         $("#content").addClass(pageName);
 
-        if (!that.swipers[pageName] && pageName !== "menu") {
+        //if (!that.swipers[pageName] && pageName !== "menu") {
             that.swipers[pageName] = $(".swiper-container:visible").swiper({
                 "loop": false,
                 "grabCursor": true,
@@ -84,7 +84,7 @@ module.exports = View.extend({
                 evt.preventDefault()
                 that.swipers[pageName].swipeNext()
             });
-        } 
+        //} 
         $(".tooltips").tooltip();
     },
 

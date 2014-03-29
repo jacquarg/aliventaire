@@ -484,10 +484,9 @@ module.exports = View.extend({
         hand.animate({ "arc": [value, total, R, name] }, 750, "elastic");
     },
 
-    "updateRender": function (data) {
-        var data  = data || this.getRenderData(),
-            total,
-            R     = this.R,
+    "redrawChart": function (data) {
+        var total,
+            R = this.R,
             recipe,
             tag,
             tags,
@@ -500,8 +499,6 @@ module.exports = View.extend({
                       "vegetarian": 0,
                       "sugar": 0 };
 
-
-        // TODO : check already checked recipes
         this.$el.find(".carts-recipes").html(this.templateRecipes(data));
 
         total = 6;
@@ -528,6 +525,14 @@ module.exports = View.extend({
         this.updateValue(byTag["vegetarian"], R, total, "végétarien");
         R -= this.RDecrement;
         this.updateValue(byTag["sugar"], R, total, "sucré");
+    },
+
+    "updateRender": function (data) {
+        if (!data) {
+            this.query();
+        } else {
+            this.redrawChart(data);
+        }
     },
 
     "add": function (cart) {
@@ -560,12 +565,12 @@ module.exports = View.extend({
 
     "query": function () {
         var that = this;
-        
+
         this.recipes.fetch({ 
             "data": { "tags": this.tags,
                       "price": this.price },
             "success": function (data) {
-                that.updateRender();
+                that.updateRender(that.getRenderData());
             }
         });
     },
@@ -574,9 +579,9 @@ module.exports = View.extend({
         var $elem = $(evt.currentTarget),
             selected,
             that = this;
-        $(".selected").removeClass("selected");
-        $elem.addClass("selected");
+        $elem.toggleClass("selected");
         selected  = $(".tag.selected img");
+        that.tags = [];
         selected.each(function () {
             var tag = $(this).attr("class");
             that.tags.push(tag);
@@ -784,7 +789,7 @@ module.exports = View.extend({
         $("#content").removeClass();
         $("#content").addClass(pageName);
 
-        if (!that.swipers[pageName] && pageName !== "menu") {
+        //if (!that.swipers[pageName] && pageName !== "menu") {
             that.swipers[pageName] = $(".swiper-container:visible").swiper({
                 "loop": false,
                 "grabCursor": true,
@@ -800,7 +805,7 @@ module.exports = View.extend({
                 evt.preventDefault()
                 that.swipers[pageName].swipeNext()
             });
-        } 
+        //} 
         $(".tooltips").tooltip();
     },
 
