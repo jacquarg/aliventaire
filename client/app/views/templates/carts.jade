@@ -1,13 +1,26 @@
-
 .navigation.left
 .swiper-container
     .swiper-wrapper
         .swiper-slide 
-            h2 Informations de consommation
+            hr
+            h2 
+                span Informations de consommation
+                span.tooltips(data-toggle="tooltip",
+                 data-placement="bottom",
+                 title="Chaque fois que vous validez une recette dans la partie 'Ma cuisine', le nombre de recettes par catégorie augmentera ici. Ceci dans le but de choisir vos prochaines recettes en fonction de votre historique ! Passez à la page des choix en cliquant sur les flèches roses !")
+                    span.glyphicon.glyphicon-question-sign
+            hr
             .history
                 #holder
         .swiper-slide 
-            h2 Choix des catégories
+            hr
+            h2 
+                span Choix des catégories
+                span.tooltips(data-toggle="tooltip",
+                     data-placement="bottom",
+                     title="Choisissez les catégories de recettes que vous voulez cuisiner puis passez à l'étape du choix de la recette en cliquant sur les flèches roses !")
+                        span.glyphicon.glyphicon-question-sign
+            hr
             .tags
                 .row
                     .col-xs-offset-4.col-xs-2
@@ -30,7 +43,14 @@
                     .col-xs-2
                         span.tag
                             img.sugar(alt="sucré")
-            h2 Choix du prix
+            hr
+            h2 
+                span Choix du prix
+                span.tooltips(data-toggle="tooltip",
+                     data-placement="bottom",
+                     title="Choisissez le prix maximum par personne pour la recette que vous voulez choisir puis passez à l'étape du choix de la recette en cliquant sur les flèches roses !")
+                        span.glyphicon.glyphicon-question-sign
+            hr
             form.price.row
                 .form-group.col-xs-offset-4.col-xs-4
                     input#cart-price(class="form-control", 
@@ -41,14 +61,38 @@
         .swiper-slide.carts
             .row
                 div.choose-recipe.col-xs-6
-                    h2 Choix de la recette
+                    hr
+                    h2 
+                        span Choisissez vos recettes
+                        span.tooltips(data-toggle="tooltip",
+                             data-placement="bottom",
+                             title="Choisissez les recettes à cuisiner et leur nombre, s'il manque un produit, celui-ci s'affichera dans votre liste de courses ! Et il faut créer une liste de courses même si vous ne manquez de rien. Cela permettra de voir la recette s'afficher sur la page 'Ma cuisine'")
+                            span.glyphicon.glyphicon-question-sign
+                    hr
                     .carts-recipes
                 div.choose-products.col-xs-6
-                    h2 Panier
+                    hr
+                    h2
+                        span Votre panier
+                        span.tooltips(data-toggle="tooltip",
+                             data-placement="bottom",
+                             title="Il vous manque un produit ? Il s'affiche alors ici, il ne vous reste plus qu'à ajuster la quantité qu'il vous manque avant de créer votre liste de courses !")
+                            span.glyphicon.glyphicon-question-sign
                     .products
             hr
-            .btn.btn-primary.order Créer une liste de courses
+            h2
+                .btn.btn-primary.order Créer une liste de courses
+                span.tooltips(data-toggle="tooltip",
+                         data-placement="bottom",
+                         title="Cliquez sur ce bouton une fois vos choix faits, et ce même si vous n'avez rien à commander pour que la recette apparaisse dans votre liste de recettes à préparer !")
+                    span.glyphicon.glyphicon-question-sign
             hr
-            h2 Listes de courses
+            h2 
+                span Vos listes de courses
+                span.tooltips(data-toggle="tooltip",
+                         data-placement="bottom",
+                         title="La liste de vos courses à effectuer, la commande sera automatique dans la prochaine version")
+                    span.glyphicon.glyphicon-question-sign
+            hr
             ul.carts.row
 .navigation.right
