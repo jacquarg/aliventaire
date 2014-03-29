@@ -1,22 +1,28 @@
 form.form-inline(role="form")
+    .row Ajouter un produit
+        span.tooltips(data-toggle="tooltip",
+         data-placement="bottom",
+         title="Pour ajouter un produit, remplissez les champs ci-dessous et validez en cliquant sur l'icone '+'. Il apparaîtra tout d'abord sous le formulaire, et rejoindra les autres produits par la suite. Une fois ajouté, il sera disponible pour faire partie d'une recette.")
+            span.glyphicon.glyphicon-question-sign
     .row
         .form-group.col-xs-7
             input#product-name(type="text", 
                                class="form-control",
                                required="required"
+                               title="Veuillez entrer le nom du produit à ajouter"
                                placeholder="Produit")
         .form-group.col-xs-2
             input#product-price(type="text",
                                 class="form-control",
                                 required="required"
                                 pattern="[0-9]+(.[0-9]+)?"
-                                title="le prix unitaire de ce produit (ex: 3.2)"
+                                title="Veuillez entrer le prix unitaire de ce produit (ex: 3.2)"
                                 placeholder="Prix unitaire")
         .form-group.col-xs-2
             input#product-quantity(type="text",
                                    class="form-control",
                                    pattern="[0-9]+"
-                                   title="le nombre de produits de ce type"
+                                   title="Veuillez entrer le nombre de produits de ce type que vous possédez"
                                    placeholder="Quantité")
         .col-xs-1
             button(type="submit",
@@ -27,14 +33,22 @@ form.form-inline(role="form")
         .form-group.col-xs-11
             input#product-image(type="text", 
                                 class="form-control",
+                                title="Veuillez entrer l'adresse de l'image du produit si il y en a une (ex : http://monimage.fr/monimage.png)"
                                 placeholder="adresse de l'image")
 .products-list
     ul.products.new
+    hr
+    span Les produits de mon frigo
+    span.tooltips(data-toggle="tooltip",
+         data-placement="bottom",
+         title="Ceci est la liste des produits de votre frigo, gérez les quantités avec les boutons '+' et '-', Pour éditer le nom ou le prix d'un produit, supprimez le en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. Le produit est alors supprimé, mais ces informations sont placées dans le formulaire d'ajout, il ne reste plus qu'à les modifier et ajouter le produit de nouveau.")
+            span.glyphicon.glyphicon-question-sign
     hr
     .row
         div.form-group.col-xs-10.col-xs-offset-2
             input.search(type="text",
                          placeholder="filtrer",
+                         title="filtrer la liste des produit",
                          class="form-control")
     .row
         button.sort(class="btn btn-default col-xs-5 col-xs-offset-2",
@@ -46,7 +60,7 @@ form.form-inline(role="form")
                     title="trier par prix",
                     data-sort="price") 
              span.glyphicon.glyphicon-sort
-             | prix
+             | prix (€)
         button.sort(class="btn btn-default col-xs-3",
                 title="trier par quantité",
                     data-sort="quantity") 

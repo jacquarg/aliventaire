@@ -801,6 +801,7 @@ module.exports = View.extend({
                 that.swipers[pageName].swipeNext()
             });
         } 
+        $(".tooltips").tooltip();
     },
 
     "goShop": function () {
@@ -1042,10 +1043,11 @@ module.exports = View.extend({
 
     "addProduct": function (evt) {
         var $form = $(evt.target),
+            price = $("#product-price").val() ? $("#product-price").val() : "0",
             product = new Product ({
                 "name": $("#product-name").val(),
                 "quantity": $("#product-quantity").val(),
-                "price": $("#product-price").val(),
+                "price": price.replace(",", "."),
                 "image": $("#product-image").val()
             }),
             that = this;
@@ -1444,9 +1446,9 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div title="supprimer" class="delete col-xs-1"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></div><div class="image col-xs-1"> <img');
-buf.push(attrs({ 'src':("" + (image) + ""), 'alt':(""), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
-buf.push('/></div><div class="name col-xs-5">' + escape((interp = name) == null ? '' : interp) + '</div><div class="price col-xs-2">' + escape((interp = price) == null ? '' : interp) + '</div><div class="quantity col-xs-3">' + escape((interp = quantity) == null ? '' : interp) + '<span class="actions"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></div>');
+buf.push('<div title="supprimer et placer dans le formulaire d\'ajout" class="delete col-xs-1"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></div><div class="image col-xs-1"><span class="img well"><img');
+buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("X"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
+buf.push('/></span></div><div class="name col-xs-5">' + escape((interp = name) == null ? '' : interp) + '</div><div class="price col-xs-2">' + escape((interp = price) == null ? '' : interp) + '</div><div class="quantity col-xs-3">' + escape((interp = quantity) == null ? '' : interp) + '<span class="actions"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></div>');
 }
 return buf.join("");
 };
@@ -1458,7 +1460,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<form role="form" class="form-inline"><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="le nombre de produits de ce type" placeholder="Quantité" class="form-control"/></div><div class="col-xs-1"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" placeholder="adresse de l\'image" class="form-control"/></div></div></form><div class="products-list"><ul class="products new"></ul><hr/><div class="row"><div class="form-group col-xs-10 col-xs-offset-2"><input type="text" placeholder="filtrer" class="search form-control"/></div></div><div class="row"><button title="trier par nom" data-sort="name" class="sort btn btn-default col-xs-5 col-xs-offset-2"><span class="glyphicon glyphicon-sort"></span>nom</button><button title="trier par prix" data-sort="price" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>prix</button><button title="trier par quantité" data-sort="quantity" class="sort btn btn-default col-xs-3"> <span class="glyphicon glyphicon-sort"></span>quantité</button></div><ul class="products old list"></ul></div>');
+buf.push('<form role="form" class="form-inline"><div class="row">Ajouter un produit<span data-toggle="tooltip" data-placement="bottom" title="Pour ajouter un produit, remplissez les champs ci-dessous et validez en cliquant sur l\'icone \'+\'. Il apparaîtra tout d\'abord sous le formulaire, et rejoindra les autres produits par la suite. Une fois ajouté, il sera disponible pour faire partie d\'une recette." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></div><div class="row"><div class="form-group col-xs-7"><input id="product-name" type="text" required="required" title="Veuillez entrer le nom du produit à ajouter" placeholder="Produit" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-price" type="text" required="required" pattern="[0-9]+(.[0-9]+)?" title="Veuillez entrer le prix unitaire de ce produit (ex: 3.2)" placeholder="Prix unitaire" class="form-control"/></div><div class="form-group col-xs-2"><input id="product-quantity" type="text" pattern="[0-9]+" title="Veuillez entrer le nombre de produits de ce type que vous possédez" placeholder="Quantité" class="form-control"/></div><div class="col-xs-1"><button type="submit" title="ajouter" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></div></div><div class="row"><div class="form-group col-xs-11"><input id="product-image" type="text" title="Veuillez entrer l\'adresse de l\'image du produit si il y en a une (ex : http://monimage.fr/monimage.png)" placeholder="adresse de l\'image" class="form-control"/></div></div></form><div class="products-list"><ul class="products new"></ul><hr/><span>Les produits de mon frigo</span><span data-toggle="tooltip" data-placement="bottom" title="Ceci est la liste des produits de votre frigo, gérez les quantités avec les boutons \'+\' et \'-\', Pour éditer le nom ou le prix d\'un produit, supprimez le en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. Le produit est alors supprimé, mais ces informations sont placées dans le formulaire d\'ajout, il ne reste plus qu\'à les modifier et ajouter le produit de nouveau." class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span><hr/><div class="row"><div class="form-group col-xs-10 col-xs-offset-2"><input type="text" placeholder="filtrer" title="filtrer la liste des produit" class="search form-control"/></div></div><div class="row"><button title="trier par nom" data-sort="name" class="sort btn btn-default col-xs-5 col-xs-offset-2"><span class="glyphicon glyphicon-sort"></span>nom</button><button title="trier par prix" data-sort="price" class="sort btn btn-default col-xs-2"> <span class="glyphicon glyphicon-sort"></span>prix (€)</button><button title="trier par quantité" data-sort="quantity" class="sort btn btn-default col-xs-3"> <span class="glyphicon glyphicon-sort"></span>quantité</button></div><ul class="products old list"></ul></div>');
 }
 return buf.join("");
 };

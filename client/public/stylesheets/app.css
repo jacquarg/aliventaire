@@ -469,6 +469,23 @@ ol {
 .alert {
   margin: 0.5em;
 }
+.tooltips {
+  margin: 0.2em;
+}
+.tooltip {
+  font-size: 0.7em;
+}
+.tooltip .tooltip-inner {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+}
+.img.well {
+  padding: 3px;
+}
+.img.well img {
+  vertical-align: text-top;
+}
 
 
 /*# sourceMappingURL=app.css.map*/

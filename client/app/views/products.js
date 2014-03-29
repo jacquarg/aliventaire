@@ -37,10 +37,11 @@ module.exports = View.extend({
 
     "addProduct": function (evt) {
         var $form = $(evt.target),
+            price = $("#product-price").val() ? $("#product-price").val() : "0",
             product = new Product ({
                 "name": $("#product-name").val(),
                 "quantity": $("#product-quantity").val(),
-                "price": $("#product-price").val(),
+                "price": price.replace(",", "."),
                 "image": $("#product-image").val()
             }),
             that = this;
