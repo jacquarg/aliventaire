@@ -1,20 +1,27 @@
-.image.col-xs-3 
-    img(src="#{image}", alt="image", title="#{name}")
-.col-xs-8 
+.row
+    .image.col-xs-3 
+        span.img.well
+            img(src="#{image}", alt="image", title="#{name}")
+    .col-xs-8 
     .name 
-        span.delete(title="supprimer")
-            button.btn.btn-danger
-                span.glyphicon.glyphicon-remove
-        span #{name}
-    .recipe-tags 
-        - each tag in tags
-            span.tag #{tag.id} 
-    .description !{description}
-    hr
-.recipe-products Produits :
+            span.delete(title="supprimer")
+                button.btn.btn-danger
+                    span.glyphicon.glyphicon-remove
+            span #{name}
+        .recipe-tags 
+            - each tag in tags
+                span.tag #{tag.id} 
+        .description !{description}
+        hr
+.recipe-products 
+    span Nombre de produits du placard :
+    span.tooltips(data-toggle="tooltip",
+            data-placement="bottom",
+            title="Mettez à jour le nombre de produits qu'il vous reste dans votre placard")
+        span.glyphicon.glyphicon-question-sign
     ul
     - each product in products
-        li.row 
+        li.row
             span.name.col-xs-8 #{product.name}
             span.quantity.col-xs-2 #{product.quantity}
             span.actions.col-xs-2

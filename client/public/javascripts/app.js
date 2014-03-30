@@ -362,7 +362,7 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "cart col-xs-6",
+    "className": "cart col-xs-6 well",
     "template": template,
 
     "model": Cart,
@@ -528,8 +528,17 @@ module.exports = View.extend({
     },
 
     "updateRender": function (data) {
+        var that = this,
+            i;
+        $(".selected").removeClass("selected");
+        $(".checked").removeClass("checked");
+        this.checkedProducts = {};
         if (!data) {
-            this.query();
+            this.allRecipes.fetch({ 
+                "success": function (data) {
+                    that.updateRender(that.getRenderData());
+                }
+            });
         } else {
             this.redrawChart(data);
         }
@@ -666,8 +675,7 @@ module.exports = View.extend({
     },
 
     "order": function (evt) {
-        var checked      = $("#shop .recipe .glyphicon-check"),
-            that         = this,
+        var that         = this,
             recipesNames = [],
             recipeName,
             cart,
@@ -1211,7 +1219,7 @@ module.exports = View.extend({
     "model": Recipe,
 
     "getRenderData": function () { 
-        var attributes = this.model.attributes,
+        var attributes = $.extend(true, {}, this.model.attributes),
             i,
             tag,
             tagName;
@@ -1226,7 +1234,6 @@ module.exports = View.extend({
             for (i = 0; i < attributes.tags.length; i++) {
                 tag = attributes.tags[i];
                 tagName = tag["id"];
-                tagName = tagName.replace("cheap", "pas cher");
                 tagName = tagName.replace("cheap", "pas cher");
                 tagName = tagName.replace("quick", "rapide");
                 tagName = tagName.replace("organic", "bio");
@@ -1359,7 +1366,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<span title="supprimer" class="delete"><button class="btn btn-danger glyphicon glyphicon-remove"></button></span><span class="name">Recettes : ' + escape((interp = name) == null ? '' : interp) + '</span><ul>');
+buf.push('<span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span class="name">Recettes : ' + escape((interp = name) == null ? '' : interp) + '</span><ul>');
 // iterate products
 ;(function(){
   if ('number' == typeof products.length) {
@@ -1421,7 +1428,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <hr/><h2> <span>Informations de consommation</span><span data-toggle="tooltip" data-placement="bottom" title="Chaque fois que vous validez une recette dans la partie \'Ma cuisine\', le nombre de recettes par catégorie augmentera ici. Ceci dans le but de choisir vos prochaines recettes en fonction de votre historique ! Passez à la page des choix en cliquant sur les flèches roses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <hr/><h2> <span>Choix des catégories</span><span data-toggle="tooltip" data-placement="bottom" title="Choisissez les catégories de recettes que vous voulez cuisiner puis passez à l\'étape du choix de la recette en cliquant sur les flèches roses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="organic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="végétarien" class="vegetarian"/></span></div><div class="col-xs-2"><span class="tag"><img alt="sucré" class="sugar"/></span></div></div></div><hr/><h2> <span>Choix du prix</span><span data-toggle="tooltip" data-placement="bottom" title="Choisissez le prix maximum par personne pour la recette que vous voulez choisir puis passez à l\'étape du choix de la recette en cliquant sur les flèches roses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" value="10" name="price" class="form-control"/></div></form></div><div class="swiper-slide carts"><div class="row"><div class="choose-recipe col-xs-6"><hr/><h2> <span>Choisissez vos recettes</span><span data-toggle="tooltip" data-placement="bottom" title="Choisissez les recettes à cuisiner et leur nombre, s\'il manque un produit, celui-ci s\'affichera dans votre liste de courses ! Et il faut créer une liste de courses même si vous ne manquez de rien. Cela permettra de voir la recette s\'afficher sur la page \'Ma cuisine\'" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><div class="carts-recipes"></div></div><div class="choose-products col-xs-6"><hr/><h2><span>Votre panier</span><span data-toggle="tooltip" data-placement="bottom" title="Il vous manque un produit ? Il s\'affiche alors ici, il ne vous reste plus qu\'à ajuster la quantité qu\'il vous manque avant de créer votre liste de courses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><div class="products"></div></div></div><hr/><h2><div class="btn btn-primary order">Créer une liste de courses</div><span data-toggle="tooltip" data-placement="bottom" title="Cliquez sur ce bouton une fois vos choix faits, et ce même si vous n\'avez rien à commander pour que la recette apparaisse dans votre liste de recettes à préparer !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><h2> <span>Vos listes de courses</span><span data-toggle="tooltip" data-placement="bottom" title="La liste de vos courses à effectuer, la commande sera automatique dans la prochaine version" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
+buf.push('<div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <hr/><h2> <span>Informations de consommation</span><span data-toggle="tooltip" data-placement="bottom" title="Chaque fois que vous validez une recette dans la partie \'Ma cuisine\', le nombre de recettes par catégorie augmentera ici. Ceci dans le but de choisir vos prochaines recettes en fonction de votre historique ! Passez à la page des choix en cliquant sur les flèches roses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><div class="history"><div id="holder"></div></div></div><div class="swiper-slide"> <hr/><h2> <span>Choix des catégories</span><span data-toggle="tooltip" data-placement="bottom" title="Choisissez les catégories de recettes que vous voulez cuisiner puis passez à l\'étape du choix de la recette en cliquant sur les flèches roses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><div class="tags"><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="pas cher" class="cheap"/></span></div><div class="col-xs-2"><span class="tag"><img alt="rapide" class="quick"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="bio" class="organic"/></span></div><div class="col-xs-2"><span class="tag"><img alt="light" class="light"/></span></div></div><div class="row"><div class="col-xs-offset-4 col-xs-2"><span class="tag"><img alt="végétarien" class="vegetarian"/></span></div><div class="col-xs-2"><span class="tag"><img alt="sucré" class="sugar"/></span></div></div></div><hr/><h2> <span>Choix du prix</span><span data-toggle="tooltip" data-placement="bottom" title="Choisissez le prix maximum par personne pour la recette que vous voulez choisir puis passez à l\'étape du choix de la recette en cliquant sur les flèches roses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><form class="price row"><div class="form-group col-xs-offset-4 col-xs-4"><input id="cart-price" placeholder="Prix" required="required" value="10" name="price" class="form-control"/></div></form></div><div class="swiper-slide carts"><hr/><h2><div class="btn btn-primary order">Créer une liste de courses</div><span data-toggle="tooltip" data-placement="bottom" title="Cliquez sur ce bouton une fois vos choix faits, et ce même si vous n\'avez rien à commander pour que la recette apparaisse dans votre liste de recettes à préparer !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><div class="row"><div class="choose-recipe col-xs-6"><hr/><h2> <span>Choisissez vos recettes</span><span data-toggle="tooltip" data-placement="bottom" title="Choisissez les recettes à cuisiner et leur nombre, s\'il manque un produit, celui-ci s\'affichera dans votre liste de courses ! Et il faut créer une liste de courses même si vous ne manquez de rien. Cela permettra de voir la recette s\'afficher sur la page \'Ma cuisine\'" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><div class="carts-recipes"></div></div><div class="choose-products col-xs-6"><hr/><h2><span>Votre panier</span><span data-toggle="tooltip" data-placement="bottom" title="Il vous manque un produit ? Il s\'affiche alors ici, il ne vous reste plus qu\'à ajuster la quantité qu\'il vous manque avant de créer votre liste de courses !" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><div class="products"></div></div></div><hr/><h2> <span>Vos listes de courses</span><span data-toggle="tooltip" data-placement="bottom" title="La liste de vos courses à effectuer, la commande sera automatique dans la prochaine version" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><ul class="carts row"></ul></div></div></div><div class="navigation right"></div>');
 }
 return buf.join("");
 };
@@ -1445,7 +1452,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <h2>Tickets de caisse</h2><h3>Validez les tickets de caisse pour mettre les produits dans le frigo !</h3><div id="receipts"></div></div><div class="swiper-slide"> <h2>Recette à cuisiner</h2><h3>Validez les recettes à cuisiner pour enlever les produits du frigo !</h3><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
+buf.push('<div class="kitchen"><div class="navigation left"></div><div class="swiper-container"><div class="swiper-wrapper"><div class="swiper-slide"> <hr/><h2> <span>Tickets de caisse</span><span data-toggle="tooltip" data-placement="bottom" title="Validez les tickets de caisse pour mettre les produits dans le frigo ! Pour vous rendre sur la page des recettes à cuisiner, allez-y en cliquant sur les flèches roses" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><h3> </h3><div id="receipts"></div></div><div class="swiper-slide"> <hr/><h2> <span>Recette à cuisiner</span><span data-toggle="tooltip" data-placement="bottom" title="Supprimez la recette de cette liste une fois qu\'elle est cuisinée pour mettre à jour votre historique et votre placard ! Attention de bien vérifier le nombre de produits à supprimer du placard" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span></h2><hr/><h3> </h3><div id="recipes-to-cook"></div></div></div></div><div class="navigation right"></div></div>');
 }
 return buf.join("");
 };
@@ -1533,9 +1540,9 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="image col-xs-3"> <img');
+buf.push('<div class="row"><div class="image col-xs-3"> <span class="img well"><img');
 buf.push(attrs({ 'src':("" + (image) + ""), 'alt':("image"), 'title':("" + (name) + "") }, {"src":true,"alt":true,"title":true}));
-buf.push('/></div><div class="col-xs-8"> <div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="recipe-tags"> ');
+buf.push('/></span></div><div class="col-xs-8"> </div><div class="name"> <span title="supprimer" class="delete"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button></span><span>' + escape((interp = name) == null ? '' : interp) + '</span></div><div class="recipe-tags"> ');
 // iterate tags
 ;(function(){
   if ('number' == typeof tags.length) {
@@ -1553,20 +1560,20 @@ buf.push('<span class="tag">' + escape((interp = tag.id) == null ? '' : interp) 
   }
 }).call(this);
 
-buf.push('</div><div class="description">' + ((interp = description) == null ? '' : interp) + '</div><hr/></div><div class="recipe-products">Produits :<ul></ul>');
+buf.push('</div><div class="description">' + ((interp = description) == null ? '' : interp) + '<hr/></div></div><div class="recipe-products"> <span>Nombre de produits du placard :</span><span data-toggle="tooltip" data-placement="bottom" title="Mettez à jour le nombre de produits qu\'il vous reste dans votre placard" class="tooltips"><span class="glyphicon glyphicon-question-sign"></span></span><ul></ul>');
 // iterate products
 ;(function(){
   if ('number' == typeof products.length) {
     for (var $index = 0, $$l = products.length; $index < $$l; $index++) {
       var product = products[$index];
 
-buf.push('<li class="row"> <span class="name col-xs-8">' + escape((interp = product.name) == null ? '' : interp) + '</span><span class="quantity col-xs-2">' + escape((interp = product.quantity) == null ? '' : interp) + '</span><span class="actions col-xs-2"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></li>');
+buf.push('<li class="row"><span class="name col-xs-8">' + escape((interp = product.name) == null ? '' : interp) + '</span><span class="quantity col-xs-2">' + escape((interp = product.quantity) == null ? '' : interp) + '</span><span class="actions col-xs-2"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></li>');
     }
   } else {
     for (var $index in products) {
       var product = products[$index];
 
-buf.push('<li class="row"> <span class="name col-xs-8">' + escape((interp = product.name) == null ? '' : interp) + '</span><span class="quantity col-xs-2">' + escape((interp = product.quantity) == null ? '' : interp) + '</span><span class="actions col-xs-2"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></li>');
+buf.push('<li class="row"><span class="name col-xs-8">' + escape((interp = product.name) == null ? '' : interp) + '</span><span class="quantity col-xs-2">' + escape((interp = product.quantity) == null ? '' : interp) + '</span><span class="actions col-xs-2"><button class="minus btn btn-default"><span class="glyphicon glyphicon-minus"></span></button><button class="plus btn btn-default"><span class="glyphicon glyphicon-plus"></span></button></span></li>');
    }
   }
 }).call(this);
@@ -1682,19 +1689,35 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "row recipe",
+    "className": "row recipe well",
     "template": template,
 
     "model": Recipe,
 
     "getRenderData": function () { 
-        var attributes = this.model.attributes;
+        var attributes = $.extend(true, {}, this.model.attributes),
+            tag,
+            tagNale,
+            i;
         if (!attributes.image) {
             attributes.image = "images/recipe.png";
         }
         if (attributes.description) {
             attributes.description = 
                 attributes.description.replace(/[\r\n]+/g, "<br>");
+        }
+        if (attributes.tags) {
+            for (i = 0; i < attributes.tags.length; i++) {
+                tag = attributes.tags[i];
+                tagName = tag["id"];
+                tagName = tagName.replace("cheap", "pas cher");
+                tagName = tagName.replace("quick", "rapide");
+                tagName = tagName.replace("organic", "bio");
+                tagName = tagName.replace("light", "light");
+                tagName = tagName.replace("vegetarian", "végétarien");
+                tagName = tagName.replace("sugar", "sucré");
+                tag["id"] = tagName;
+            }
         }
         return attributes;
     },
@@ -1783,7 +1806,7 @@ module.exports = View.extend({
         });
     },
 
-    "updateRender": function (swiper) {
+    "updateRender": function () {
         var that = this,
             $recipes = this.recipesList;
 
@@ -1800,7 +1823,9 @@ module.exports = View.extend({
                 $recipes.height(that.height);
                 $recipes.parents(".swiper-slide").height(that.height + 500);
                 $recipes.parents(".swiper-wrapper").height(that.height + 500);
-                swiper.resizeFix();
+            },
+            "error": function (data) {
+                console.log("pb with recipes to cook")
             }
         });
     },

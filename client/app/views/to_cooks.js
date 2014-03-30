@@ -19,7 +19,7 @@ module.exports = View.extend({
         });
     },
 
-    "updateRender": function (swiper) {
+    "updateRender": function () {
         var that = this,
             $recipes = this.recipesList;
 
@@ -36,7 +36,9 @@ module.exports = View.extend({
                 $recipes.height(that.height);
                 $recipes.parents(".swiper-slide").height(that.height + 500);
                 $recipes.parents(".swiper-wrapper").height(that.height + 500);
-                swiper.resizeFix();
+            },
+            "error": function (data) {
+                console.log("pb with recipes to cook")
             }
         });
     },

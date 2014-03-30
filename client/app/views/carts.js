@@ -130,8 +130,17 @@ module.exports = View.extend({
     },
 
     "updateRender": function (data) {
+        var that = this,
+            i;
+        $(".selected").removeClass("selected");
+        $(".checked").removeClass("checked");
+        this.checkedProducts = {};
         if (!data) {
-            this.query();
+            this.allRecipes.fetch({ 
+                "success": function (data) {
+                    that.updateRender(that.getRenderData());
+                }
+            });
         } else {
             this.redrawChart(data);
         }
@@ -268,8 +277,7 @@ module.exports = View.extend({
     },
 
     "order": function (evt) {
-        var checked      = $("#shop .recipe .glyphicon-check"),
-            that         = this,
+        var that         = this,
             recipesNames = [],
             recipeName,
             cart,

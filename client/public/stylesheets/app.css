@@ -399,10 +399,6 @@ ol {
 #recipes ul {
   margin-top: 1em;
 }
-#recipes ul img {
-  width: 128px;
-  height: 128px;
-}
 #recipes ul .description {
   text-align: left;
 }
@@ -420,6 +416,11 @@ ol {
 #kitchen ul.recipes > li,
 #recipes ul.recipes > li {
   padding: 0.5em;
+}
+#kitchen ul.recipes img,
+#recipes ul.recipes img {
+  width: 128px;
+  height: 128px;
 }
 #kitchen .delete,
 #recipes .delete {

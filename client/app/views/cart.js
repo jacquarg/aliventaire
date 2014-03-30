@@ -4,7 +4,7 @@ var View     = require("./view"),
 
 module.exports = View.extend({
     "tagName": "li",
-    "className": "cart col-xs-6",
+    "className": "cart col-xs-6 well",
     "template": template,
 
     "model": Cart,

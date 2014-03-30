@@ -10,7 +10,7 @@ module.exports = View.extend({
     "model": Recipe,
 
     "getRenderData": function () { 
-        var attributes = this.model.attributes,
+        var attributes = $.extend(true, {}, this.model.attributes),
             i,
             tag,
             tagName;
@@ -25,7 +25,6 @@ module.exports = View.extend({
             for (i = 0; i < attributes.tags.length; i++) {
                 tag = attributes.tags[i];
                 tagName = tag["id"];
-                tagName = tagName.replace("cheap", "pas cher");
                 tagName = tagName.replace("cheap", "pas cher");
                 tagName = tagName.replace("quick", "rapide");
                 tagName = tagName.replace("organic", "bio");
