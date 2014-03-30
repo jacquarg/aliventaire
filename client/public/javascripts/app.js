@@ -484,7 +484,7 @@ module.exports = View.extend({
         hand.animate({ "arc": [value, total, R, name] }, 750, "elastic");
     },
 
-    "redrawChart": function (data) {
+    "redrawChart": function () {
         var total,
             R = this.R,
             recipe,
@@ -498,8 +498,6 @@ module.exports = View.extend({
                       "light": 0,
                       "vegetarian": 0,
                       "sugar": 0 };
-
-        this.$el.find(".carts-recipes").html(this.templateRecipes(data));
 
         total = 6;
         for (i = 0; i < this.allRecipes.models.length; i++) {
@@ -530,16 +528,17 @@ module.exports = View.extend({
     "updateRender": function (data) {
         var that = this,
             i;
-        $(".selected").removeClass("selected");
         $(".checked").removeClass("checked");
         this.checkedProducts = {};
         if (!data) {
+            $(".selected").removeClass("selected");
             this.allRecipes.fetch({ 
                 "success": function (data) {
                     that.updateRender(that.getRenderData());
                 }
             });
         } else {
+            this.$el.find(".carts-recipes").html(this.templateRecipes(data));
             this.redrawChart(data);
         }
     },
@@ -579,7 +578,7 @@ module.exports = View.extend({
             "data": { "tags": this.tags,
                       "price": this.price },
             "success": function (data) {
-                //that.updateRender(that.getRenderData());
+                that.updateRender(that.getRenderData());
             }
         });
     },
