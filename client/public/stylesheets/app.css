@@ -447,9 +447,9 @@ ol {
 }
 #shop .tag {
   cursor: pointer;
-  opacity: 0.8;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
-  filter: alpha(opacity=80);
+  opacity: 0.5;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+  filter: alpha(opacity=50);
 }
 #shop .tag:hover {
   opacity: 0.9;
@@ -457,10 +457,14 @@ ol {
   filter: alpha(opacity=90);
 }
 #shop .tag.selected {
-  opacity: 1;
-  -ms-filter: none;
-  filter: none;
+  opacity: 1.5;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=150);
+  filter: alpha(opacity=150);
   color: #008000;
+}
+#shop .tag.selected img {
+  width: 80px;
+  height: 80px;
 }
 #shop .tag img {
   width: 64px;
