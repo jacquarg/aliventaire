@@ -81,7 +81,7 @@ module.exports = View.extend({
     "updateValue": function (value, R, total, name) {
         var hand,
             param = { "stroke": "#fff", "stroke-width": 20 };
-        name += " : " + value + " repas.";
+        name = " vous avez déjà préparé " + value + " repas " + name + ".";
         hand = this.r.path().attr(param).attr({ "arc": [0, total, R, name] });
         hand.animate({ "arc": [value, total, R, name] }, 750, "elastic");
     },

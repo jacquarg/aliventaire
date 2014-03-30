@@ -77,12 +77,20 @@ ul, ol
     div.menu
       display: block
 
-      img
-        padding: 0 2px
-        cursor: pointer
-        opacity: 0.9
-        &:hover
-          opacity: 1
+    h2
+      padding: 1em
+      p 
+        margin: 0
+
+    img
+      padding: 0 2px
+      cursor: pointer
+      opacity: 0.9
+      &:hover
+        opacity: 1
+    .tooltips
+      span
+        font-size: 2em
 
   &.shop
     div.shop
@@ -284,6 +292,7 @@ ul, ol
 
 .tooltips
   margin: .2em
+  cursor: pointer
 .tooltip
   font-size: .7em
   .tooltip-inner

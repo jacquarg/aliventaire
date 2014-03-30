@@ -235,17 +235,26 @@ ol {
 #content.menu div.menu {
   display: block;
 }
-#content.menu div.menu img {
+#content.menu h2 {
+  padding: 1em;
+}
+#content.menu h2 p {
+  margin: 0;
+}
+#content.menu img {
   padding: 0 2px;
   cursor: pointer;
   opacity: 0.9;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
   filter: alpha(opacity=90);
 }
-#content.menu div.menu img:hover {
+#content.menu img:hover {
   opacity: 1;
   -ms-filter: none;
   filter: none;
+}
+#content.menu .tooltips span {
+  font-size: 2em;
 }
 #content.shop div.shop,
 #content.shop div.pagination {
@@ -475,6 +484,7 @@ ol {
 }
 .tooltips {
   margin: 0.2em;
+  cursor: pointer;
 }
 .tooltip {
   font-size: 0.7em;
