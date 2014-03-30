@@ -85,7 +85,7 @@ module.exports = View.extend({
                 that.swipers[pageName].swipeNext()
             });
         //} 
-        $(".tooltips").tooltip();
+        $(".tooltips").tooltip({ "trigger": "click" });
     },
 
     "goShop": function () {

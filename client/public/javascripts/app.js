@@ -553,6 +553,7 @@ module.exports = View.extend({
         "click .product-to-buy": "updateProduct",
         "click .order": "order",
         "click .tag": "selectTag",
+        "change .price input": "selectPrice",
         "submit .price": "selectPrice",
     },
 
@@ -813,7 +814,7 @@ module.exports = View.extend({
                 that.swipers[pageName].swipeNext()
             });
         //} 
-        $(".tooltips").tooltip();
+        $(".tooltips").tooltip({ "trigger": "click" });
     },
 
     "goShop": function () {

@@ -155,6 +155,7 @@ module.exports = View.extend({
         "click .product-to-buy": "updateProduct",
         "click .order": "order",
         "click .tag": "selectTag",
+        "change .price input": "selectPrice",
         "submit .price": "selectPrice",
     },
 

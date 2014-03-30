@@ -480,9 +480,11 @@ ol {
   font-size: 0.7em;
 }
 .tooltip .tooltip-inner {
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #000;
+  background-color: #eee;
+  border: 1px solid #111;
+  color: #111;
+  font-size: 25px;
+  padding: 2px;
 }
 .img.well {
   padding: 3px;
