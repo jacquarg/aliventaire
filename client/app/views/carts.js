@@ -181,7 +181,7 @@ module.exports = View.extend({
             "data": { "tags": this.tags,
                       "price": this.price },
             "success": function (data) {
-                that.updateRender(that.getRenderData());
+                //that.updateRender(that.getRenderData());
             }
         });
     },
