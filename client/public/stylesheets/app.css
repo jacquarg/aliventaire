@@ -179,8 +179,11 @@ h1 {
   margin-bottom: 0.5em;
 }
 h2 {
-  font-size: 2em;
+  font-size: 45px;
   line-height: normal;
+}
+h2 p {
+  font-size: 30px;
 }
 h3 {
   padding-bottom: 2em;
@@ -271,9 +274,6 @@ ol {
 #content.recipes div.recipes,
 #content.recipes div.pagination {
   display: block;
-}
-#content .page {
-  margin-top: 40px;
 }
 #content img.menu {
   position: absolute;
@@ -490,10 +490,11 @@ ol {
   font-size: 0.7em;
 }
 .tooltip .tooltip-inner {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #eee;
   border: 1px solid #111;
   color: #111;
-  font-size: 25px;
+  font-size: 15px;
   padding: 2px;
 }
 .img.well {

@@ -288,6 +288,10 @@ module.exports = View.extend({
             i, j;
 
         recipesNames = Object.keys(this.checkedProducts);
+        if (!recipesNames.length) {
+            console.log("rien à faire")
+            return
+        }
         for (i = 0; i < recipesNames.length; i++) {
             recipeName    = recipesNames[i];
             productsNames = Object.keys(this.checkedProducts[recipeName]);
@@ -313,6 +317,8 @@ module.exports = View.extend({
             // TODO: quantity of products and same product in diff recipe
         });
 
+        $(evt.target).removeClass("btn-primary");
+        $(evt.target).addClass("btn-warning");
         that.collection.create(cart, {
             "success": function (cart) {
                 _(recipesNames).each(function (recipeName) {
@@ -320,6 +326,8 @@ module.exports = View.extend({
                     recipe.save({ "toCook": recipe.get("toCook") + 1 });
                 });
                 that.add(cart);
+                $(evt.target).removeClass("btn-warning");
+                $(evt.target).addClass("btn-success");
             }
         });
     },

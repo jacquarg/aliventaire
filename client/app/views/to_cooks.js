@@ -14,6 +14,9 @@ module.exports = View.extend({
         this.$el.html(this.template(this.getRenderData()));
 
         this.recipesList = this.$el.find("ul.recipes");
+        if (this.collection.models.length) {
+            this.recipesList.html("");
+        }
         this.collection.each(function (recipe){
             that.add(recipe);
         });

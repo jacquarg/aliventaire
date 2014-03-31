@@ -70,11 +70,11 @@ module.exports = View.extend({
 
         //if (!that.swipers[pageName] && pageName !== "menu") {
             that.swipers[pageName] = $(".swiper-container:visible").swiper({
-                "loop": false,
                 "grabCursor": true,
                 "pagination": pageClass + "> .pagination",
                 "paginationClickable": true,
                 "keyboardControl": true,
+                "loop": false
             });
             $(pageClass + "> .navigation.left").on("click", function (evt) {
                 evt.preventDefault()

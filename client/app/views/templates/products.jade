@@ -1,11 +1,12 @@
 form.form-inline(role="form")
     .row 
         hr
-        span Ajouter un produit
-        span.tooltips(data-toggle="tooltip",
-         data-placement="bottom",
-         title="Pour ajouter un produit, remplissez les champs ci-dessous et validez en cliquant sur l'icone '+'. Il apparaîtra tout d'abord sous le formulaire, et rejoindra les autres produits par la suite. Une fois ajouté, il sera disponible pour faire partie d'une recette.")
-            span.glyphicon.glyphicon-question-sign
+        h2
+            span Ajouter un produit
+            span.tooltips(data-toggle="tooltip",
+             data-placement="bottom",
+             title="Pour ajouter un produit, remplissez les champs ci-dessous et validez en cliquant sur l'icone '+'. Il apparaîtra sous le formulaire et sera disponible pour faire partie d'une recette. Il rejoindra la liste des produits par la suite.")
+                span.glyphicon.glyphicon-question-sign
         hr
     .row
         .form-group.col-xs-7
@@ -41,11 +42,12 @@ form.form-inline(role="form")
 .products-list
     ul.products.new
     hr
-    span Les produits de mon frigo
-    span.tooltips(data-toggle="tooltip",
-         data-placement="bottom",
-         title="Ceci est la liste des produits de votre frigo, gérez les quantités avec les boutons '+' et '-', Pour éditer le nom ou le prix d'un produit, supprimez le en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. Le produit est alors supprimé, mais ces informations sont placées dans le formulaire d'ajout, il ne reste plus qu'à les modifier et ajouter le produit de nouveau.")
-            span.glyphicon.glyphicon-question-sign
+    h2
+        span Les produits de mon placard
+        span.tooltips(data-toggle="tooltip",
+             data-placement="bottom",
+             title="Ceci est la liste des produits de votre placard, gérez les quantités avec les boutons '+' et '-', Pour éditer le nom ou le prix d'un produit, supprimez le en cliquant sur la croix rouge qui apparait lorsque vous passez la souris dessus. Le produit est alors supprimé, mais ces informations sont placées dans le formulaire d'ajout, il ne reste plus qu'à les modifier et ajouter le produit de nouveau.")
+                span.glyphicon.glyphicon-question-sign
     hr
     .row
         div.form-group.col-xs-10.col-xs-offset-2

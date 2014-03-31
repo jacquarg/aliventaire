@@ -64,7 +64,7 @@ module.exports = View.extend({
                 .prop("selected", true);
         });
         that.$el.find(".recipe-tags span").each(function () {
-            $recipesTags.find("option[value='" + $.trim($(this).text()) + "']")
+            $recipesTags.find("option:contains('" + $.trim($(this).text()) + "')")
                 .prop("selected", true);
         });
         $(".select-picker").selectpicker("refresh");

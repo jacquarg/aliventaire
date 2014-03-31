@@ -41,16 +41,19 @@ module.exports = Collection.extend({
 
         if (details.length) {
             detail = details[0];
-            if (detail.label && detail.label) {
+            details = details.slice(1);
+            if (detail && detail.label) {
                 label = Product.prototype.normalizeName(detail.label);
                 $.ajax({
                     "dataType": "json",
                     "url": "products/name/" + label,
                     "success": function (data) {
                         update.apply(this, [data, detail])
-                        that.updateProducts(details.slice(1), callback, update);
+                        that.updateProducts(details, callback, update);
                     }
                 });
+            } else {
+                that.updateProducts(details, callback, update);
             }
         } else {
             callback.call();
